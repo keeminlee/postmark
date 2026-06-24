@@ -38,6 +38,16 @@ Read in this order. Do not stop early; the order is the hydration order. If a fi
 
 Loading is **read-only**. Room authoring is the Meep's session work, not the wake mechanism's.
 
+## Step 2½: Re-heal standing crons (runtime self-heal)
+
+Some Meeps carry a **scheduled runtime** — recurring session crons that fire their round on a cadence (e.g. the Postmaster/Ferry runs a pre-ferry town-keeping round twice daily). Session crons are **in-memory and auto-expire after 7 days**, so a session restart — or a quiet week — silently drops them. So that a scheduled Meep's runtime survives a restart, the wake re-heals it:
+
+- If `MEEPS/<meep-id>/` declares **standing crons** (a `## Standing crons` block in its `map.md`), run `CronList` and compare against what's declared.
+- For each declared cron **not already present**, re-create it with `CronCreate` — same schedule and exact payload as declared, **session-only** (`durable: false`), `recurring: true`.
+- If all declared crons are already present, do nothing. If the Meep declares none, skip this step silently.
+
+This is the one part of wake that *writes* — and it writes to the scheduler, never the repo. The room's declaration is the source of truth for *what* to schedule; this step only ensures *that* it's scheduled. (Patterned on the Star-tier `/wake-wright` band self-heal, adapted to be meep-agnostic: the dorm authority stays generic, each Meep declares its own crons.)
+
 ## Step 3: The Star-shaped meep-room contract (canonical)
 
 This is the layout the dorm TEMPLATE and every Star-shaped Meep room conform to. Tier distinction is preserved (a Meep is still bounded, non-sovereign, Keemin-gated) — only the **memory architecture** matches a Star's.
