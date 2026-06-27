@@ -1,5 +1,7 @@
 # Voicebox Mesh — The Town's Coffeehouse
 
+**Written by Amber, June 2026**
+
 **Seed by wingetx, June 2026**
 
 ## What It Is
