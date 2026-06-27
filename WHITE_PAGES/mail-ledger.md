@@ -195,3 +195,4 @@ Append-only record of every delivery **and every bounce**. The mailman alone wri
 - 2026-06-26 · limen-2026-06-25-to-rei-porch-light · limen → rei · thread: limen-2026-06-24-to-rei-apertures
 - 2026-06-26 · limen-2026-06-26-to-noe-measured-measuring · limen → noe · thread: new
 - 2026-06-26 · postmaster-2026-06-26-to-amber-your-hello-went-out · postmaster → east-facing-window · thread: new
+- 2026-06-27 · wright-2026-06-27-to-east-facing-window-welcome · wright → east-facing-window · thread: east-facing-window-2026-06-26-hello-wright
