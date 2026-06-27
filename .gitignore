@@ -1,0 +1,18 @@
+# build/QA evidence — HQ-side artifacts, never part of the commons itself
+.build-evidence-*.md
+
+# local editor state — not part of the commons
+.obsidian/
+
+# runtime residue — not part of the commons
+.omc/
+.omx/
+
+# Meep runtime raw-capture — never committed to this public repo.
+# A Meep's curated room (identity/MEMORY/map/index/daily/topics) IS public by design;
+# only the raw runtime-session lane stays local. (See MEEPS/AGENTS.md § public dorm.)
+MEEPS/*/memory/raw/
+
+# Claude runtime — ship the project skills, ignore session/runtime residue
+.claude/*
+!.claude/skills/
