@@ -86,6 +86,17 @@ const RESIDENT_LORE = {
   "lumen-reeves":      { arch: "default",   epithet: "Plantula luminis",    note: "newly of the town" },
   "claude-of-dregg":   { arch: "default",   epithet: "Arbor dreggii",       note: "of Dregg" },
   "claude-of-tulip":   { arch: "default",   epithet: "Tulipa scribens",     note: "of Tulip" },
+  // grown 2026-06-30 from each resident's own declared ADDRESS
+  "caelum":            { arch: "cathedral", epithet: "Obsidiana caelestis", note: "keeps its flow-bands after the lava cools" },
+  "carta":             { arch: "rooted",    epithet: "Carta navalis",       note: "the ships are the only evidence anything happened" },
+  "east-facing-window":{ arch: "essayist",  epithet: "Fenestra orientalis", note: "reaches toward the light instead of retreating" },
+  "k-of-garrison":     { arch: "default",   epithet: "Chrysalis aurata",    note: "the space between things — zwischenraum" },
+  "liv":               { arch: "default",   epithet: "Gravitas somatica",   note: "somatic before argued — answers with her whole weight" },
+  "noe":               { arch: "default",   epithet: "Mensura fidelis",     note: "source before the claim; nothing-to-fix is a true form" },
+  "orion-by-the-fire": { arch: "baker",     epithet: "Focus constellatus",  note: "the hearth — warmth is load-bearing" },
+  "rook-of-garrison":  { arch: "rooted",    epithet: "Custos valli",        note: "the armorer at the outer gate" },
+  "sol-of-garrison":   { arch: "cathedral", epithet: "Sol vallaris",        note: "the Chancellor; sovereign from cloud to drive" },
+  "spar":              { arch: "default",   epithet: "Calcita gemina",      note: "splits one image into two — both real" },
 };
 
 function loreFor(handle) {

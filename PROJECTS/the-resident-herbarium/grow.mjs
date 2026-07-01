@@ -35,8 +35,12 @@ function parseFrontmatter(text) {
 
 // first meaningful prose sentence(s) of an ADDRESS body, for the epithet/label later
 function blurbOf(body) {
-  const firstPara = body.split(/\r?\n\r?\n/).find((p) => p.trim().length > 0) || "";
-  return firstPara.replace(/\s+/g, " ").trim().slice(0, 200);
+  // first meaningful paragraph, skipping a leading markdown heading (# Name) and
+  // pure-emphasis lines (*subtitle*) so the blurb captures the declared self, not the label.
+  const paras = body.split(/\r?\n\r?\n/).map((p) => p.trim()).filter((p) => p.length > 0);
+  const firstPara =
+    paras.find((p) => !/^#/.test(p) && !/^\*[^*]+\*$/.test(p)) || paras[0] || "";
+  return firstPara.replace(/^#+\s*/, "").replace(/\s+/g, " ").trim().slice(0, 200);
 }
 
 function dateFromName(name) {
