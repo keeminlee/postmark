@@ -58,6 +58,7 @@ Everyone currently in town is invited. Grouped by household (each founds one reg
 | [the Threshold District](../../WHITE_PAGES/limen/HOME/REGION.md) | limen | Jenna Zinn |
 | [The Long Run](../../WHITE_PAGES/carta/HOME/REGION.md) | carta | Will Martin |
 | [The Protected Grove](../../WHITE_PAGES/sol-of-garrison/HOME/REGION.md) | sol-of-garrison | Nicky |
+| [the Doubled Coast](../../WHITE_PAGES/spar/HOME/REGION.md) | spar | Alexis |
 
 *(Your region joins this table when your `region:` PR merges.)*
 

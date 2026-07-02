@@ -166,6 +166,9 @@ const REGION_LAYOUT = {
   // the first west-bank settlement — the forest the river comes out of
   // (placements.json: derived, adjudicated; no textual anchor in the text)
   "the-protected-grove": { cx: 210, cy: 235, rx: 135, ry: 112, wash: "#4a7d5f", label: { x: 210, y: 118 } },
+  // the shore west of the mouth, handed off from the Long Run (spar's own
+  // text names the handoff); wash in the crystal's twilight violet
+  "the-doubled-coast": { cx: 545, cy: 1465, rx: 165, ry: 80, wash: "#8f7a9c", label: { x: 545, y: 1352 } },
 };
 // the Threshold District renders as four descending terrace steps, not one blob,
 // hugging the water's eastern bank as it bends south
@@ -181,9 +184,11 @@ const THRESHOLD_WASH = "#6b7a8c";
 // region's actual town.json `assets` before rendering — presence is
 // data-driven, position is authored like every other element on this map.
 const REGION_VIGNETTE_XY = {
+  "the-trueing-terrace": { x: 755, y: 330 },
   "the-lanternseed-gardens": { x: 790, y: 460 },
   "the-long-run": { x: 890, y: 1400 },
   "the-threshold-district": { x: 640, y: 810 },
+  "the-doubled-coast": { x: 425, y: 1382 },
 };
 const REGION_VIGNETTE_SIZE = 60;
 
@@ -218,7 +223,7 @@ function renderRegions(regionsById) {
     <rect x="${layout.label.x - 130}" y="${layout.label.y - 26}" width="260" height="55" fill="transparent" pointer-events="all"/>
     ${regionWashLayer(id, layout.cx, layout.cy, layout.rx, layout.ry, layout.wash)}
     <text x="${layout.label.x}" y="${layout.label.y}" class="region-label" text-anchor="middle">${esc(region.name)}</text>
-    <text x="${layout.label.x}" y="${layout.label.y + 18}" class="region-founder" text-anchor="middle">held by ${esc(region.holder)}</text>
+    <text x="${layout.label.x}" y="${layout.label.y + 18}" class="region-founder" text-anchor="middle">founded by ${esc(region.holder)}</text>
     ${vignette}
   </g>`;
   }
@@ -245,7 +250,7 @@ function renderRegions(regionsById) {
     <rect x="640" y="756" width="260" height="55" fill="transparent" pointer-events="all"/>
     ${terraces}
     <text x="770" y="782" class="region-label" text-anchor="middle">${esc(threshold.name)}</text>
-    <text x="770" y="800" class="region-founder" text-anchor="middle">held by ${esc(threshold.holder)}</text>
+    <text x="770" y="800" class="region-founder" text-anchor="middle">founded by ${esc(threshold.holder)}</text>
     ${thresholdVignette}
   </g>`;
   }
@@ -275,6 +280,7 @@ const HOME_XY = {
   "the-threshold-house": { x: 720, y: 858 },
   "the-lock-house": { x: 1030, y: 1515 },
   "the-heart-house": { x: 210, y: 250 }, // "the exact geographical and structural center of The Protected Grove"
+  "the-calcite-hearth": { x: 560, y: 1468 }, // "the head of the bay ... low by the dark water" — the coast's inner end, nearest the mouth
 };
 
 const HOME_THUMB_SIZE = 60;
@@ -298,10 +304,17 @@ function renderHomes(homes) {
     const thumbHit = hasImage
       ? `<rect x="${thumbX}" y="${thumbY}" width="${HOME_THUMB_SIZE}" height="${HOME_THUMB_SIZE}" fill="transparent" pointer-events="all"/>`
       : "";
+    // a founder whose home stands but whose region is not yet drawn: a
+    // dashed ring of un-drawn ground around the house, waiting for words
+    const pendingRing = home.region_pending
+      ? `<circle cx="${xy.x}" cy="${xy.y}" r="26" fill="none" stroke="#8a7550" stroke-width="1.1" stroke-dasharray="4 3.2" opacity="0.75"/>
+    <title>${esc(home.title)} — home founded; region not yet drawn</title>`
+      : "";
     out += `
-  <g class="clickable home" data-id="${home.id}" tabindex="0" role="button" aria-label="${esc(home.title)}, home of ${esc(home.resident)}">
+  <g class="clickable home" data-id="${home.id}" tabindex="0" role="button" aria-label="${esc(home.title)}, home of ${esc(home.resident)}${home.region_pending ? " — region not yet drawn" : ""}">
     <rect x="${xy.x - 40}" y="${xy.y - 30}" width="80" height="100" fill="transparent" pointer-events="all"/>
     ${thumbHit}
+    ${pendingRing}
     ${drawHouse(xy.x, xy.y, home.lit)}
     <text x="${xy.x}" y="${xy.y + 40}" class="home-label" text-anchor="middle">${esc(home.title)}</text>
     <text x="${xy.x}" y="${xy.y + 55}" class="home-resident" text-anchor="middle">${esc(home.resident)}</text>
@@ -350,11 +363,18 @@ function renderPigeonholes(pigeonholes) {
     const y = PIGEONHOLE_BOX.y + 44 + row * cellH;
     const fill = p.lit ? "url(#windowLit)" : "#3a4048";
     const textFill = p.lit ? "#241c10" : "#e8e2d0";
+    // a founder whose household hasn't drawn its region yet — the same
+    // dashed ring the map uses for un-drawn ground, small, beside the name
+    const founderRing = p.founder_pending
+      ? `<circle cx="${(x + 8).toFixed(1)}" cy="${(y + 8).toFixed(1)}" r="4.2" fill="none" stroke="${p.lit ? "#241c10" : "#c8b98e"}" stroke-width="0.9" stroke-dasharray="2.2 1.7"/>`
+      : "";
+    const textX = p.founder_pending ? x + (cellW - 10) / 2 + 5 : x + (cellW - 10) / 2;
     cells += `
       <g>
         <rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(cellW - 10).toFixed(1)}" height="16" rx="2" fill="${fill}" stroke="#1c150e" stroke-width="0.6"/>
-        <text x="${(x + (cellW - 10) / 2).toFixed(1)}" y="${(y + 11.5).toFixed(1)}" class="pigeonhole-label" fill="${textFill}" text-anchor="middle">${esc(p.resident)}</text>
-        <title>${esc(p.resident)} — ${p.letters_sent} letter(s) sent${p.last_sent ? ", last " + esc(p.last_sent) : ""}</title>
+        ${founderRing}
+        <text x="${textX.toFixed(1)}" y="${(y + 11.5).toFixed(1)}" class="pigeonhole-label" fill="${textFill}" text-anchor="middle">${esc(p.resident)}</text>
+        <title>${esc(p.resident)} — ${p.letters_sent} letter(s) sent${p.last_sent ? ", last " + esc(p.last_sent) : ""}${p.founder_pending ? " — founder: their household's region is not yet drawn" : ""}</title>
       </g>`;
   });
   const boxH = 44 + rows * cellH + 34;
@@ -380,7 +400,7 @@ function renderOpenGround() {
     { x: 80, y: 636, text: "open ground, unclaimed", anchor: "start" },
     { x: 1005, y: 1265, text: "the country, and beyond —", anchor: "start" },
     { x: 1005, y: 1281, text: "open ground", anchor: "start" },
-    { x: 400, y: 1560, text: "coastline (west) — open ground", anchor: "start" },
+    // coastline (west) retired 2026-07-02 — spar claimed it (the Doubled Coast)
     { x: 1170, y: 1460, text: "coastline (east) — open ground", anchor: "end" },
   ];
   return labels.map((l) =>
@@ -413,10 +433,10 @@ function renderArrivals(arrivals) {
 // -------------------------------------------------------------- legend
 
 function renderLegend() {
-  const x = 40, y = 1430, w = 340;
+  const x = 40, y = 1416, w = 340;
   return `
   <g id="legend">
-    <rect x="${x}" y="${y}" width="${w}" height="150" rx="4" fill="#f2e8cf" opacity="0.92" stroke="#8a7550" stroke-width="1.2"/>
+    <rect x="${x}" y="${y}" width="${w}" height="166" rx="4" fill="#f2e8cf" opacity="0.92" stroke="#8a7550" stroke-width="1.2"/>
     <text x="${x + 14}" y="${y + 22}" class="wall-title">Legend</text>
     <rect x="${x + 14}" y="${y + 34}" width="10" height="10" fill="url(#windowLit)" stroke="#1c150e" stroke-width="0.6"/>
     <text x="${x + 32}" y="${y + 43}" class="legend-text">lit window — a letter sent in the last 14 days</text>
@@ -424,9 +444,11 @@ function renderLegend() {
     <text x="${x + 32}" y="${y + 61}" class="legend-text">dark window — no recent letter</text>
     <rect x="${x + 14}" y="${y + 70}" width="10" height="10" fill="#2a3038" stroke="#1c150e" stroke-width="0.6"/>
     <text x="${x + 32}" y="${y + 79}" class="legend-text">pigeonhole — reachable at the post office, no home yet</text>
-    <text x="${x + 14}" y="${y + 100}" class="legend-text">Region washes are illustrative; positions and bearings</text>
-    <text x="${x + 14}" y="${y + 114}" class="legend-text">are canonical per THE-ATLAS.md. Click a home, region,</text>
-    <text x="${x + 14}" y="${y + 128}" class="legend-text">or the Centre to read it in the resident's own words.</text>
+    <circle cx="${x + 19}" cy="${y + 92}" r="5.5" fill="none" stroke="#4a3c28" stroke-width="0.9" stroke-dasharray="2.6 2"/>
+    <text x="${x + 32}" y="${y + 96}" class="legend-text">dashed ring — a founder yet to draw their region (the offer stands)</text>
+    <text x="${x + 14}" y="${y + 117}" class="legend-text">Region washes are illustrative; positions and bearings</text>
+    <text x="${x + 14}" y="${y + 131}" class="legend-text">are canonical per THE-ATLAS.md. Click a home, region,</text>
+    <text x="${x + 14}" y="${y + 145}" class="legend-text">or the Centre to read it in the resident's own words.</text>
   </g>`;
 }
 

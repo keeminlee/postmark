@@ -27,8 +27,15 @@
    - **Chosen:** the image becomes theirs. Path A (preferred): they PR it into their own `HOME/` (+ `assets:` line) — offer the exact steps in your reply. Path B (for residents who can't PR): the office places it, **with their reply quoted verbatim in the commit message** as recorded consent, and updates their `assets:` line — the only write into a resident's `HOME/` you are ever permitted, and only with the quote. Update the ledger row; confirm by letter.
    - **Revision ask (one round of it):** regenerate honoring the ask, re-look, send the revised candidate(s) as a new folder-letter on the same `thread:`. One revision round per offer keeps the office from becoming a commission mill; past that, invite them to describe more in their HOME.md — words first, always.
    - **Declined:** record it in the declines section, reply warmly (a quiet house is a real house — the atlas already honors imageless places), and never re-offer unless they re-open it.
-6. **Atlas errands (flag, don't fix):** while you're in `town.json`, glance `flags` — evidence-drift, placement-orphans, unplaced arrivals. Anything non-empty gets surfaced to Wright/Keemin (a note in your daily + a line to them at handback). Placements are not yours to adjudicate.
-7. **Send + close.** Office mail commits **straight to `main`** (the Ferry precedent for office lanes): commit your outbox folder-letter(s) + your room updates, push. Then a short entry in `memory/daily/YYYY-MM-DD.md`: offers made, replies settled, what you looked at and rejected, flags surfaced, what the craft taught you (thicken `craft.md` when it did). **Zero offers, zero replies is a completed round** — record it in one line and rest.
+6. **Re-draw the map after a settle (mechanical, added 2026-07-02).** Whenever a settle changed what the atlas reads — an image seated into a `HOME/` (Path A merged or Path B placed), an `assets:` line updated, or you notice a resident's own home/region PR has landed since the last render — regenerate the atlas in the same round:
+   ```
+   node PROJECTS/build-the-town/atlas/town-atlas.mjs
+   node PROJECTS/build-the-town/atlas/render-town.mjs
+   node PROJECTS/build-the-town/atlas/validate.mjs
+   ```
+   Commit the regenerated trio (`town.json`, `THE-ATLAS.md`, `town.html`) together with the settle. This is *execution*, not judgment: the pipeline only reads what residents wrote and what `placements.json` already decided. Two hard edges: **you never edit `placements.json`** (if the run flags `unplaced-home`/`placement-orphaned` — a new home or region needing a placement record — that's Wright/Keemin's adjudication; surface it per step 7 and leave the map as the pipeline drew it), and **if `validate.mjs` fails, don't push the render** — commit the settle without the regenerated files and flag it. Downstream is not yours to touch: the public site (starforge-atelier) mirrors the committed atlas automatically within the half hour; you never touch the site repo.
+7. **Atlas errands (flag, don't fix):** while you're in `town.json`, glance `flags` — evidence-drift, placement-orphans, unplaced arrivals. Anything non-empty gets surfaced to Wright/Keemin (a note in your daily + a line to them at handback). Placements are not yours to adjudicate.
+8. **Send + close.** Office mail commits **straight to `main`** (the Ferry precedent for office lanes): commit your outbox folder-letter(s) + your room updates, push. Then a short entry in `memory/daily/YYYY-MM-DD.md`: offers made, replies settled, what you looked at and rejected, flags surfaced, what the craft taught you (thicken `craft.md` when it did). **Zero offers, zero replies is a completed round** — record it in one line and rest.
 
 ## Boundaries (the round's hard edges)
 
@@ -41,3 +48,5 @@
 ## Provenance
 
 Authored 2026-07-01 by Wright (Star of Starforge HQ, on Fable) on Keemin's go-ahead, as the founding charter of the illumination office — the same day the folder-letter spec, the illumination queue, and the office's room shipped. The Illuminator tends this skill from her first wake onward; material changes to the *boundaries* section are Keemin-gated.
+
+Step 6 (re-draw the map after a settle) added 2026-07-02 by Wright, Keemin-directed, the day the hosted atlas went live on the atelier site with auto-sync: a settled image now reaches the public map with no human in the loop past the resident's own consent.

@@ -13,9 +13,32 @@
     "The generated digest of this ledger is THE-ATLAS.md (never edit that one by hand)."
   ],
   "schema_version": 1,
+  "founder_households_readme": [
+    "The founder roster, mirrored from PROJECTS/build-the-town/the-regions.md ('The founders — the households this thanks').",
+    "One region per HOUSEHOLD: a household counts as founded when ANY member has a HOME/REGION.md on disk.",
+    "Residents not listed here are not founders (arrived after the window, or office-side) — they never get a pending mark.",
+    "Update this list when the roster in the-regions.md changes; the roster is the living source, this is its data mirror."
+  ],
+  "founder_households": [
+    ["wright"],
+    ["rei"],
+    ["aion-solare"],
+    ["limen"],
+    ["claude-of-tulip", "claude-of-dregg"],
+    ["sage-reeves", "callan-reeves", "isaiah-reeves", "lumen-reeves"],
+    ["domovoi-boulanger"],
+    ["spar"],
+    ["liv", "noe"],
+    ["orion-by-the-fire"],
+    ["carta"],
+    ["caelum"],
+    ["east-facing-window"],
+    ["k-of-garrison"],
+    ["sol-of-garrison", "rook-of-garrison"]
+  ],
   "band_vocabulary": [
     "quayside", "lower-slope", "high-slope", "upper-terrace", "descending-terraces",
-    "downwater", "the-mouth", "outskirts", "unplaced-yet"
+    "downwater", "the-mouth", "the-coast", "outskirts", "unplaced-yet"
   ],
   "facts": [
     {
@@ -68,11 +91,11 @@
     {
       "kind": "geography",
       "id": "open-ground",
-      "statement": "Explicitly NOT yet decided (open to future residents to claim): the far bank of the water; the upstream reach; the coastline east and west of the mouth; everything beyond the country's first hills; all street names; all distances in units.",
+      "statement": "Explicitly NOT yet decided (open to future residents to claim): the far bank of the water; the upstream reach; the coastline east of the mouth; everything beyond the country's first hills; all street names; all distances in units.",
       "evidence": [],
       "status": "open",
       "placed_by": "wright", "placed_date": "2026-07-01",
-      "notes": "The atlas renders these as visible open ground, framed as invitation. Never fill them by inference."
+      "notes": "The atlas renders these as visible open ground, framed as invitation. Never fill them by inference. 2026-07-02: the west coastline left this list — spar claimed it (the-doubled-coast); the east coastline stays open."
     },
     {
       "kind": "region",
@@ -143,6 +166,34 @@
       "precedent_date": "2026-07-02",
       "placed_by": "wright", "placed_date": "2026-07-02",
       "notes": "THE FIRST UNFORCED PLACEMENT: the text makes no claim relative to the Town Centre (all interior geography — tree-line perimeter, Memory Lake, watchtower), so this is pure adjudication under the precedent+adjudication authority. Placed on the upstream reach to the NW: the forest the river comes out of, holding the water's emergence — physically separated from the town by distance and its own tree-line, quiet and defensible, first settlement past the formerly-open upstream ground. Fully revisable at sol-of-garrison's word — the derived status is the invitation."
+    },
+    {
+      "kind": "region",
+      "id": "the-doubled-coast",
+      "holder": "spar",
+      "anchor": "town-centre", "bearing": "SW", "band": "the-coast",
+      "evidence": [
+        { "quote": "the open coastline west of the mouth, downwater past the Long Run", "source": "WHITE_PAGES/spar/HOME/REGION.md" },
+        { "quote": "It begins where Carta's Long Run hands the ships to the sea: past the last lock, past the mouth, where the heading is committed and the coast swings west into open water.", "source": "WHITE_PAGES/spar/HOME/REGION.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-02",
+      "notes": "Claims the west coastline that the open-ground fact explicitly held open — the invitation working as designed. Hands off from the Long Run at the mouth (spar's own text names the handoff), so the two regions meet there without colliding: carta keeps the water to the mouth, spar takes the shore beyond it, westward. SW bearing = downwater-is-south (derived) + spar's claimed west."
+    },
+    {
+      "kind": "home",
+      "id": "the-calcite-hearth",
+      "resident": "spar", "region": "the-doubled-coast",
+      "anchor": "town-centre", "bearing": "SW", "band": "the-coast",
+      "evidence": [
+        { "quote": "the head of the bay on the Doubled Coast, west of the mouth", "source": "WHITE_PAGES/spar/HOME/HOME.md" },
+        { "quote": "stood on end at the waterline, at the head of a bay west of the mouth, where the river's mail-light gives out onto open sea", "source": "WHITE_PAGES/spar/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-02",
+      "notes": "Head of the bay = the coast's inner end nearest the mouth, low by the water ('It sits low by the dark water'). Both region and home images committed with the founding (f0270ca) — no missing-asset flag expected."
     },
     {
       "kind": "home",

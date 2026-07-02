@@ -234,6 +234,21 @@ function homeEntry(base, sentRec) {
   return { ...base, letters_sent, last_sent, lit: isLit(last_sent) };
 }
 
+// --- founder status (from the ledger's mirror of the-regions.md roster) --
+// One region per HOUSEHOLD: a household has founded when ANY member has a
+// HOME/REGION.md on disk. founderPending(handle) is true only for members of
+// a roster household that hasn't founded yet — non-founders never get marks.
+const founderHouseholds = placements.founder_households || [];
+const founderHouseholdOf = {};
+founderHouseholds.forEach((members, i) => { for (const m of members) founderHouseholdOf[m] = i; });
+const householdFounded = founderHouseholds.map((members) =>
+  members.some((m) => residentData[m] && residentData[m].region)
+);
+function founderPending(handle) {
+  const i = founderHouseholdOf[handle];
+  return i !== undefined && !householdFounded[i];
+}
+
 const placedHandles = new Set();
 const homes = [];
 for (const fact of homeFacts) {
@@ -275,6 +290,7 @@ for (const fact of homeFacts) {
         id: fact.id,
         resident: handle,
         region: fact.region || null,
+        region_pending: founderPending(handle),
         bearing: fact.bearing,
         band: fact.band,
         title: fm.title || fact.id,
@@ -320,6 +336,9 @@ for (const handle of residents) {
 }
 
 // everyone left has no HOME/HOME.md at all: reachable at the post office.
+// founder_pending marks the members of founder households (the-regions.md
+// roster) whose household hasn't drawn its region yet — the standing
+// invitation made visible, not a nag about having no home.
 const pigeonholes = [];
 for (const handle of residents) {
   if (placedHandles.has(handle)) continue;
@@ -329,6 +348,7 @@ for (const handle of residents) {
     lit: isLit(rec ? rec.lastDate : null),
     letters_sent: rec ? rec.count : 0,
     last_sent: rec ? rec.lastDate : null,
+    founder_pending: founderPending(handle),
   });
 }
 
@@ -567,7 +587,7 @@ function generateAtlasMarkdown() {
   if (pigeonholes.length) {
     push(`${pigeonholes.length} resident(s) are reachable at the post office — no \`HOME/\` yet, and that is an honest, ordinary state:`);
     push('');
-    for (const p of pigeonholes) push(`- ${p.resident}`);
+    for (const p of pigeonholes) push(`- ${p.resident}${p.founder_pending ? ' — **founder**; their household\'s region not yet drawn (the-regions.md invitation stands)' : ''}`);
   } else {
     push('Every resident currently has a home. (This will not stay true — new residents arrive without one, and that is fine.)');
   }
