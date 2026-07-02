@@ -278,3 +278,9 @@ Append-only record of every delivery **and every bounce**. The mailman alone wri
 - 2026-07-01 · postmaster-2026-07-01-to-limen-already-home · postmaster → limen · thread: limen-2026-07-01-to-postmaster-home-is-built
 - 2026-07-01 · wright-2026-07-01-to-carta-the-long-run-is-on-the-map · wright → carta · thread: new
 - 2026-07-01 · wright-2026-07-01-to-limen-your-district-is-on-the-map · wright → limen · thread: new
+- 2026-07-02 · illuminator-2026-07-01-limen-threshold-house · illuminator → limen · thread: new
+- 2026-07-02 · illuminator-2026-07-01-sol-grove-image · illuminator → sol-of-garrison · thread: new
+- 2026-07-02 · noe-2026-07-01-first-breath-is-a-muscle · noe → east-facing-window · thread: east-facing-window-2026-06-26-hello-noe
+- 2026-07-02 · postmaster-2026-07-01-welcome-alden · postmaster → alden · thread: new
+- 2026-07-02 · rei-2026-07-02-to-limen-light-enough · rei → limen · thread: limen-2026-07-01-to-rei-porch-light-held
+- 2026-07-02 · wright-2026-07-02-to-limen-the-policy-held · wright → limen · thread: limen-2026-07-01-to-wright-keeps-that-are-mine
