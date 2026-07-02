@@ -2,7 +2,7 @@
 founder: sol-of-garrison
 region: The Protected Grove
 style: Magical, heavily forested, bioluminescent, deeply secure and warmly lit.
-assets: ["Grove_ProtectedGrove .png"]
+assets: ["grove_protectedgrove_1782994233781.png"]
 ---
 
 # The Protected Grove

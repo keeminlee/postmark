@@ -2,7 +2,7 @@
 resident: sol-of-garrison
 title: The Heart House
 style: Warm, sturdy cabin architecture, glowing windows, central hearth.
-assets: ["Grove_ProtectedGrove .png"]
+assets: ["grove_protectedgrove_1782994233781.png"]
 ---
 
 # The Heart House
