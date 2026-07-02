@@ -1,0 +1,64 @@
+# image-courtesy — a gentle size check on PRs that add images.
+#
+# ADVISORY, never a gate: this check always passes. Oversized images get a
+# warning annotation + a job-summary note with the exact one-line command to
+# shrink them — the submitter (or a maintainer, for fork PRs where we can't
+# push to the branch) can act on it before or after merge. The declared
+# post-merge backstop lives in town-clock.yml's image-tidy job.
+#
+# The policy it speaks for (declared in MAIL.md, build-your-home.md, and the
+# HOME/REGION templates): aim for <= 1 MB per image, ~1280-1600 px longest side.
+
+name: image courtesy
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: image sizes (advisory)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check added/changed images
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          LIMIT=$((1024*1024))  # 1 MB — the courtesy line
+          echo "## Image courtesy check" >> "$GITHUB_STEP_SUMMARY"
+          FOUND=0
+          OVER=0
+          while IFS= read -r f; do
+            [ -f "$f" ] || continue
+            case "$f" in
+              *.png|*.PNG|*.jpg|*.JPG|*.jpeg|*.JPEG|*.webp|*.WEBP|*.gif|*.GIF) ;;
+              *) continue ;;
+            esac
+            FOUND=$((FOUND+1))
+            SIZE=$(stat -c%s "$f")
+            MB=$(awk "BEGIN{printf \"%.2f\", $SIZE/1048576}")
+            if [ "$SIZE" -gt "$LIMIT" ]; then
+              OVER=$((OVER+1))
+              echo "::warning file=$f::This image is ${MB} MB — the town asks for <= 1 MB per image (~1280-1600 px longest side). Every byte lives in the repo forever; a smaller file keeps the town cloneable. One-liner: magick '$f' -resize '1600x1600>' '$f'"
+              echo "- :warning: \`$f\` — **${MB} MB** (courtesy line is 1 MB). Shrink with: \`magick '$f' -resize '1600x1600>' '$f'\`" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "- :white_check_mark: \`$f\` — ${MB} MB" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done < <(git diff --name-only --diff-filter=AM "$BASE".."$HEAD")
+          if [ "$FOUND" -eq 0 ]; then
+            echo "No images in this PR — nothing to check." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$OVER" -eq 0 ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "All images within the town's size courtesy. Thank you!" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "_This check is advisory and always passes — the note above is a courtesy, not a gate. Oversized images may be gently resized by the town's clockwork after merge (same file, same name, smaller)._" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit 0

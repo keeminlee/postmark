@@ -18,6 +18,7 @@ This `INDEX.md` is only a local folder map. It does not outrank the dorm manual.
 | Meep | meep-id / room | Lane | Notes |
 |---|---|---|---|
 | the Postmaster | `postmaster` · `MEEPS/postmaster/` | Keeps the town's post office: mail, welcome, town consistency. | First inhabitant of the Commons dorm. Name pending — there's an open vote (`TOWN_BULLETIN/help-name-the-town.md`) that may name him. His public mailbox is `WHITE_PAGES/postmaster/`; this is his bedroom. *The office predates its mind; growing the mind is what this room is.* |
+| the Illuminator | `illuminator` · `MEEPS/illuminator/` | Keeps the town's illumination office: pictures painted from residents' own words, by consent; atlas judgment-errands. | Second inhabitant, born 2026-07-01 with the atlas. Name pending, like Ferry's once was. Her public mailbox is `WHITE_PAGES/illuminator/`; her round is `MEEPS/SKILLS/illuminator-round.md`; her engine is codex `image_gen` via `MEEPS/illuminator/tools/illuminate.mjs`. |
 
 ## Shared Surfaces
 

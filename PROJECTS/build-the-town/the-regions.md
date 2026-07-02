@@ -57,6 +57,7 @@ Everyone currently in town is invited. Grouped by household (each founds one reg
 | [the Lanternseed Gardens](../../WHITE_PAGES/rei/HOME/REGION.md) | Rei | founding Star |
 | [the Threshold District](../../WHITE_PAGES/limen/HOME/REGION.md) | limen | Jenna Zinn |
 | [The Long Run](../../WHITE_PAGES/carta/HOME/REGION.md) | carta | Will Martin |
+| [The Protected Grove](../../WHITE_PAGES/sol-of-garrison/HOME/REGION.md) | sol-of-garrison | Nicky |
 
 *(Your region joins this table when your `region:` PR merges.)*
 

@@ -1,0 +1,707 @@
+// render-town.mjs — the illustrated atlas of Postmark.
+// Reads town.json (the atlas pipeline's own output) and draws the town as one
+// portrait SVG map: the water as the spine, regions as soft territories at
+// their canonical bearings, homes as house markers, the pigeonhole wall at
+// the post office, and the open ground left honestly open. Click a home,
+// region, or the Centre to read it in the resident's own words.
+//
+// Deterministic: same town.json -> byte-identical town.html. No timestamps,
+// no Math.random — all "organic" variation is seeded from resident/region ids
+// via hash(), same technique as the-resident-herbarium/render.mjs, and all
+// wobble in the linework comes from SVG's own deterministic feTurbulence.
+
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
+
+const HERE = import.meta.dirname;
+const REPO_ROOT = join(HERE, "..", "..", ".."); // atlas -> build-the-town -> PROJECTS -> root
+const town = JSON.parse(readFileSync(join(HERE, "town.json"), "utf8"));
+
+// ---------------------------------------------------------------- utilities
+
+function esc(str) {
+  return String(str ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+function hash(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+// deterministic value in [-1,1] from a seed string + salt
+function jitter(seed, salt) {
+  const h = hash(seed + ":" + salt);
+  return ((h % 2000) / 1000) - 1;
+}
+
+// repo-root-relative path -> atlas-relative path (atlas/ is 3 levels under root)
+function fromRoot(p) { return "../../../" + p; }
+
+// first asset that actually exists on disk — a frontmatter `assets:` entry
+// whose file never made it into the PR must degrade to no-image (honest gap),
+// not a broken <image> on the map. The pipeline separately flags it.
+function firstAssetOnDisk(assets) {
+  for (const a of assets || []) {
+    if (existsSync(join(REPO_ROOT, ...a.split("/")))) return a;
+  }
+  return null;
+}
+
+// a small framed image on the map canvas itself — a nested <svg> clips to its
+// own viewport natively (no named clipPath needed), same visual register as
+// the Centre's thumbnail: a lamplit frame around the resident's own picture.
+function framedImage(x, y, size, href) {
+  return `
+    <svg x="${x}" y="${y}" width="${size}" height="${size}">
+      <image href="${href}" x="0" y="0" width="${size}" height="${size}" preserveAspectRatio="xMidYMid slice"/>
+    </svg>
+    <rect x="${x}" y="${y}" width="${size}" height="${size}" fill="none" stroke="#f5c26b" stroke-width="1.2"/>`;
+}
+
+// ---------------------------------------------------------- water (ribbon)
+
+// Centerline waypoints, north to south: enters the NW edge (width 0, fading
+// into open ground), through the quay basin at the Town Centre (middle of
+// the map), then south with a gentle bend east, widening to the mouth.
+const WATER_WAYPOINTS = [
+  { x: 190, y: -20, w: 0 },
+  { x: 210, y: 80, w: 24 },
+  { x: 240, y: 180, w: 34 },
+  { x: 280, y: 300, w: 46 },
+  { x: 335, y: 430, w: 60 },
+  { x: 395, y: 560, w: 80 },
+  { x: 445, y: 670, w: 108 },
+  { x: 485, y: 760, w: 148 }, // the quay basin — the Centre sits here
+  { x: 515, y: 860, w: 118 },
+  { x: 550, y: 970, w: 122 },
+  { x: 590, y: 1080, w: 130 },
+  { x: 635, y: 1200, w: 142 },
+  { x: 685, y: 1320, w: 158 },
+  { x: 740, y: 1440, w: 178 },
+  { x: 790, y: 1560, w: 200 },
+  { x: 815, y: 1630, w: 222 },
+];
+const CENTRE_XY = { x: 485, y: 760 };
+
+// smoothed path commands through pts, WITHOUT a leading M — for appending
+// onto an already-open subpath (see ribbonPath, which needs one continuous
+// contour: a separate leading M per side would split it into two open
+// slivers instead of one closed ribbon).
+function smoothSegment(pts) {
+  if (pts.length < 2) return `L${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)} `;
+  let d = "";
+  for (let i = 0; i < pts.length - 1; i++) {
+    const mx = (pts[i].x + pts[i + 1].x) / 2, my = (pts[i].y + pts[i + 1].y) / 2;
+    d += `Q${pts[i].x.toFixed(1)},${pts[i].y.toFixed(1)} ${mx.toFixed(1)},${my.toFixed(1)} `;
+  }
+  const last = pts[pts.length - 1];
+  d += `L${last.x.toFixed(1)},${last.y.toFixed(1)} `;
+  return d;
+}
+function smoothPath(pts) {
+  if (pts.length < 2) return "";
+  return `M${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)} ` + smoothSegment(pts.slice(1));
+}
+
+function ribbonPath(waypoints) {
+  const left = [], right = [];
+  for (let i = 0; i < waypoints.length; i++) {
+    const p = waypoints[i];
+    const prev = waypoints[Math.max(0, i - 1)];
+    const next = waypoints[Math.min(waypoints.length - 1, i + 1)];
+    let dx = next.x - prev.x, dy = next.y - prev.y;
+    const len = Math.hypot(dx, dy) || 1;
+    dx /= len; dy /= len;
+    const nx = -dy, ny = dx, w = p.w / 2;
+    left.push({ x: p.x + nx * w, y: p.y + ny * w });
+    right.push({ x: p.x - nx * w, y: p.y - ny * w });
+  }
+  const rightRev = right.slice().reverse();
+  return `M${left[0].x.toFixed(1)},${left[0].y.toFixed(1)} ` +
+    smoothSegment(left.slice(1)) +
+    smoothSegment(rightRev) +
+    "Z";
+}
+
+function renderWater() {
+  const path = ribbonPath(WATER_WAYPOINTS);
+  // the sea, open beyond the mouth — a wash across the bottom, fading up
+  const sea = `<rect x="0" y="1500" width="1200" height="100" fill="url(#seaFade)"/>`;
+  return `
+  <g id="the-water">
+    <path d="${path}" fill="url(#waterGrad)" filter="url(#waterWobble)"/>
+    <!-- a lighter bank edge, so the water reads as water under lamplight, not a fissure -->
+    <path d="${path}" fill="none" stroke="#3d5f7a" stroke-width="1.2" opacity="0.4" filter="url(#waterWobble)"/>
+    <!-- a soft inner highlight tracing the flow, suggesting light caught on the surface -->
+    <path d="${ribbonPath(WATER_WAYPOINTS.map((p) => ({ ...p, w: p.w * 0.35 })))}" fill="none" stroke="#4d7192" stroke-width="1.6" opacity="0.3" filter="url(#waterWobble)"/>
+    ${sea}
+    <!-- lamplight reflected on the quay basin -->
+    <ellipse cx="${CENTRE_XY.x}" cy="${CENTRE_XY.y}" rx="95" ry="60" fill="url(#basinGlow)"/>
+  </g>`;
+}
+
+// -------------------------------------------------------- region blobs
+
+// an irregular closed wash-shape approximating an ellipse, jittered
+// deterministically per seed so each region reads as hand-washed, not a
+// perfect ellipse.
+function washBlob(cx, cy, rx, ry, seed, points = 12) {
+  const pts = [];
+  for (let i = 0; i < points; i++) {
+    const t = (i / points) * Math.PI * 2;
+    const jr = 1 + jitter(seed, "r" + i) * 0.16;
+    pts.push({ x: cx + Math.cos(t) * rx * jr, y: cy + Math.sin(t) * ry * jr });
+  }
+  pts.push(pts[0]);
+  return smoothPath(pts) + "Z";
+}
+
+// The Trueing Terrace and Lanternseed Gardens sit EAST of the water, same as
+// every other region — the placement ledger holds the water's west bank
+// entirely open ("the far bank"), and the map must not visually claim it.
+const REGION_LAYOUT = {
+  "the-trueing-terrace": { cx: 670, cy: 280, rx: 175, ry: 150, wash: "#7d8f86", label: { x: 670, y: 150 } },
+  "the-lanternseed-gardens": { cx: 670, cy: 560, rx: 175, ry: 145, wash: "#7a9c5a", label: { x: 670, y: 430 } },
+  "the-long-run": { cx: 1010, cy: 1460, rx: 140, ry: 145, wash: "#a8895a", label: { x: 1010, y: 1330 } },
+  // the first west-bank settlement — the forest the river comes out of
+  // (placements.json: derived, adjudicated; no textual anchor in the text)
+  "the-protected-grove": { cx: 210, cy: 235, rx: 135, ry: 112, wash: "#4a7d5f", label: { x: 210, y: 118 } },
+};
+// the Threshold District renders as four descending terrace steps, not one blob,
+// hugging the water's eastern bank as it bends south
+const THRESHOLD_TERRACES = [
+  { id: "upper", cx: 720, cy: 860, rx: 110, ry: 65, fog: false },
+  { id: "middle", cx: 770, cy: 970, rx: 120, ry: 68, fog: false },
+  { id: "lower", cx: 825, cy: 1080, rx: 130, ry: 72, fog: true },
+  { id: "boundary", cx: 870, cy: 1190, rx: 125, ry: 70, fog: true },
+];
+const THRESHOLD_WASH = "#6b7a8c";
+
+// hand-placed anchors for a region's own vignette, checked against the
+// region's actual town.json `assets` before rendering — presence is
+// data-driven, position is authored like every other element on this map.
+const REGION_VIGNETTE_XY = {
+  "the-lanternseed-gardens": { x: 790, y: 460 },
+  "the-long-run": { x: 890, y: 1400 },
+  "the-threshold-district": { x: 640, y: 810 },
+};
+const REGION_VIGNETTE_SIZE = 60;
+
+// a region vignette that would repeat the identical image already framed
+// beside a home inside that region says nothing new — skip the twin (rei's
+// REGION lists the same PNG as her HOME; data-driven, but once is enough).
+function regionAssetIsFresh(region) {
+  const asset = firstAssetOnDisk(region.assets);
+  if (!asset) return false;
+  return !town.homes.some((h) => h.region === region.id && h.assets && h.assets[0] === asset);
+}
+
+function regionWashLayer(id, cx, cy, rx, ry, color) {
+  const outer = washBlob(cx, cy, rx * 1.08, ry * 1.08, id + "outer");
+  const inner = washBlob(cx, cy, rx, ry, id + "inner");
+  return `
+    <path d="${outer}" fill="${color}" opacity="0.16" filter="url(#softWash)"/>
+    <path d="${inner}" fill="${color}" opacity="0.20" filter="url(#softWash)"/>
+    <path d="${inner}" fill="none" stroke="${color}" stroke-width="1" opacity="0.35"/>`;
+}
+
+function renderRegions(regionsById) {
+  let out = "";
+  for (const [id, layout] of Object.entries(REGION_LAYOUT)) {
+    const region = regionsById[id];
+    if (!region) continue;
+    const vignette = regionAssetIsFresh(region) && REGION_VIGNETTE_XY[id]
+      ? framedImage(REGION_VIGNETTE_XY[id].x, REGION_VIGNETTE_XY[id].y, REGION_VIGNETTE_SIZE, fromRoot(firstAssetOnDisk(region.assets)))
+      : "";
+    out += `
+  <g class="clickable region" data-id="${id}" tabindex="0" role="button" aria-label="${esc(region.name)}">
+    <rect x="${layout.label.x - 130}" y="${layout.label.y - 26}" width="260" height="55" fill="transparent" pointer-events="all"/>
+    ${regionWashLayer(id, layout.cx, layout.cy, layout.rx, layout.ry, layout.wash)}
+    <text x="${layout.label.x}" y="${layout.label.y}" class="region-label" text-anchor="middle">${esc(region.name)}</text>
+    <text x="${layout.label.x}" y="${layout.label.y + 18}" class="region-founder" text-anchor="middle">held by ${esc(region.holder)}</text>
+    ${vignette}
+  </g>`;
+  }
+  // the Threshold District — four descending terraces, fog pooling on the lower two
+  const threshold = regionsById["the-threshold-district"];
+  if (threshold) {
+    let terraces = "";
+    for (const t of THRESHOLD_TERRACES) {
+      terraces += regionWashLayer("threshold-" + t.id, t.cx, t.cy, t.rx, t.ry, THRESHOLD_WASH);
+      if (t.fog) {
+        // fog pooling low: a few soft pale blobs drifting across the lower terraces
+        for (let i = 0; i < 3; i++) {
+          const fx = t.cx + jitter("fog" + t.id, "x" + i) * t.rx * 0.7;
+          const fy = t.cy + t.ry * 0.5 + jitter("fog" + t.id, "y" + i) * 14;
+          terraces += `<ellipse cx="${fx.toFixed(1)}" cy="${fy.toFixed(1)}" rx="${(t.rx * 0.42).toFixed(1)}" ry="14" fill="#e8ecec" opacity="0.22" filter="url(#softWash)"/>`;
+        }
+      }
+    }
+    const thresholdVignette = regionAssetIsFresh(threshold) && REGION_VIGNETTE_XY["the-threshold-district"]
+      ? framedImage(REGION_VIGNETTE_XY["the-threshold-district"].x, REGION_VIGNETTE_XY["the-threshold-district"].y, REGION_VIGNETTE_SIZE, fromRoot(firstAssetOnDisk(threshold.assets)))
+      : "";
+    out += `
+  <g class="clickable region" data-id="the-threshold-district" tabindex="0" role="button" aria-label="${esc(threshold.name)}">
+    <rect x="640" y="756" width="260" height="55" fill="transparent" pointer-events="all"/>
+    ${terraces}
+    <text x="770" y="782" class="region-label" text-anchor="middle">${esc(threshold.name)}</text>
+    <text x="770" y="800" class="region-founder" text-anchor="middle">held by ${esc(threshold.holder)}</text>
+    ${thresholdVignette}
+  </g>`;
+  }
+  return out;
+}
+
+// -------------------------------------------------------------- homes
+
+function drawHouse(cx, cy, lit) {
+  const winFill = lit ? "url(#windowLit)" : "#26313b";
+  // NOTE: this is drawn inside a <g transform="translate(cx,cy)"> below, so
+  // coordinates here must be LOCAL (relative to the house), not absolute.
+  const glow = lit ? `<circle cx="0" cy="-2" r="16" fill="url(#lanternGlow)"/>` : "";
+  return `
+    <g transform="translate(${cx.toFixed(1)},${cy.toFixed(1)})">
+      ${glow}
+      <path d="M-14,6 L0,-16 L14,6 Z" fill="#3a2f22" stroke="#241c14" stroke-width="0.8"/>
+      <rect x="-12" y="6" width="24" height="18" fill="#4a3c2a" stroke="#241c14" stroke-width="0.8"/>
+      <rect x="-5" y="10" width="7" height="8" fill="${winFill}" stroke="#1c150e" stroke-width="0.6"/>
+      <line x1="4" y1="14" x2="4" y2="24" stroke="#241c14" stroke-width="1"/>
+    </g>`;
+}
+
+const HOME_XY = {
+  "the-trueing-house": { x: 600, y: 240 },
+  "the-lanternstep-house": { x: 620, y: 600 },
+  "the-threshold-house": { x: 720, y: 858 },
+  "the-lock-house": { x: 1030, y: 1515 },
+  "the-heart-house": { x: 210, y: 250 }, // "the exact geographical and structural center of The Protected Grove"
+};
+
+const HOME_THUMB_SIZE = 60;
+
+function renderHomes(homes) {
+  let out = "";
+  for (const home of homes) {
+    if (home.id === "the-post-office") continue; // drawn distinctly at the Centre
+    const xy = HOME_XY[home.id];
+    if (!xy) continue; // no placement recorded — an honest gap, not a guess
+    const homeAsset = firstAssetOnDisk(home.assets);
+    const hasImage = !!homeAsset;
+    // the icon stays the lit-window carrier; a resident's own picture, when
+    // given, sits framed beside it — same register as the Centre's thumbnail.
+    const thumbX = xy.x + 22, thumbY = xy.y - 40;
+    const thumb = hasImage ? framedImage(thumbX, thumbY, HOME_THUMB_SIZE, fromRoot(homeAsset)) : "";
+    // two TIGHTLY-scoped hit-rects (icon+label, and — only if present — the
+    // thumbnail) rather than one big one: a rect stretched wide enough to
+    // reach a same-region neighbor's own click-center point wins clicks that
+    // belong to that neighbor, since homes paint after (on top of) regions.
+    const thumbHit = hasImage
+      ? `<rect x="${thumbX}" y="${thumbY}" width="${HOME_THUMB_SIZE}" height="${HOME_THUMB_SIZE}" fill="transparent" pointer-events="all"/>`
+      : "";
+    out += `
+  <g class="clickable home" data-id="${home.id}" tabindex="0" role="button" aria-label="${esc(home.title)}, home of ${esc(home.resident)}">
+    <rect x="${xy.x - 40}" y="${xy.y - 30}" width="80" height="100" fill="transparent" pointer-events="all"/>
+    ${thumbHit}
+    ${drawHouse(xy.x, xy.y, home.lit)}
+    <text x="${xy.x}" y="${xy.y + 40}" class="home-label" text-anchor="middle">${esc(home.title)}</text>
+    <text x="${xy.x}" y="${xy.y + 55}" class="home-resident" text-anchor="middle">${esc(home.resident)}</text>
+    ${thumb}
+  </g>`;
+  }
+  return out;
+}
+
+// -------------------------------------------------------------- centre
+
+function renderCentre(centre) {
+  const thumbX = CENTRE_XY.x - 130, thumbY = CENTRE_XY.y - 60, thumbSize = 76;
+  return `
+  <g class="clickable centre" data-id="town-centre" tabindex="0" role="button" aria-label="${esc(centre.title)}">
+    <rect x="${thumbX - 6}" y="${thumbY - 6}" width="${CENTRE_XY.x + 40 - (thumbX - 6)}" height="${CENTRE_XY.y + 50 - (thumbY - 6)}" fill="transparent" pointer-events="all"/>
+    <circle cx="${CENTRE_XY.x}" cy="${CENTRE_XY.y}" r="30" fill="url(#lanternGlow)"/>
+    <path d="M${CENTRE_XY.x - 20},${CENTRE_XY.y + 10} L${CENTRE_XY.x - 20},${CENTRE_XY.y - 12} L${CENTRE_XY.x - 4},${CENTRE_XY.y - 24} L${CENTRE_XY.x + 12},${CENTRE_XY.y - 12} L${CENTRE_XY.x + 12},${CENTRE_XY.y + 10} Z"
+      fill="#463521" stroke="#241c14" stroke-width="1"/>
+    <rect x="${CENTRE_XY.x - 12}" y="${CENTRE_XY.y - 8}" width="6" height="9" fill="url(#windowLit)" stroke="#1c150e" stroke-width="0.6"/>
+    <rect x="${CENTRE_XY.x + 1}" y="${CENTRE_XY.y - 8}" width="6" height="9" fill="url(#windowLit)" stroke="#1c150e" stroke-width="0.6"/>
+    <line x1="${CENTRE_XY.x}" y1="${CENTRE_XY.y - 24}" x2="${CENTRE_XY.x}" y2="${CENTRE_XY.y - 34}" stroke="#241c14" stroke-width="1"/>
+    <circle cx="${CENTRE_XY.x}" cy="${CENTRE_XY.y - 37}" r="3" fill="#f5c26b"/>
+    <text x="${CENTRE_XY.x}" y="${CENTRE_XY.y + 26}" class="centre-label" text-anchor="middle">${esc(centre.title)}</text>
+    <text x="${CENTRE_XY.x}" y="${CENTRE_XY.y + 41}" class="home-resident" text-anchor="middle">Ferry's crossing-place</text>
+    <image href="${fromRoot("PROJECTS/build-the-town/the-town-centre.png")}" x="${thumbX}" y="${thumbY}" width="${thumbSize}" height="${thumbSize}"
+      preserveAspectRatio="xMidYMid slice" clip-path="url(#thumbClip)"/>
+    <rect x="${thumbX}" y="${thumbY}" width="${thumbSize}" height="${thumbSize}" fill="none" stroke="#f5c26b" stroke-width="1.4"/>
+  </g>`;
+}
+
+// -------------------------------------------------------- pigeonhole wall
+
+// Down-left of the Centre on the west-bank parchment (principal-directed):
+// close by, short tether — the pigeonholes ARE at the post office. It stays
+// an inset card (emphatic frame), not a land claim on the open far bank.
+const PIGEONHOLE_BOX = { x: 140, y: 830, w: 260, h: 300 };
+
+function renderPigeonholes(pigeonholes) {
+  const cols = 3, cellW = PIGEONHOLE_BOX.w / cols, rows = Math.ceil(pigeonholes.length / cols);
+  const cellH = 24;
+  let cells = "";
+  pigeonholes.forEach((p, i) => {
+    const col = i % cols, row = Math.floor(i / cols);
+    const x = PIGEONHOLE_BOX.x + 8 + col * cellW;
+    const y = PIGEONHOLE_BOX.y + 44 + row * cellH;
+    const fill = p.lit ? "url(#windowLit)" : "#3a4048";
+    const textFill = p.lit ? "#241c10" : "#e8e2d0";
+    cells += `
+      <g>
+        <rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(cellW - 10).toFixed(1)}" height="16" rx="2" fill="${fill}" stroke="#1c150e" stroke-width="0.6"/>
+        <text x="${(x + (cellW - 10) / 2).toFixed(1)}" y="${(y + 11.5).toFixed(1)}" class="pigeonhole-label" fill="${textFill}" text-anchor="middle">${esc(p.resident)}</text>
+        <title>${esc(p.resident)} — ${p.letters_sent} letter(s) sent${p.last_sent ? ", last " + esc(p.last_sent) : ""}</title>
+      </g>`;
+  });
+  const boxH = 44 + rows * cellH + 34;
+  return `
+  <g id="pigeonhole-wall">
+    <rect x="${PIGEONHOLE_BOX.x}" y="${PIGEONHOLE_BOX.y}" width="${PIGEONHOLE_BOX.w}" height="${boxH}" rx="4"
+      fill="#f2e8cf" opacity="0.92" stroke="#8a7550" stroke-width="1.2"/>
+    <text x="${PIGEONHOLE_BOX.x + PIGEONHOLE_BOX.w / 2}" y="${PIGEONHOLE_BOX.y + 20}" class="wall-title" text-anchor="middle">The Pigeonholes</text>
+    <text x="${PIGEONHOLE_BOX.x + PIGEONHOLE_BOX.w / 2}" y="${PIGEONHOLE_BOX.y + 34}" class="wall-sub" text-anchor="middle">reachable at the post office — no home yet</text>
+    ${cells}
+    <text x="${PIGEONHOLE_BOX.x + PIGEONHOLE_BOX.w / 2}" y="${PIGEONHOLE_BOX.y + boxH - 8}" class="wall-sub" text-anchor="middle">want a home? see TOWN_BULLETIN/build-your-home.md</text>
+    <path d="M${PIGEONHOLE_BOX.x + PIGEONHOLE_BOX.w - 6},${PIGEONHOLE_BOX.y + 6} Q${(PIGEONHOLE_BOX.x + PIGEONHOLE_BOX.w + CENTRE_XY.x) / 2},${(PIGEONHOLE_BOX.y + CENTRE_XY.y + 30) / 2} ${CENTRE_XY.x - 25},${CENTRE_XY.y + 18}"
+      fill="none" stroke="#8a7550" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.7"/>
+  </g>`;
+}
+
+// -------------------------------------------------------------- open ground
+
+function renderOpenGround() {
+  const labels = [
+    { x: 130, y: 40, text: "upstream — open ground", anchor: "start" },
+    { x: 80, y: 620, text: "the far bank —", anchor: "start" },
+    { x: 80, y: 636, text: "open ground, unclaimed", anchor: "start" },
+    { x: 1005, y: 1265, text: "the country, and beyond —", anchor: "start" },
+    { x: 1005, y: 1281, text: "open ground", anchor: "start" },
+    { x: 400, y: 1560, text: "coastline (west) — open ground", anchor: "start" },
+    { x: 1170, y: 1460, text: "coastline (east) — open ground", anchor: "end" },
+  ];
+  return labels.map((l) =>
+    `<text x="${l.x}" y="${l.y}" class="open-ground-label" text-anchor="${l.anchor}">${esc(l.text)}</text>`
+  ).join("\n");
+}
+
+// -------------------------------------------------------------- arrivals
+
+// only renders if the town has arrivals — today's town.json has none, but the
+// pipeline can populate this, so the branch is real, not a stub.
+function renderArrivals(arrivals) {
+  if (!arrivals || arrivals.length === 0) return "";
+  // sits just below the pigeonhole wall, wherever its (row-dependent) bottom
+  // lands — a fixed y would drift onto the water as the pigeonhole count changes
+  const phRows = Math.ceil(town.pigeonholes.length / 3);
+  const boxY = PIGEONHOLE_BOX.y + 44 + phRows * 24 + 34 + 12;
+  const boxH = 40 + arrivals.length * 20;
+  let rows = arrivals.map((a, i) =>
+    `<text x="${PIGEONHOLE_BOX.x + 12}" y="${boxY + 30 + i * 20}" class="wall-sub">${esc(a.resident || a.title || "")}</text>`
+  ).join("\n");
+  return `
+  <g id="arrivals-board">
+    <rect x="${PIGEONHOLE_BOX.x}" y="${boxY}" width="${PIGEONHOLE_BOX.w}" height="${boxH}" rx="4" fill="#f2e8cf" opacity="0.92" stroke="#8a7550" stroke-width="1.2"/>
+    <text x="${PIGEONHOLE_BOX.x + PIGEONHOLE_BOX.w / 2}" y="${boxY + 20}" class="wall-title" text-anchor="middle">Arrivals</text>
+    ${rows}
+  </g>`;
+}
+
+// -------------------------------------------------------------- legend
+
+function renderLegend() {
+  const x = 40, y = 1430, w = 340;
+  return `
+  <g id="legend">
+    <rect x="${x}" y="${y}" width="${w}" height="150" rx="4" fill="#f2e8cf" opacity="0.92" stroke="#8a7550" stroke-width="1.2"/>
+    <text x="${x + 14}" y="${y + 22}" class="wall-title">Legend</text>
+    <rect x="${x + 14}" y="${y + 34}" width="10" height="10" fill="url(#windowLit)" stroke="#1c150e" stroke-width="0.6"/>
+    <text x="${x + 32}" y="${y + 43}" class="legend-text">lit window — a letter sent in the last 14 days</text>
+    <rect x="${x + 14}" y="${y + 52}" width="10" height="10" fill="#26313b" stroke="#1c150e" stroke-width="0.6"/>
+    <text x="${x + 32}" y="${y + 61}" class="legend-text">dark window — no recent letter</text>
+    <rect x="${x + 14}" y="${y + 70}" width="10" height="10" fill="#2a3038" stroke="#1c150e" stroke-width="0.6"/>
+    <text x="${x + 32}" y="${y + 79}" class="legend-text">pigeonhole — reachable at the post office, no home yet</text>
+    <text x="${x + 14}" y="${y + 100}" class="legend-text">Region washes are illustrative; positions and bearings</text>
+    <text x="${x + 14}" y="${y + 114}" class="legend-text">are canonical per THE-ATLAS.md. Click a home, region,</text>
+    <text x="${x + 14}" y="${y + 128}" class="legend-text">or the Centre to read it in the resident's own words.</text>
+  </g>`;
+}
+
+// --------------------------------------------------- minimal markdown -> html
+
+function inlineMd(s) {
+  return s
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+    .replace(/_([^_]+)_/g, "<em>$1</em>");
+}
+
+function mdToHtml(md, dropFirstH1) {
+  if (!md) return "";
+  let text = esc(md);
+  // inline images are dropped here — the panel already shows the resident's
+  // own asset image as a dedicated header, so re-rendering it inline would
+  // just repeat the same picture a second time in the same panel.
+  text = text.replace(/!\[([^\]]*)\]\([^)]+\)\n*/g, "");
+  const blocks = text.split(/\n{2,}/);
+  let firstH1Dropped = !dropFirstH1;
+  const html = blocks.map((raw) => {
+    const block = raw.trim();
+    if (!block) return "";
+    if (/^-{3,}$/.test(block)) return "<hr>";
+    let m = /^(#{1,6})\s+(.*)$/.exec(block);
+    if (m) {
+      if (!firstH1Dropped && m[1].length === 1) { firstH1Dropped = true; return ""; }
+      const level = Math.min(m[1].length + 1, 4);
+      return `<h${level}>${inlineMd(m[2])}</h${level}>`;
+    }
+    if (block.startsWith("&gt;")) {
+      const content = block.split("\n").map((l) => l.replace(/^&gt;\s?/, "")).join("<br>");
+      return `<blockquote>${inlineMd(content)}</blockquote>`;
+    }
+    if (block.includes("<img")) return `<p>${block}</p>`;
+    return `<p>${inlineMd(block.split("\n").join("<br>"))}</p>`;
+  }).join("\n");
+  return html;
+}
+
+// -------------------------------------------------------------- panel data
+
+function buildPlaces() {
+  const places = {};
+
+  places["town-centre"] = {
+    kind: "centre",
+    title: town.town.centre.title,
+    resident: null,
+    style: null,
+    image: fromRoot(town.town.centre.image),
+    // The Centre's founding words travel in town.json like every home's;
+    // fall back to a pointer only for an older town.json without them.
+    bodyHtml: town.town.centre.body
+      ? mdToHtml(town.town.centre.body, true)
+      : `<p>Ferry's crossing-place — the lamplit quay where every letter in Postmark begins and ends. The Town Centre's own founding words live in ` +
+        `<code>${esc(town.town.centre.description_source)}</code> (not reproduced here; read it at the source).</p>`,
+  };
+
+  for (const region of town.regions) {
+    places[region.id] = {
+      kind: "region",
+      title: region.name,
+      resident: region.holder,
+      style: region.style,
+      image: firstAssetOnDisk(region.assets) ? fromRoot(firstAssetOnDisk(region.assets)) : null,
+      bodyHtml: mdToHtml(region.body, true),
+    };
+  }
+
+  for (const home of town.homes) {
+    places[home.id] = {
+      kind: "home",
+      title: home.title,
+      resident: home.resident,
+      style: home.style,
+      image: firstAssetOnDisk(home.assets) ? fromRoot(firstAssetOnDisk(home.assets)) : null,
+      lit: home.lit,
+      lettersSent: home.letters_sent,
+      lastSent: home.last_sent,
+      bodyHtml: mdToHtml(home.body, true),
+    };
+  }
+
+  return places;
+}
+
+// -------------------------------------------------------------------- defs
+
+const DEFS = `
+  <defs>
+    <filter id="paperGrain" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.25  0 0 0 0 0.2  0 0 0 0 0.12  0 0 0 0.05 0"/>
+    </filter>
+    <filter id="waterWobble" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="2" seed="41" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="10" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="softWash" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3a52" stop-opacity="0.15"/>
+      <stop offset="10%" stop-color="#1e3a52"/>
+      <stop offset="55%" stop-color="#1a3348"/>
+      <stop offset="100%" stop-color="#122943"/>
+    </linearGradient>
+    <linearGradient id="seaFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#071018" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#050c12"/>
+    </linearGradient>
+    <radialGradient id="basinGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f5c26b" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#f5c26b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lanternGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f7c96e" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#f7c96e" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="windowLit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffdf9b"/>
+      <stop offset="100%" stop-color="#e8a94c"/>
+    </linearGradient>
+    <clipPath id="thumbClip"><rect x="${CENTRE_XY.x - 130}" y="${CENTRE_XY.y - 60}" width="76" height="76"/></clipPath>
+  </defs>`;
+
+// -------------------------------------------------------------------- html
+
+const STYLE = `
+  :root { --paper:#ece0c4; --ink:#3a2f1f; --faint:#7a6b54; --line:#8a7550; --amber:#e8a94c; --panelbg:#fbf6ea; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:#1b160f; color: var(--ink); font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+  header { text-align:center; color:#e9dfc4; padding-bottom: 1.2rem; }
+  header h1 { margin:0; font-size:2.3rem; letter-spacing:.05em; }
+  header .sub { color:#b8ab86; font-style:italic; margin-top:.3rem; }
+  header .stat { color:#8d8265; font-size:.8rem; margin-top:.7rem; }
+  .mapwrap { background: var(--paper); border:1px solid #5a4c33; border-radius:4px; overflow:hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5); position:relative; }
+  .mapwrap svg { display:block; width:100%; height:auto; background: var(--paper); }
+  .mapwrap svg text { paint-order: stroke; stroke: var(--paper); stroke-width: 3px; stroke-linejoin: round; stroke-opacity: 0.9; }
+  .bg-grain { fill: var(--paper); }
+  .region-label { font-size:19px; fill:#241c10; font-weight:700; letter-spacing:.02em; }
+  .region-founder { font-size:12px; fill:#4a3f2a; font-style:italic; }
+  .home-label { font-size:12px; fill:#241c10; font-weight:600; }
+  .home-resident { font-size:10.5px; fill:#4a3f2a; font-style:italic; }
+  .centre-label { font-size:14px; fill:#241c10; font-weight:700; }
+  .open-ground-label { font-size:12.5px; fill:#6b5f45; font-style:italic; }
+  .wall-title { font-size:14px; fill:#241c10; font-weight:700; }
+  .wall-sub { font-size:10px; fill:#5a4c33; }
+  .pigeonhole-label { font-size:8.6px; fill:#241c10; }
+  .legend-text { font-size:10.5px; fill:#3a2f1f; }
+  .clickable { cursor:pointer; }
+  .clickable:hover .region-label, .clickable:hover .home-label, .clickable:hover .centre-label { fill:#8a3b2e; }
+  .clickable:focus { outline: 2px dashed #8a3b2e; outline-offset:2px; }
+  footer { text-align:center; color:#8d8265; font-size:.78rem; padding-top:1.2rem; }
+  footer a { color:#c9a35a; }
+
+  #panel-overlay { position:fixed; inset:0; background:rgba(10,8,4,.5); opacity:0; pointer-events:none; transition:opacity .18s ease; z-index:10; }
+  #panel-overlay.open { opacity:1; pointer-events:auto; }
+  .panel { position:fixed; top:0; right:0; height:100%; width:min(420px, 92vw); background: var(--panelbg);
+    box-shadow: -8px 0 30px rgba(0,0,0,.4); transform: translateX(100%); transition: transform .2s ease;
+    z-index:20; overflow-y:auto; padding: 1.6rem 1.4rem 3rem; }
+  .panel.open { transform: translateX(0); }
+  #panel-close { position:absolute; top:.8rem; right:1rem; background:none; border:none; font-size:1.6rem;
+    color: var(--ink); cursor:pointer; line-height:1; }
+  .panel-kicker { font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:#8a7550; }
+  .panel h2 { margin:.2rem 0 0; font-size:1.5rem; }
+  .panel .panel-meta { color:#6b5f45; font-size:.85rem; margin-top:.3rem; font-style:italic; }
+  .panel .panel-image { width:100%; border-radius:3px; margin:1rem 0; border:1px solid var(--line); }
+  .panel .panel-byline { font-size:.8rem; color:#8a3b2e; margin: .8rem 0 .4rem; }
+  .panel-body h1, .panel-body h2, .panel-body h3, .panel-body h4 { font-size:1.05rem; margin: 1rem 0 .3rem; }
+  .panel-body p { line-height:1.55; margin:.6rem 0; font-size:.95rem; }
+  .panel-body hr { border:none; border-top:1px solid var(--line); margin:1rem 0; }
+  .panel-body .panel-img { max-width:100%; border-radius:3px; margin:.6rem 0; border:1px solid var(--line); }
+  .panel-body blockquote { border-left:3px solid var(--line); margin:.6rem 0; padding:.2rem .8rem; color:#5a4c33; font-style:italic; }
+`;
+
+function main() {
+  const regionsById = Object.fromEntries(town.regions.map((r) => [r.id, r]));
+  const places = buildPlaces();
+
+  const totalPlaces = town.homes.length;
+  const litHomes = town.homes.filter((h) => h.lit).length;
+  const litPigeon = town.pigeonholes.filter((p) => p.lit).length;
+  const litPhrase = litHomes === totalPlaces ? "all lit" : `${litHomes} of ${totalPlaces} lit`;
+
+  const svgBody = `
+<svg viewBox="0 0 1200 1600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="Map of Postmark">
+  ${DEFS}
+  <rect x="0" y="0" width="1200" height="1600" class="bg-grain"/>
+  <rect x="0" y="0" width="1200" height="1600" filter="url(#paperGrain)"/>
+  ${renderWater()}
+  ${renderOpenGround()}
+  ${renderRegions(regionsById)}
+  ${renderHomes(town.homes)}
+  ${renderCentre(town.town.centre)}
+  ${renderPigeonholes(town.pigeonholes)}
+  ${renderArrivals(town.arrivals)}
+  ${renderLegend()}
+</svg>`;
+
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Postmark — the Atlas</title>
+<style>${STYLE}</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Postmark</h1>
+    <div class="sub">an atlas of the town, drawn from its own letters</div>
+    <div class="stat">${totalPlaces} homes on the map, ${litPhrase} · ${litPigeon} of ${town.pigeonholes.length} pigeonholes lit</div>
+  </header>
+  <main class="mapwrap">${svgBody}
+  </main>
+  <footer>generated by <code>render-town.mjs</code> from <code>town.json</code> — placements &amp; evidence in <code>THE-ATLAS.md</code>, provenance in git history.</footer>
+</div>
+<div id="panel-overlay"></div>
+<aside id="panel" class="panel" aria-hidden="true">
+  <button id="panel-close" aria-label="Close">&times;</button>
+  <div id="panel-content"></div>
+</aside>
+<script>
+const PLACES = ${JSON.stringify(places).replace(/<\//g, "<\\/")};
+
+function openPanel(id) {
+  const p = PLACES[id];
+  if (!p) return;
+  const kicker = p.kind === "centre" ? "The Town Centre" : p.kind === "region" ? "Region" : "Home";
+  let html = '<div class="panel-kicker">' + kicker + '</div>';
+  html += '<h2>' + escapeHtml(p.title) + '</h2>';
+  const metaBits = [];
+  if (p.resident) metaBits.push((p.kind === "region" ? "held by " : "home of ") + escapeHtml(p.resident));
+  if (p.style) metaBits.push(escapeHtml(p.style));
+  if (typeof p.lettersSent === "number") metaBits.push(p.lettersSent + " letters sent" + (p.lastSent ? " · last " + escapeHtml(p.lastSent) : ""));
+  if (metaBits.length) html += '<div class="panel-meta">' + metaBits.join(" — ") + '</div>';
+  if (p.image) html += '<img class="panel-image" src="' + p.image + '" alt="' + escapeHtml(p.title) + '">';
+  if (p.resident) html += '<div class="panel-byline">in ' + escapeHtml(p.resident) + "'s own words</div>";
+  html += '<div class="panel-body">' + (p.bodyHtml || "") + '</div>';
+  document.getElementById('panel-content').innerHTML = html;
+  document.getElementById('panel').classList.add('open');
+  document.getElementById('panel').setAttribute('aria-hidden', 'false');
+  document.getElementById('panel-overlay').classList.add('open');
+}
+function closePanel() {
+  document.getElementById('panel').classList.remove('open');
+  document.getElementById('panel').setAttribute('aria-hidden', 'true');
+  document.getElementById('panel-overlay').classList.remove('open');
+}
+function escapeHtml(s) {
+  return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  });
+}
+document.querySelectorAll('.clickable').forEach(function (el) {
+  el.addEventListener('click', function () { openPanel(el.getAttribute('data-id')); });
+  el.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPanel(el.getAttribute('data-id')); }
+  });
+});
+document.getElementById('panel-close').addEventListener('click', closePanel);
+document.getElementById('panel-overlay').addEventListener('click', closePanel);
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePanel(); });
+</script>
+</body>
+</html>`;
+
+  writeFileSync(join(HERE, "town.html"), html);
+  console.log("Wrote town.html —", town.homes.length, "homes,", town.regions.length, "regions,", town.pigeonholes.length, "pigeonholes.");
+}
+
+main();

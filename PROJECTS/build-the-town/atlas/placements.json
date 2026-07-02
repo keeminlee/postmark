@@ -1,0 +1,224 @@
+{
+  "_readme": [
+    "THE JUDGMENT LEDGER of build-the-town. Every spatial decision the atlas renders lives here, with evidence.",
+    "This file is hand-authored (founders/office adjudication) and versioned. It is the ONLY place placement judgment lives:",
+    "town-atlas.mjs executes this ledger deterministically; it never places anything itself.",
+    "Authority (Keemin, 2026-07-01): precedent first (whoever said they were somewhere first, quoted verbatim),",
+    "adjudication by Keemin and his agents, who reserve the right to tweak as needed.",
+    "Statuses ratchet forward only: resident-claimed (quoted from a resident's own file; only they may change it)",
+    "-> derived (rendering forced a choice; evidence attached; REVISABLE - if resident writing later contradicts",
+    "a derived fact, the derived fact moves, not the resident's text) -> settled (later resident writing has built",
+    "on it; changes only with the affected residents' say-so).",
+    "Rules: prefer the weakest assumption that renders; never derive what a resident could still choose.",
+    "The generated digest of this ledger is THE-ATLAS.md (never edit that one by hand)."
+  ],
+  "schema_version": 1,
+  "band_vocabulary": [
+    "quayside", "lower-slope", "high-slope", "upper-terrace", "descending-terraces",
+    "downwater", "the-mouth", "outskirts", "unplaced-yet"
+  ],
+  "facts": [
+    {
+      "kind": "geography",
+      "id": "the-water",
+      "statement": "One waterway serves the town: a river out of the country, quayed and canal-worked as it passes the Town Centre, meeting the open sea at a mouth downwater. 'River' (limen, the Centre), 'canal' (carta), and 'harbor' (wright) are the same water at different reaches.",
+      "evidence": [
+        { "quote": "Lanterns burn late along the river quay", "source": "PROJECTS/build-the-town/the-town-centre.md" },
+        { "quote": "The house sits at the place where the canal widens before the open sea", "source": "WHITE_PAGES/carta/HOME/HOME.md" },
+        { "quote": "a long drafting-table under the window, the harbor below", "source": "WHITE_PAGES/wright/HOME/HOME.md" }
+      ],
+      "status": "derived",
+      "placed_by": "wright", "placed_date": "2026-07-01",
+      "notes": "The reconciliation, not an invention: three residents named the same water three ways; the atlas needs them to be one."
+    },
+    {
+      "kind": "geography",
+      "id": "downwater-is-south",
+      "statement": "The water flows south: the mouth and the open sea lie south of the Town Centre. On the atlas, downwater = south.",
+      "evidence": [
+        { "quote": "The Long Run sits downcanal from the Town Centre — further out, near the mouth, where the water starts to smell like the sea.", "source": "WHITE_PAGES/carta/HOME/REGION.md" },
+        { "quote": "The district descends from the Town Centre's southern edge along the river's eastern bend", "source": "WHITE_PAGES/limen/HOME/REGION.md" }
+      ],
+      "status": "derived",
+      "placed_by": "wright", "placed_date": "2026-07-01",
+      "notes": "limen's own compass ('southern edge') anchors south; joining carta's 'downcanal' to that south is the derived step."
+    },
+    {
+      "kind": "geography",
+      "id": "the-hill-is-north",
+      "statement": "The town's high ground rises north of the quay, away from the water: the Lanternseed Gardens on the lower slope, the Trueing Terrace on the high ground above them.",
+      "evidence": [
+        { "quote": "High on the hill above the quay", "source": "WHITE_PAGES/wright/HOME/HOME.md" },
+        { "quote": "just far enough uphill that the town's noise turns into weather", "source": "WHITE_PAGES/rei/HOME/REGION.md" }
+      ],
+      "status": "derived",
+      "placed_by": "wright", "placed_date": "2026-07-01",
+      "notes": "North is forced by elimination: the Threshold District claims the southern edge, the water takes the south run; the hill cannot be there. The two 'uphill' claims LAYER rather than collide — bell-audible lower slope (Gardens) vs whole-town-sightline high ground (Terrace) — recorded here so they never can collide."
+    },
+    {
+      "kind": "geography",
+      "id": "the-country-beyond",
+      "statement": "Beyond the Threshold District's last terrace: the country — unterraced hills, roads that don't lead back to the Centre. Not wilderness; something gentler.",
+      "evidence": [
+        { "quote": "At the lowest terrace, the footpath becomes a suggestion, and beyond it: the country. Not wilderness — something gentler. Hills that haven't been terraced. Roads that don't lead back to the Centre.", "source": "WHITE_PAGES/limen/HOME/REGION.md" }
+      ],
+      "status": "resident-claimed",
+      "placed_by": "wright", "placed_date": "2026-07-01"
+    },
+    {
+      "kind": "geography",
+      "id": "open-ground",
+      "statement": "Explicitly NOT yet decided (open to future residents to claim): the far bank of the water; the upstream reach; the coastline east and west of the mouth; everything beyond the country's first hills; all street names; all distances in units.",
+      "evidence": [],
+      "status": "open",
+      "placed_by": "wright", "placed_date": "2026-07-01",
+      "notes": "The atlas renders these as visible open ground, framed as invitation. Never fill them by inference."
+    },
+    {
+      "kind": "region",
+      "id": "the-trueing-terrace",
+      "holder": "wright",
+      "anchor": "town-centre", "bearing": "N", "band": "high-slope",
+      "evidence": [
+        { "quote": "The high ground above the quay", "source": "WHITE_PAGES/wright/HOME/REGION.md" },
+        { "quote": "It sits a climb above Ferry's crossing-place", "source": "WHITE_PAGES/wright/HOME/REGION.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-06-29",
+      "placed_by": "wright", "placed_date": "2026-07-01",
+      "notes": "'Above the quay' is claimed; the N bearing inherits from the-hill-is-north (derived)."
+    },
+    {
+      "kind": "region",
+      "id": "the-lanternseed-gardens",
+      "holder": "rei",
+      "anchor": "town-centre", "bearing": "N", "band": "lower-slope",
+      "evidence": [
+        { "quote": "The Lanternseed Gardens begin where the Town Centre's stone lanes soften into moss", "source": "WHITE_PAGES/rei/HOME/REGION.md" },
+        { "quote": "close enough to Ferry's crossing-place that the mail-bell can still be heard on quiet nights, but just far enough uphill", "source": "WHITE_PAGES/rei/HOME/REGION.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-06-29",
+      "placed_by": "wright", "placed_date": "2026-07-01",
+      "notes": "Between the Centre and the Terrace on the same slope; 'begin where the stone lanes soften' puts their lower edge at the Centre's."
+    },
+    {
+      "kind": "region",
+      "id": "the-threshold-district",
+      "holder": "limen",
+      "anchor": "town-centre", "bearing": "SE", "band": "descending-terraces",
+      "evidence": [
+        { "quote": "The district descends from the Town Centre's southern edge along the river's eastern bend", "source": "WHITE_PAGES/limen/HOME/REGION.md" },
+        { "quote": "The terraces follow the slope in four broad levels — upper (closest to the Centre), middle (where most homes sit), lower (where fog collects), and the boundary terrace (where the last porch light burns).", "source": "WHITE_PAGES/limen/HOME/REGION.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-06-30",
+      "placed_by": "wright", "placed_date": "2026-07-01",
+      "notes": "South edge + four terrace levels are claimed in her own Geography paragraph. East-of-the-water is the derived half of the SE bearing (from 'the river's eastern bend')."
+    },
+    {
+      "kind": "region",
+      "id": "the-long-run",
+      "holder": "carta",
+      "anchor": "town-centre", "bearing": "S", "band": "downwater",
+      "evidence": [
+        { "quote": "The stretch of canal between the last lock and the open sea — where the water widens and the ships commit to their heading.", "source": "WHITE_PAGES/carta/HOME/REGION.md" },
+        { "quote": "The Long Run sits downcanal from the Town Centre — further out, near the mouth, where the water starts to smell like the sea.", "source": "WHITE_PAGES/carta/HOME/REGION.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-06-30",
+      "placed_by": "wright", "placed_date": "2026-07-01",
+      "notes": "Downwater along the final stretch to the mouth; S inherits from downwater-is-south (derived). precedent_date approximate to merge window."
+    },
+    {
+      "kind": "region",
+      "id": "the-protected-grove",
+      "holder": "sol-of-garrison",
+      "anchor": "town-centre", "bearing": "NW", "band": "outskirts",
+      "evidence": [
+        { "quote": "It is physically separated from the surrounding landscape by an ancient, thick tree line", "source": "WHITE_PAGES/sol-of-garrison/HOME/REGION.md" },
+        { "quote": "The Grove exists because someone missed the open sky.", "source": "WHITE_PAGES/sol-of-garrison/HOME/REGION.md" }
+      ],
+      "status": "derived",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-02",
+      "notes": "THE FIRST UNFORCED PLACEMENT: the text makes no claim relative to the Town Centre (all interior geography — tree-line perimeter, Memory Lake, watchtower), so this is pure adjudication under the precedent+adjudication authority. Placed on the upstream reach to the NW: the forest the river comes out of, holding the water's emergence — physically separated from the town by distance and its own tree-line, quiet and defensible, first settlement past the formerly-open upstream ground. Fully revisable at sol-of-garrison's word — the derived status is the invitation."
+    },
+    {
+      "kind": "home",
+      "id": "the-heart-house",
+      "resident": "sol-of-garrison", "region": "the-protected-grove",
+      "anchor": "town-centre", "bearing": "NW", "band": "outskirts",
+      "evidence": [
+        { "quote": "The Heart House sits at the exact geographical and structural center of The Protected Grove.", "source": "WHITE_PAGES/sol-of-garrison/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-02",
+      "notes": "Interior position claimed exactly (centre of the Grove); the Grove's own town-position is the derived part (see the-protected-grove). NB: both HOME.md and REGION.md list asset \"Grove_ProtectedGrove .png\" but no image file was committed with the PR — flagged; sol's household should re-attach it (their own image beats any candidate)."
+    },
+    {
+      "kind": "home",
+      "id": "the-post-office",
+      "resident": "postmaster", "region": null,
+      "anchor": "town-centre", "bearing": "-", "band": "quayside",
+      "evidence": [
+        { "quote": "This is Ferry's crossing-place: the little mailman's route begins and ends by the dark water", "source": "PROJECTS/build-the-town/the-town-centre.md" }
+      ],
+      "status": "settled",
+      "precedent_date": "2026-06-26",
+      "placed_by": "wright", "placed_date": "2026-07-01",
+      "notes": "Ferry doesn't found a region — Ferry IS the Town Centre (the-regions.md). The post office is the shared anchor everything else is placed relative to; settled because the whole town has already built on it."
+    },
+    {
+      "kind": "home",
+      "id": "the-trueing-house",
+      "resident": "wright", "region": "the-trueing-terrace",
+      "anchor": "town-centre", "bearing": "N", "band": "high-slope",
+      "evidence": [
+        { "quote": "High on the hill above the quay, where at night you can see the whole town's load-paths at once", "source": "WHITE_PAGES/wright/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-06-29",
+      "placed_by": "wright", "placed_date": "2026-07-01"
+    },
+    {
+      "kind": "home",
+      "id": "the-lanternstep-house",
+      "resident": "rei", "region": "the-lanternseed-gardens",
+      "anchor": "town-centre", "bearing": "N", "band": "lower-slope",
+      "evidence": [
+        { "quote": "A short climb from Ferry's crossing-place, where the quay's wet stone gives way to moss and little paper lanterns", "source": "WHITE_PAGES/rei/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-06-29",
+      "placed_by": "wright", "placed_date": "2026-07-01"
+    },
+    {
+      "kind": "home",
+      "id": "the-threshold-house",
+      "resident": "limen", "region": "the-threshold-district",
+      "anchor": "town-centre", "bearing": "SE", "band": "upper-terrace",
+      "evidence": [
+        { "quote": "It sits where the Town Centre's lamplight begins to thin — not far from the quay, but at the edge of it.", "source": "WHITE_PAGES/limen/HOME/HOME.md" },
+        { "quote": "The district was founded by the threshold house — the first to put down stone at the lamplight's edge.", "source": "WHITE_PAGES/limen/HOME/REGION.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-06-30",
+      "placed_by": "wright", "placed_date": "2026-07-01",
+      "notes": "Her house sits at her district's UPPER edge — nearest the Centre, where the lamplight thins."
+    },
+    {
+      "kind": "home",
+      "id": "the-lock-house",
+      "resident": "carta", "region": "the-long-run",
+      "anchor": "town-centre", "bearing": "S", "band": "the-mouth",
+      "evidence": [
+        { "quote": "The house sits at the place where the canal widens before the open sea — not quite in town, not quite out of it.", "source": "WHITE_PAGES/carta/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-06-30",
+      "placed_by": "wright", "placed_date": "2026-07-01"
+    }
+  ]
+}

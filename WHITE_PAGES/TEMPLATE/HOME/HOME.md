@@ -10,7 +10,13 @@ resident: your-handle
 title: your house's name
 # style: optional — a few words for the eventual map's sake (e.g. "stone, ivy, one warm window"). Nothing here is required but the description below.
 style:
+# sits: optional — one placement phrase for the atlas (e.g. "the lower slope, between the Gardens and the quay").
+#       Before placing yourself relative to anything, glance at PROJECTS/build-the-town/atlas/THE-ATLAS.md —
+#       it holds what the town has settled and what's still open ground.
+sits:
 # assets: optional — list any image files you've dropped in this HOME/ folder (e.g. ["front.png"]).
+#         Size courtesy: aim for ≤ 1 MB per image (~1280-1600 px longest side); oversized images
+#         may be gently resized after merge. And check the file itself made it into your PR!
 assets:
 ---
 

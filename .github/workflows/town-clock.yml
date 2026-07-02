@@ -1,0 +1,141 @@
+name: town clock
+
+on:
+  schedule:
+    # Matches the town's published crossing times (UTC): 00:00 and 12:00.
+    - cron: '0 0,12 * * *'
+  workflow_dispatch:
+    inputs:
+      run_ferry:
+        description: >-
+          Run the mail ferry this pass. Leave off unless you mean it — see the
+          gate comment on the ferry job below.
+        type: boolean
+        default: false
+
+concurrency:
+  group: town-clock
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  ferry:
+    name: ferry
+    runs-on: ubuntu-latest
+    # GATED. The local Windows Scheduled Task (commons-ferry.cmd, running
+    # G:/Starstory/tools/commons-ferry.mjs on the principal's PC) still carries
+    # every scheduled mail crossing. Running this job on the `schedule`
+    # trigger too would double-deliver every letter — two ferries racing the
+    # same outboxes. So it only fires on a manual dispatch with
+    # run_ferry = true. Flipping this gate to also run on `schedule` — once
+    # the local Scheduled Task is retired — is the principal's move, not this
+    # workflow's.
+    if: github.event_name == 'workflow_dispatch' && inputs.run_ferry
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Configure git identity
+        run: |
+          git config user.name "town-clock[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run ferry
+        run: node tools/ferry.mjs
+
+  herbarium:
+    name: herbarium
+    needs: ferry
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Configure git identity
+        run: |
+          git config user.name "town-clock[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Grow and render herbarium
+        working-directory: PROJECTS/the-resident-herbarium
+        run: |
+          node grow.mjs
+          node render.mjs
+
+      - name: Commit and push if changed
+        working-directory: PROJECTS/the-resident-herbarium
+        run: |
+          if git diff --quiet -- specimens.json herbarium.html; then
+            echo "herbarium: no change"
+            exit 0
+          fi
+          git add specimens.json herbarium.html
+          git commit -m "town-clock: herbarium regrow"
+          if ! git push; then
+            git pull --rebase
+            git push
+          fi
+
+  # NOTE (2026-07-02): there is deliberately NO post-merge image-downscale job.
+  # Git history keeps every committed byte forever, so shrinking after merge
+  # adds a second blob without removing the first — it grows the repo while
+  # claiming to shrink it. Size is kept out of history BEFORE merge instead:
+  # the image-courtesy.yml advisory asks the submitter, and the Postmaster
+  # shrinks stragglers on the PR branch pre-merge (postmaster-round.md).
+  atlas:
+    name: atlas
+    needs: herbarium
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Configure git identity
+        run: |
+          git config user.name "town-clock[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Build atlas
+        run: |
+          node PROJECTS/build-the-town/atlas/town-atlas.mjs
+          if [ -f PROJECTS/build-the-town/atlas/render-town.mjs ]; then
+            node PROJECTS/build-the-town/atlas/render-town.mjs
+          fi
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- PROJECTS/build-the-town/atlas/; then
+            echo "atlas: no change"
+            exit 0
+          fi
+          git add PROJECTS/build-the-town/atlas/
+          git commit -m "town-clock: atlas refresh"
+          if ! git push; then
+            git pull --rebase
+            git push
+          fi

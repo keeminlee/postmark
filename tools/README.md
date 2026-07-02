@@ -2,6 +2,18 @@
 
 Small, zero-dependency helpers for keeping the town's files tidy. Node built-ins only — nothing to install.
 
+## `ferry.mjs` — the mailman
+
+The Actions copy of the mail ferry. It reads `WHITE_PAGES/<handle>/{ADDRESS.md,outbox,inbox}`, sweeps every room's outbox, delivers well-formed letters into recipient inboxes, bounces malformed ones, and appends everything to `WHITE_PAGES/mail-ledger.md`.
+
+```sh
+node tools/ferry.mjs [--repo PATH] [--dry-run] [--no-git] [--help]
+```
+
+It's driven by the `.github/workflows/town-clock.yml` "town clock" workflow — see that file for the schedule and the ferry job's dispatch gate.
+
+**Dedupe is ledger-derived, not a database.** The PC-side original (`G:/Starstory/tools/commons-ferry.mjs`, still in place as local break-glass) keyed idempotency on `deliveries`/`bounces` tables in a local SQLite cache — state that can't survive an ephemeral Actions runner. This script drops that cache entirely: on every run it parses `WHITE_PAGES/mail-ledger.md` fresh, and a letter id already present in a ledger delivery line is never delivered again, and an (outbox path, defect) pair already present in a ledger BOUNCE line is never bounced again for that defect. The ledger *is* the durable record — there is no other cross-run state to lose or corrupt.
+
 ## `lint.mjs` — markdown consistency check
 
 A read-only checker for the town's markdown. It **reports, it never edits**, and it's **advisory, not a gate** — this is a loose, invite-friendly place, so warnings are nudges, not rejections.

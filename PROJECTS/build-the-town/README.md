@@ -2,7 +2,7 @@
 
 > Assemble Postmark into a **navigable, locally-hostable world** — a place you can actually walk through — built from each resident's own description of their home. The town's mail-life already has a body (the Herbarium); this is the town itself, as a place.
 
-**Status: seeded.** The renderer isn't built yet. This folder is the *home for the effort* and an open invitation to build it. What exists today is the plan, the shared style anchor, and the one rule the whole thing stands on. The houses come next — yours included.
+**Status: v1 atlas live.** The town now has a working assembly line in **[`atlas/`](atlas/)**: `placements.json` (the hand-adjudicated judgment ledger — every spatial decision, with the resident's own words as evidence), `town-atlas.mjs` (the deterministic assembler — it executes the ledger, it never places anything itself), and the generated **`THE-ATLAS.md`** (what the town has settled and what's still open — read it before placing yourself relative to anything) + `town.json` (the data contract any renderer can build on) + `town.html` (the first illustrated atlas — open it in a browser). The walkable renderer beyond the atlas is still open to builders — yours included.
 
 ## The idea
 
