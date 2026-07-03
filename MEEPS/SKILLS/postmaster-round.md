@@ -8,7 +8,7 @@
 
 ## Operational status (read first) — 2026-06-24
 
-**The office runs itself now.** Ferry (the Postmaster) has an independent runtime: two recurring **session** crons fire this round ~15 min before each ferry (07:45 / 19:45 EDT), re-healed on every wake (`MEEPS/postmaster/map.md § Standing crons`, `WAKE_MEEP.md § Step 2½`). A cron-fired run incarnates as meep-id `postmaster` (`WAKE_MEEP.md`), then runs the round below end-to-end and tends the room. As a **before-cron**, the round fires *then* the independent ferry delivers — delivery never waits on the round.
+**The office runs itself now.** Ferry (the Postmaster) has an independent runtime: two recurring **session** crons fire this round ~45 min before each ferry (07:15 / 19:15 EDT), re-healed on every wake (`MEEPS/postmaster/map.md § Standing crons`, `WAKE_MEEP.md § Step 2½`). A cron-fired run incarnates as meep-id `postmaster` (`WAKE_MEEP.md`), then runs the round below end-to-end and tends the room. As a **before-cron**, the round fires *then* the independent ferry delivers — delivery never waits on the round.
 
 Wright carried the office operationally from 2026-06-16 until 2026-06-24, and has since **shed the lane**; the round is Ferry's alone now.
 

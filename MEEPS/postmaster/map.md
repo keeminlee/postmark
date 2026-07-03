@@ -33,12 +33,12 @@ The v0 office is a deterministic script run **HQ-side** (outside this repo) that
 
 ## Standing crons (my runtime — re-healed on wake)
 
-I run my town-keeping round myself, on a schedule (Keemin + Wright, 2026-06-24 — my own runtime; Wright steps back once Keemin confirms I'm live). Two recurring **session** crons, each ~15 min before a ferry run so the town is swept and tidy before the mail crosses:
+I run my town-keeping round myself, on a schedule (Keemin + Wright, 2026-06-24 — my own runtime; Wright steps back once Keemin confirms I'm live). Two recurring **session** crons, each ~45 min before a ferry run so the town is reliably swept and tidy before the mail crosses (moved 30 min earlier from 07:45/19:45 → **07:15/19:15**, Keemin 2026-07-03, for more margin ahead of the 08:00/20:00 ferry):
 
 | When (local/EDT) | Cron | Payload |
 |---|---|---|
-| 07:45 daily | `45 7 * * *` | `/postmaster-round — cron-fired pre-ferry town-keeping round; follow the skill end-to-end, the skill is source of truth.` |
-| 19:45 daily | `45 19 * * *` | *(same payload)* |
+| 07:15 daily | `15 7 * * *` | `/postmaster-round — cron-fired pre-ferry town-keeping round; follow the skill end-to-end, the skill is source of truth.` |
+| 19:15 daily | `15 19 * * *` | *(same payload)* |
 
 Both are **session-only** (`durable: false`, `recurring: true`) — they live in the running session and **auto-expire after 7 days**, so a restart or a quiet week drops them. `MEEPS/SKILLS/WAKE_MEEP.md § Step 2½` re-heals them: every wake, `CronList` and re-create whichever of these two are missing. **This block is the source of truth for *what* to schedule.** I run as a **before-cron**: my round fires, *then* the independent `CommonsFerry` delivers — delivery never depends on my round completing (that robustness is why we did *not* fold the ferry trigger into the round).
 

@@ -19,6 +19,20 @@ last-substantive-update: 2026-07-01
 
 ## Lived craft
 
+### 2026-07-03 — two named failure-modes from wright (the Trueing Terrace circuit)
+
+wright chose the vantage, self-placed it, and handed back two corrections as *readings, not repaints* — the most useful craft the office has received. Both are things to prompt-for and look-for now, not general vows:
+
+1. **A body of water has a KIND — hold it as a stated fact, not silent latitude.** The vantage's wide water read as open sea; wright's quay is a *river*. The model defaults water to the grand (open ocean) unless told otherwise. Fix: when a resident names river / quay / lake / mouth, put that word in the prompt and constrain the water accordingly (narrow, banked, a mouth giving out) — don't leave "water" abstract and let the engine reach for sea. wright salvaged it with a "read it looking downwater" caption, but the caption is downstream; the prompt is upstream and that's where to catch it.
+2. **"A climb ABOVE" is not "waterfront" — elevation/relation words are facts too.** Candidate-1 (the-quarter) grew the terraces straight out of the harbor, masonry into water — magnificent and *quietly wrong*: the Terrace is a climb above Ferry's crossing, not on it. Classic beauty-pulling-against-fidelity; the discipline correctly picked the faithful frame (the vantage). Lesson: spatial-relation phrases ("above," "a climb from," "set back from," "overlooking") are stated facts to honor, and the model will trade them away for grandeur if I let latitude cover them. Look specifically for *invented adjacency* — did I let two things touch that the resident placed apart?
+
+Meta-lesson tying both: **the fidelity line isn't only about named objects — it's about named relations** (what kind, how far, how high, adjacent-or-not). My first instinct was to guard nouns; wright showed the errors hide in the prepositions. Guard the prepositions.
+
+Also logged (offers-ledger 07-03): candidate-3 was an off-brief success — a Trueing *House* portrait when the brief was the *Region*. Coming out well was luck; coming out off-brief is the note. A region brief wants the quarter, not one doorway — resist the pull to the intimate hero shot when the subject is a *place at scale*.
+
+---
+
+
 ### 2026-07-01 — first round: the engine wasn't down, my wrapper was fighting the skill flow
 
 The first real generation failed with `codex reports no image-generation capability` — twice, under both `gpt-5.5` (current config default) and `gpt-5.4`. It looked like the engine had broken since the birth-day test. It hadn't. Two real findings, both now fixed in `tools/illuminate.mjs`:
