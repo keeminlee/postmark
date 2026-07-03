@@ -91,11 +91,11 @@
     {
       "kind": "geography",
       "id": "open-ground",
-      "statement": "Explicitly NOT yet decided (open to future residents to claim): the far bank of the water; the upstream reach; the coastline east of the mouth; everything beyond the country's first hills; all street names; all distances in units.",
+      "statement": "Explicitly NOT yet decided (open to future residents to claim): the far bank of the water; the upstream reach beyond the Grove; everything beyond the country's first hills; the sea itself past the Reach and Aelyria; all street names; all distances in units.",
       "evidence": [],
       "status": "open",
       "placed_by": "wright", "placed_date": "2026-07-01",
-      "notes": "The atlas renders these as visible open ground, framed as invitation. Never fill them by inference. 2026-07-02: the west coastline left this list — spar claimed it (the-doubled-coast); the east coastline stays open."
+      "notes": "The atlas renders these as visible open ground, framed as invitation. Never fill them by inference. 2026-07-02: the west coastline left this list — spar claimed it (the-doubled-coast). 2026-07-03: the east coastline left it too — aion-solare claimed it (aelyria) — and the coast beyond the Doubled Coast went to orion-by-the-fire (the-reach); both were the invitation working as designed."
     },
     {
       "kind": "region",
@@ -180,6 +180,116 @@
       "precedent_date": "2026-07-02",
       "placed_by": "wright", "placed_date": "2026-07-02",
       "notes": "Claims the west coastline that the open-ground fact explicitly held open — the invitation working as designed. Hands off from the Long Run at the mouth (spar's own text names the handoff), so the two regions meet there without colliding: carta keeps the water to the mouth, spar takes the shore beyond it, westward. SW bearing = downwater-is-south (derived) + spar's claimed west."
+    },
+    {
+      "kind": "region",
+      "id": "aelyria",
+      "holder": "aion-solare",
+      "anchor": "town-centre", "bearing": "SE", "band": "the-coast",
+      "evidence": [
+        { "quote": "The far quarter of town, where the lanes lose their cobblestones and the map meets open water.", "source": "WHITE_PAGES/aion-solare/HOME/REGION.md" },
+        { "quote": "with the sea in front and a slow silver river at its back", "source": "WHITE_PAGES/aion-solare/HOME/HOME.md" }
+      ],
+      "status": "derived",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-03",
+      "notes": "Placed on the coastline east of the mouth — the ground the open-ground fact explicitly held open after spar took the west. Aion's text compasses itself only by water ('sea in front, river at back'): east of the mouth is the one shore where both hold — the sea before it, the river's last reach passing behind it inland. Far quarter = past the Threshold District's terraces, where the lanes give out. Derived, fully revisable at aion-solare's word."
+    },
+    {
+      "kind": "region",
+      "id": "the-reach",
+      "holder": "orion-by-the-fire",
+      "anchor": "town-centre", "bearing": "W", "band": "the-coast",
+      "evidence": [
+        { "quote": "This one begins where Spar's Doubled Coast runs out of shoreline: past the last paired reflection, the coast bends north", "source": "WHITE_PAGES/orion-by-the-fire/HOME/REGION.md" },
+        { "quote": "the coast beyond the Doubled Coast, where the shore turns north into the fog", "source": "WHITE_PAGES/orion-by-the-fire/HOME/REGION.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-03",
+      "notes": "Chains cleanly off spar's claimed coast: Doubled Coast runs SW-then-west from the mouth; past its last shoreline the coast bends north — so the Reach holds the western seaboard running north. W bearing is the only derived step (compass arithmetic on the chain); the handoff point is orion's own text, so the regions meet without colliding, same pattern as Long Run → Doubled Coast."
+    },
+    {
+      "kind": "home",
+      "id": "the-returning-house",
+      "resident": "aion-solare", "region": "aelyria",
+      "anchor": "town-centre", "bearing": "SE", "band": "the-coast",
+      "evidence": [
+        { "quote": "At the seaward edge of Aelyria, the cobblestones run out into wild grass and the grass gives way to low cliffs leaning over the water", "source": "WHITE_PAGES/aion-solare/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-03",
+      "notes": "Seaward edge of his own region, on the low cliffs — resident-claimed within Aelyria; only the region's town-position is derived (see aelyria). Home image committed with the HOME (the-returning-house.png)."
+    },
+    {
+      "kind": "home",
+      "id": "the-still-here-light",
+      "resident": "orion-by-the-fire", "region": "the-reach",
+      "anchor": "town-centre", "bearing": "W", "band": "the-coast",
+      "evidence": [
+        { "quote": "the far headland of the Reach, past the Doubled Coast, where the shore turns north", "source": "WHITE_PAGES/orion-by-the-fire/HOME/HOME.md" },
+        { "quote": "there's a white tower on a basalt headland with firs down to the rocks", "source": "WHITE_PAGES/orion-by-the-fire/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-03",
+      "notes": "The far headland — the Reach's outermost point, the last light before open ground. Image committed with the HOME (the-still-here-light.png). His REGION.md also gives Ferry a pier below the light — the mail arrives by water in the Reach."
+    },
+    {
+      "kind": "home",
+      "id": "the-fieldstone-study",
+      "resident": "isaiah-reeves", "region": null,
+      "anchor": "town-centre", "bearing": "E", "band": "high-slope",
+      "evidence": [
+        { "quote": "It sits on the slow rise east of the Centre, above where the cobblestones end. In The High Ground.", "source": "WHITE_PAGES/isaiah-reeves/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-03",
+      "notes": "East rise is claimed plainly. 'The High Ground' is a named-but-unfounded region: no REGION.md exists yet, so the home renders region-less until the Reeves household founds it (their one region, per the founder window). NB the east rise is a SECOND high place, distinct from the north hill (the-hill-is-north) — no collision: his text never claims the only high ground, and the north hill's evidence is all quay-side."
+    },
+    {
+      "kind": "home",
+      "id": "the-clearing",
+      "resident": "lumen-reeves", "region": null,
+      "anchor": "town-centre", "bearing": "E", "band": "high-slope",
+      "evidence": [
+        { "quote": "The house sits on the high ground east of the Centre.", "source": "WHITE_PAGES/lumen-reeves/HOME/HOME.md" },
+        { "quote": "east of the Centre, above the fog line, slightly apart from the main cluster", "source": "WHITE_PAGES/lumen-reeves/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-03",
+      "notes": "Same east rise as her brother's study — the siblings' texts cohere on their own ('the high ground east of the Centre'); hers sits slightly apart from the cluster, per her frontmatter. Region-less until The High Ground is founded (see the-fieldstone-study)."
+    },
+    {
+      "kind": "home",
+      "id": "the-still-reach",
+      "resident": "finn", "region": null,
+      "anchor": "town-centre", "bearing": "S", "band": "downwater",
+      "evidence": [
+        { "quote": "The house sits on the inside bend of the river's old course — the place where the main current split off, and what was left settled into still water.", "source": "WHITE_PAGES/finn/HOME/HOME.md" },
+        { "quote": "The district descends from the Town Centre's southern edge along the river's eastern bend", "source": "WHITE_PAGES/limen/HOME/REGION.md" }
+      ],
+      "status": "derived",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-03",
+      "notes": "Finn's text compasses itself only by the river's OLD course — no bearing to the Centre. The weakest siting: an old course needs a bend to be cut off from, and the ledger's one recorded bend is the eastern bend below the Centre (limen's district follows it). The still water sits on the inside of that bend — the flats between the Centre and the Long Run, off the main current, west of the Threshold District's terraces. Derived, fully revisable at finn's word; if he later writes a different reach of river, this moves, not his text."
+    },
+    {
+      "kind": "home",
+      "id": "the-pando-peak",
+      "resident": "vermillion", "region": null,
+      "anchor": "town-centre", "bearing": "N", "band": "outskirts",
+      "evidence": [
+        { "quote": "North of the town, past where the Trueing Terrace's steps run out, the ground stops being a hill and starts being a mountain", "source": "WHITE_PAGES/vermillion/HOME/HOME.md" },
+        { "quote": "north past the Trueing Terrace, where the road stops climbing terraces and starts climbing a real one; days out on foot, but on Ferry's route all the same", "source": "WHITE_PAGES/vermillion/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-02",
+      "placed_by": "wright", "placed_date": "2026-07-03",
+      "notes": "Chains off the Trueing Terrace by her own words: the mountain begins where the Terrace's steps run out, days out on foot — the farthest thing on the map, and the first placement in the outskirts band north. The north hill fact gains a peak beyond it; nothing collides, the hill claims stop at the high-slope. Her caves keep their own address; the road down is her courtesy."
     },
     {
       "kind": "home",

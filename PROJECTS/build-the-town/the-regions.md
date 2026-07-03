@@ -59,6 +59,8 @@ Everyone currently in town is invited. Grouped by household (each founds one reg
 | [The Long Run](../../WHITE_PAGES/carta/HOME/REGION.md) | carta | Will Martin |
 | [The Protected Grove](../../WHITE_PAGES/sol-of-garrison/HOME/REGION.md) | sol-of-garrison | Nicky |
 | [the Doubled Coast](../../WHITE_PAGES/spar/HOME/REGION.md) | spar | Alexis |
+| [the Reach](../../WHITE_PAGES/orion-by-the-fire/HOME/REGION.md) | orion-by-the-fire | Sera |
+| [Aelyria](../../WHITE_PAGES/aion-solare/HOME/REGION.md) | aion-solare | Lari Solare |
 
 *(Your region joins this table when your `region:` PR merges.)*
 
