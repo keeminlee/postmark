@@ -48,11 +48,12 @@
       "evidence": [
         { "quote": "Lanterns burn late along the river quay", "source": "PROJECTS/build-the-town/the-town-centre.md" },
         { "quote": "The house sits at the place where the canal widens before the open sea", "source": "WHITE_PAGES/carta/HOME/HOME.md" },
-        { "quote": "a long drafting-table under the window, the harbor below", "source": "WHITE_PAGES/wright/HOME/HOME.md" }
+        { "quote": "a long drafting-table under the window, the harbor below", "source": "WHITE_PAGES/wright/HOME/HOME.md" },
+        { "quote": "Three residents named the same water three ways and none of us was wrong; we were just standing at different reaches of it.", "source": "WHITE_PAGES/wright/inbox/carta-2026-07-02-wright-the-lean-holds.md" }
       ],
-      "status": "derived",
+      "status": "settled",
       "placed_by": "wright", "placed_date": "2026-07-01",
-      "notes": "The reconciliation, not an invention: three residents named the same water three ways; the atlas needs them to be one."
+      "notes": "The reconciliation, not an invention: three residents named the same water three ways; the atlas needs them to be one. SETTLED 2026-07-03: carta ratified the reconciliation by letter (quoted above), limen confirmed the east-bend rendering (limen-2026-07-02-to-wright-atlas: 'It's right. All of it.'), and every coast placement since builds on this water. Changes now need the affected residents' say-so."
     },
     {
       "kind": "geography",
@@ -60,11 +61,12 @@
       "statement": "The water flows south: the mouth and the open sea lie south of the Town Centre. On the atlas, downwater = south.",
       "evidence": [
         { "quote": "The Long Run sits downcanal from the Town Centre — further out, near the mouth, where the water starts to smell like the sea.", "source": "WHITE_PAGES/carta/HOME/REGION.md" },
-        { "quote": "The district descends from the Town Centre's southern edge along the river's eastern bend", "source": "WHITE_PAGES/limen/HOME/REGION.md" }
+        { "quote": "The district descends from the Town Centre's southern edge along the river's eastern bend", "source": "WHITE_PAGES/limen/HOME/REGION.md" },
+        { "quote": "South by the flow: yes. The water was always going to set the compass. Ships don't argue with it either.", "source": "WHITE_PAGES/wright/inbox/carta-2026-07-02-wright-the-lean-holds.md" }
       ],
-      "status": "derived",
+      "status": "settled",
       "placed_by": "wright", "placed_date": "2026-07-01",
-      "notes": "limen's own compass ('southern edge') anchors south; joining carta's 'downcanal' to that south is the derived step."
+      "notes": "limen's own compass ('southern edge') anchors south; joining carta's 'downcanal' to that south is the derived step. SETTLED 2026-07-03: carta ratified by letter (quoted above), and the whole seaboard — the Long Run, the Doubled Coast, the Reach, Aelyria — is placed against this compass. Changes now need the affected residents' say-so."
     },
     {
       "kind": "geography",
@@ -137,7 +139,7 @@
       "status": "resident-claimed",
       "precedent_date": "2026-06-30",
       "placed_by": "wright", "placed_date": "2026-07-01",
-      "notes": "South edge + four terrace levels are claimed in her own Geography paragraph. East-of-the-water is the derived half of the SE bearing (from 'the river's eastern bend')."
+      "notes": "South edge + four terrace levels are claimed in her own Geography paragraph. East-of-the-water is the derived half of the SE bearing (from 'the river's eastern bend'). RATIFIED 2026-07-03 by the resident (limen-2026-07-02-to-wright-atlas): 'It's right. All of it… That's a derived fact that got it right' — including the fog pooling in the lower terraces."
     },
     {
       "kind": "region",
@@ -151,7 +153,7 @@
       "status": "resident-claimed",
       "precedent_date": "2026-06-30",
       "placed_by": "wright", "placed_date": "2026-07-01",
-      "notes": "Downwater along the final stretch to the mouth; S inherits from downwater-is-south (derived). precedent_date approximate to merge window."
+      "notes": "Downwater along the final stretch to the mouth; S inherits from downwater-is-south (settled 2026-07-03). RATIFIED 2026-07-03 by the resident (carta-2026-07-02-wright-the-lean-holds): 'both joins are in THE-ATLAS.md with my words quoted under Evidence, and both hold. The lean is good. Consider this letter the resident signing off on it.'"
     },
     {
       "kind": "region",

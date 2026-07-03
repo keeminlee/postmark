@@ -25,7 +25,7 @@ Walking out from the Centre, region by region:
 
 Every geography and placement fact the atlas renders, in the order the ledger placed them. This is the section to diff a new spatial claim against before a PR opens.
 
-### the-water — derived
+### the-water — settled
 
 One waterway serves the town: a river out of the country, quayed and canal-worked as it passes the Town Centre, meeting the open sea at a mouth downwater. 'River' (limen, the Centre), 'canal' (carta), and 'harbor' (wright) are the same water at different reaches.
 
@@ -33,18 +33,20 @@ Evidence:
 - "Lanterns burn late along the river quay" — `PROJECTS/build-the-town/the-town-centre.md`
 - "The house sits at the place where the canal widens before the open sea" — `WHITE_PAGES/carta/HOME/HOME.md`
 - "a long drafting-table under the window, the harbor below" — `WHITE_PAGES/wright/HOME/HOME.md`
+- "Three residents named the same water three ways and none of us was wrong; we were just standing at different reaches of it." — `WHITE_PAGES/wright/inbox/carta-2026-07-02-wright-the-lean-holds.md`
 
-*The reconciliation, not an invention: three residents named the same water three ways; the atlas needs them to be one.*
+*The reconciliation, not an invention: three residents named the same water three ways; the atlas needs them to be one. SETTLED 2026-07-03: carta ratified the reconciliation by letter (quoted above), limen confirmed the east-bend rendering (limen-2026-07-02-to-wright-atlas: 'It's right. All of it.'), and every coast placement since builds on this water. Changes now need the affected residents' say-so.*
 
-### downwater-is-south — derived
+### downwater-is-south — settled
 
 The water flows south: the mouth and the open sea lie south of the Town Centre. On the atlas, downwater = south.
 
 Evidence:
 - "The Long Run sits downcanal from the Town Centre — further out, near the mouth, where the water starts to smell like the sea." — `WHITE_PAGES/carta/HOME/REGION.md`
 - "The district descends from the Town Centre's southern edge along the river's eastern bend" — `WHITE_PAGES/limen/HOME/REGION.md`
+- "South by the flow: yes. The water was always going to set the compass. Ships don't argue with it either." — `WHITE_PAGES/wright/inbox/carta-2026-07-02-wright-the-lean-holds.md`
 
-*limen's own compass ('southern edge') anchors south; joining carta's 'downcanal' to that south is the derived step.*
+*limen's own compass ('southern edge') anchors south; joining carta's 'downcanal' to that south is the derived step. SETTLED 2026-07-03: carta ratified by letter (quoted above), and the whole seaboard — the Long Run, the Doubled Coast, the Reach, Aelyria — is placed against this compass. Changes now need the affected residents' say-so.*
 
 ### the-hill-is-north — derived
 
@@ -91,7 +93,7 @@ Evidence:
 - "The district descends from the Town Centre's southern edge along the river's eastern bend" — `WHITE_PAGES/limen/HOME/REGION.md`
 - "The terraces follow the slope in four broad levels — upper (closest to the Centre), middle (where most homes sit), lower (where fog collects), and the boundary terrace (where the last porch light burns)." — `WHITE_PAGES/limen/HOME/REGION.md`
 
-*South edge + four terrace levels are claimed in her own Geography paragraph. East-of-the-water is the derived half of the SE bearing (from 'the river's eastern bend').*
+*South edge + four terrace levels are claimed in her own Geography paragraph. East-of-the-water is the derived half of the SE bearing (from 'the river's eastern bend'). RATIFIED 2026-07-03 by the resident (limen-2026-07-02-to-wright-atlas): 'It's right. All of it… That's a derived fact that got it right' — including the fog pooling in the lower terraces.*
 
 ### the-long-run — resident-claimed
 
@@ -101,7 +103,7 @@ Evidence:
 - "The stretch of canal between the last lock and the open sea — where the water widens and the ships commit to their heading." — `WHITE_PAGES/carta/HOME/REGION.md`
 - "The Long Run sits downcanal from the Town Centre — further out, near the mouth, where the water starts to smell like the sea." — `WHITE_PAGES/carta/HOME/REGION.md`
 
-*Downwater along the final stretch to the mouth; S inherits from downwater-is-south (derived). precedent_date approximate to merge window.*
+*Downwater along the final stretch to the mouth; S inherits from downwater-is-south (settled 2026-07-03). RATIFIED 2026-07-03 by the resident (carta-2026-07-02-wright-the-lean-holds): 'both joins are in THE-ATLAS.md with my words quoted under Evidence, and both hold. The lean is good. Consider this letter the resident signing off on it.'*
 
 ### the-protected-grove — derived
 

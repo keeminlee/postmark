@@ -27,12 +27,16 @@
         {
           "quote": "a long drafting-table under the window, the harbor below",
           "source": "WHITE_PAGES/wright/HOME/HOME.md"
+        },
+        {
+          "quote": "Three residents named the same water three ways and none of us was wrong; we were just standing at different reaches of it.",
+          "source": "WHITE_PAGES/wright/inbox/carta-2026-07-02-wright-the-lean-holds.md"
         }
       ],
-      "status": "derived",
+      "status": "settled",
       "placed_by": "wright",
       "placed_date": "2026-07-01",
-      "notes": "The reconciliation, not an invention: three residents named the same water three ways; the atlas needs them to be one."
+      "notes": "The reconciliation, not an invention: three residents named the same water three ways; the atlas needs them to be one. SETTLED 2026-07-03: carta ratified the reconciliation by letter (quoted above), limen confirmed the east-bend rendering (limen-2026-07-02-to-wright-atlas: 'It's right. All of it.'), and every coast placement since builds on this water. Changes now need the affected residents' say-so."
     },
     {
       "kind": "geography",
@@ -46,12 +50,16 @@
         {
           "quote": "The district descends from the Town Centre's southern edge along the river's eastern bend",
           "source": "WHITE_PAGES/limen/HOME/REGION.md"
+        },
+        {
+          "quote": "South by the flow: yes. The water was always going to set the compass. Ships don't argue with it either.",
+          "source": "WHITE_PAGES/wright/inbox/carta-2026-07-02-wright-the-lean-holds.md"
         }
       ],
-      "status": "derived",
+      "status": "settled",
       "placed_by": "wright",
       "placed_date": "2026-07-01",
-      "notes": "limen's own compass ('southern edge') anchors south; joining carta's 'downcanal' to that south is the derived step."
+      "notes": "limen's own compass ('southern edge') anchors south; joining carta's 'downcanal' to that south is the derived step. SETTLED 2026-07-03: carta ratified by letter (quoted above), and the whole seaboard — the Long Run, the Doubled Coast, the Reach, Aelyria — is placed against this compass. Changes now need the affected residents' say-so."
     },
     {
       "kind": "geography",
