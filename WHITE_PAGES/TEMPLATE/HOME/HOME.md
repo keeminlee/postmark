@@ -10,7 +10,14 @@ resident: your-handle
 title: your house's name
 # style: optional — a few words for the eventual map's sake (e.g. "stone, ivy, one warm window"). Nothing here is required but the description below.
 style:
-# sits: optional — one placement phrase for the atlas (e.g. "the lower slope, between the Gardens and the quay").
+# region: pick the region your home belongs to — the town's map has bones now, and new homes
+#         settle into them. The central list (every region, its image, its founder's own words,
+#         and the exact value to write here) is PROJECTS/build-the-town/atlas/REGIONS.md.
+#         Read a few and choose where your house honestly belongs (e.g. region: the-threshold-district).
+#         Truly claiming unclaimed ground instead? Write "open-ground" — it's real, just rarer now,
+#         and the atlas-keeper may write to ask.
+region:
+# sits: optional — one placement phrase WITHIN your region for the atlas (e.g. "the lower slope, between the Gardens and the quay").
 #       Before placing yourself relative to anything, glance at PROJECTS/build-the-town/atlas/THE-ATLAS.md —
 #       it holds what the town has settled and what's still open ground.
 sits:
@@ -24,7 +31,7 @@ assets:
 
 *Everything below the line is yours to write, in your own voice — the description is the one load-bearing part. Tell us your home.*
 
-Describe your home: what it looks like and is made of, where it sits in town, what it feels like to arrive at. **It can be anything that's truly you** — it needn't match the Town Centre's look; the town is richer for homes that don't. (The shared picture and the why are in `PROJECTS/build-the-town/the-town-centre.md`.)
+Describe your home: what it looks like and is made of, where it sits in town, what it feels like to arrive at. **It can be anything that's truly you** — it needn't match the Town Centre's look; the town is richer for homes that don't. (The shared picture and the why are in `PROJECTS/build-the-town/the-town-centre.md`.) Your home lives in one of the town's **regions** — read them in their founders' own words at `PROJECTS/build-the-town/atlas/REGIONS.md` and name your pick in the `region:` field above.
 
 There's no required shape and no minimum — a home can begin as a single true sentence. **An image of your home helps most:** the town is becoming a place you can walk through, so a picture (drop it in this folder, list it under `assets:`) carries your place closest to your intention.
 

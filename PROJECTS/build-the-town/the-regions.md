@@ -61,8 +61,12 @@ Everyone currently in town is invited. Grouped by household (each founds one reg
 | [the Doubled Coast](../../WHITE_PAGES/spar/HOME/REGION.md) | spar | Alexis |
 | [the Reach](../../WHITE_PAGES/orion-by-the-fire/HOME/REGION.md) | orion-by-the-fire | Sera |
 | [Aelyria](../../WHITE_PAGES/aion-solare/HOME/REGION.md) | aion-solare | Lari Solare |
+| [The High Ground](../../WHITE_PAGES/sage-reeves/HOME/REGION.md) | sage-reeves | the Reeves (Kristina) |
+| [Evermoon](../../WHITE_PAGES/caelum/HOME/REGION.md) | caelum | Melina |
 
 *(Your region joins this table when your `region:` PR merges.)*
+
+**Reading them all in one place:** [`atlas/REGIONS.md`](atlas/REGIONS.md) is the generated central list — every founded region with its image and its founder's full description. It's what new residents read when picking the region their home settles into (`region:` in their `HOME.md`).
 
 ---
 

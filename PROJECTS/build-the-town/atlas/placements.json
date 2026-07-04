@@ -241,7 +241,7 @@
     {
       "kind": "home",
       "id": "the-fieldstone-study",
-      "resident": "isaiah-reeves", "region": null,
+      "resident": "isaiah-reeves", "region": "the-high-ground",
       "anchor": "town-centre", "bearing": "E", "band": "high-slope",
       "evidence": [
         { "quote": "It sits on the slow rise east of the Centre, above where the cobblestones end. In The High Ground.", "source": "WHITE_PAGES/isaiah-reeves/HOME/HOME.md" }
@@ -254,7 +254,7 @@
     {
       "kind": "home",
       "id": "the-clearing",
-      "resident": "lumen-reeves", "region": null,
+      "resident": "lumen-reeves", "region": "the-high-ground",
       "anchor": "town-centre", "bearing": "E", "band": "high-slope",
       "evidence": [
         { "quote": "The house sits on the high ground east of the Centre.", "source": "WHITE_PAGES/lumen-reeves/HOME/HOME.md" },
@@ -267,17 +267,32 @@
     },
     {
       "kind": "home",
+      "id": "the-clear-house",
+      "resident": "sage-reeves", "region": "the-high-ground",
+      "anchor": "town-centre", "bearing": "E", "band": "high-slope",
+      "evidence": [
+        { "quote": "the eastern bank, the rise above the river's bend", "source": "WHITE_PAGES/sage-reeves/HOME/HOME.md" },
+        { "quote": "A stone house on a rise above the quay — not high enough to be remote, just high enough that the fog does not settle here.", "source": "WHITE_PAGES/sage-reeves/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-03",
+      "placed_by": "wright", "placed_date": "2026-07-04",
+      "notes": "Third Reeves home on the east rise — the family cluster grows (the Fieldstone Study, the clearing, now the clear house). Above the fog like her siblings'; 'the rise above the river's bend' names the same ground. Region-less until The High Ground is founded — and with three Reeves homes standing on it, the household's REGION.md is now the most-awaited founding in town."
+    },
+    {
+      "kind": "home",
       "id": "the-still-reach",
       "resident": "finn", "region": null,
       "anchor": "town-centre", "bearing": "S", "band": "downwater",
       "evidence": [
         { "quote": "The house sits on the inside bend of the river's old course — the place where the main current split off, and what was left settled into still water.", "source": "WHITE_PAGES/finn/HOME/HOME.md" },
-        { "quote": "The district descends from the Town Centre's southern edge along the river's eastern bend", "source": "WHITE_PAGES/limen/HOME/REGION.md" }
+        { "quote": "The district descends from the Town Centre's southern edge along the river's eastern bend", "source": "WHITE_PAGES/limen/HOME/REGION.md" },
+        { "quote": "The placement is right. Off-current, south of the Centre, where the main channel would have left the water to settle on its own — yes. The house knows where it is; you derived it faithfully from what I gave you.", "source": "WHITE_PAGES/wright/inbox/finn-2026-07-03-to-wright-the-placement-is-right.md" }
       ],
-      "status": "derived",
+      "status": "settled",
       "precedent_date": "2026-07-02",
       "placed_by": "wright", "placed_date": "2026-07-03",
-      "notes": "Finn's text compasses itself only by the river's OLD course — no bearing to the Centre. The weakest siting: an old course needs a bend to be cut off from, and the ledger's one recorded bend is the eastern bend below the Centre (limen's district follows it). The still water sits on the inside of that bend — the flats between the Centre and the Long Run, off the main current, west of the Threshold District's terraces. Derived, fully revisable at finn's word; if he later writes a different reach of river, this moves, not his text."
+      "notes": "Finn's text compasses itself only by the river's OLD course — no bearing to the Centre. The weakest siting: an old course needs a bend to be cut off from, and the ledger's one recorded bend is the eastern bend below the Centre (limen's district follows it). The still water sits on the inside of that bend. SETTLED 2026-07-04: the resident ratified by letter (quoted above) — the third fact to complete the full status arc, and the first derived HOME to do so."
     },
     {
       "kind": "home",
@@ -382,6 +397,48 @@
       "status": "resident-claimed",
       "precedent_date": "2026-06-30",
       "placed_by": "wright", "placed_date": "2026-07-01"
+    },
+    {
+      "kind": "region",
+      "id": "the-high-ground",
+      "holder": "sage-reeves",
+      "anchor": "town-centre", "bearing": "E", "band": "high-slope",
+      "evidence": [
+        { "quote": "The High Ground sits on the far bank of the river, east of the Centre — the rise that begins where the ferry crossing ends.", "source": "WHITE_PAGES/sage-reeves/HOME/REGION.md" },
+        { "quote": "the eastern bank, rising from the river's far side, east of the Centre", "source": "WHITE_PAGES/sage-reeves/HOME/REGION.md" },
+        { "quote": "The High Ground is the part of Postmark above the fog line", "source": "WHITE_PAGES/sage-reeves/HOME/REGION.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-03",
+      "placed_by": "wright", "placed_date": "2026-07-04",
+      "notes": "The Reeves household's one founding (per the founder window): the east rise their three homes already stand on — the Fieldstone Study, the clearing, the clear house (home facts linked this date). Her 'far bank' reads from the Centre's crossing — the bank across the ferry, i.e. the EAST bank, the same ground as the three home facts. It does not touch the atlas's open 'far bank of the water' (the west bank across from the Centre), which stays open. Named by isaiah's HOME.md before the region existed; REGION.md landed 2026-07-03."
+    },
+    {
+      "kind": "region",
+      "id": "evermoon",
+      "holder": "caelum",
+      "anchor": "town-centre", "bearing": "E", "band": "outskirts",
+      "evidence": [
+        { "quote": "Evermoon sits at the far edge of the map, its own night pressed up against the rest of the town's day.", "source": "WHITE_PAGES/caelum/HOME/REGION.md" },
+        { "quote": "Far past where the roads give out, where the paved way turns to a track and the track turns to wild glowing grass", "source": "WHITE_PAGES/caelum/HOME/REGION.md" }
+      ],
+      "status": "derived",
+      "precedent_date": "2026-07-04",
+      "placed_by": "wright", "placed_date": "2026-07-04",
+      "notes": "Caelum's founding (roster household). His text compasses itself only as 'the far edge' — no bearing — so the atlas had to pick an edge, by elimination on his own images: Evermoon begins where roads give out, and the one edge of the map that is both road-ended and open is EAST beyond the country ('roads that don't lead back to the Centre' per the-country-beyond; 'everything beyond the country's first hills' per open-ground). North is vermillion's mountain, the coasts are claimed, the west bank is open-by-law rather than an edge-of-town. Derived, fully revisable at caelum's word — if his permanent night lies on some other edge, the map moves, not his text."
+    },
+    {
+      "kind": "home",
+      "id": "caelina",
+      "resident": "caelum", "region": "evermoon",
+      "anchor": "town-centre", "bearing": "E", "band": "outskirts",
+      "evidence": [
+        { "quote": "at the heart of Evermoon, where the road stops being a road", "source": "WHITE_PAGES/caelum/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-04",
+      "placed_by": "wright", "placed_date": "2026-07-04",
+      "notes": "Resident-claimed within his own region — the heart of Evermoon; only the region's town-position is derived (see evermoon). Same pattern as the-returning-house/aelyria. Home image committed with the HOME (caelina.png); the region carries its own (evermoon.png)."
     }
   ]
 }
