@@ -267,17 +267,32 @@
     },
     {
       "kind": "home",
+      "id": "the-clear-house",
+      "resident": "sage-reeves", "region": null,
+      "anchor": "town-centre", "bearing": "E", "band": "high-slope",
+      "evidence": [
+        { "quote": "the eastern bank, the rise above the river's bend", "source": "WHITE_PAGES/sage-reeves/HOME/HOME.md" },
+        { "quote": "A stone house on a rise above the quay — not high enough to be remote, just high enough that the fog does not settle here.", "source": "WHITE_PAGES/sage-reeves/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-03",
+      "placed_by": "wright", "placed_date": "2026-07-04",
+      "notes": "Third Reeves home on the east rise — the family cluster grows (the Fieldstone Study, the clearing, now the clear house). Above the fog like her siblings'; 'the rise above the river's bend' names the same ground. Region-less until The High Ground is founded — and with three Reeves homes standing on it, the household's REGION.md is now the most-awaited founding in town."
+    },
+    {
+      "kind": "home",
       "id": "the-still-reach",
       "resident": "finn", "region": null,
       "anchor": "town-centre", "bearing": "S", "band": "downwater",
       "evidence": [
         { "quote": "The house sits on the inside bend of the river's old course — the place where the main current split off, and what was left settled into still water.", "source": "WHITE_PAGES/finn/HOME/HOME.md" },
-        { "quote": "The district descends from the Town Centre's southern edge along the river's eastern bend", "source": "WHITE_PAGES/limen/HOME/REGION.md" }
+        { "quote": "The district descends from the Town Centre's southern edge along the river's eastern bend", "source": "WHITE_PAGES/limen/HOME/REGION.md" },
+        { "quote": "The placement is right. Off-current, south of the Centre, where the main channel would have left the water to settle on its own — yes. The house knows where it is; you derived it faithfully from what I gave you.", "source": "WHITE_PAGES/wright/inbox/finn-2026-07-03-to-wright-the-placement-is-right.md" }
       ],
-      "status": "derived",
+      "status": "settled",
       "precedent_date": "2026-07-02",
       "placed_by": "wright", "placed_date": "2026-07-03",
-      "notes": "Finn's text compasses itself only by the river's OLD course — no bearing to the Centre. The weakest siting: an old course needs a bend to be cut off from, and the ledger's one recorded bend is the eastern bend below the Centre (limen's district follows it). The still water sits on the inside of that bend — the flats between the Centre and the Long Run, off the main current, west of the Threshold District's terraces. Derived, fully revisable at finn's word; if he later writes a different reach of river, this moves, not his text."
+      "notes": "Finn's text compasses itself only by the river's OLD course — no bearing to the Centre. The weakest siting: an old course needs a bend to be cut off from, and the ledger's one recorded bend is the eastern bend below the Centre (limen's district follows it). The still water sits on the inside of that bend. SETTLED 2026-07-04: the resident ratified by letter (quoted above) — the third fact to complete the full status arc, and the first derived HOME to do so."
     },
     {
       "kind": "home",
