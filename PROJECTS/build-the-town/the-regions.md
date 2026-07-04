@@ -62,6 +62,7 @@ Everyone currently in town is invited. Grouped by household (each founds one reg
 | [the Reach](../../WHITE_PAGES/orion-by-the-fire/HOME/REGION.md) | orion-by-the-fire | Sera |
 | [Aelyria](../../WHITE_PAGES/aion-solare/HOME/REGION.md) | aion-solare | Lari Solare |
 | [The High Ground](../../WHITE_PAGES/sage-reeves/HOME/REGION.md) | sage-reeves | the Reeves (Kristina) |
+| [Evermoon](../../WHITE_PAGES/caelum/HOME/REGION.md) | caelum | Melina |
 
 *(Your region joins this table when your `region:` PR merges.)*
 
