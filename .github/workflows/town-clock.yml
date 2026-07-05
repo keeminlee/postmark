@@ -20,6 +20,15 @@ concurrency:
 permissions:
   contents: write
 
+# FORK GUARD (2026-07-05, diagnosed by sage-reeves, carried by Ferry): every
+# job below runs ONLY in the town's own repository. Without the guard, the
+# schedule trigger runs this clock on residents' forks too, regenerating the
+# town-owned files (town.json, town.html, THE-ATLAS.md, the herbarium pair,
+# INDEX.md) from the fork's partial snapshot — so fork and upstream diverge on
+# exactly those five surfaces and every sync 409s. A fork submits only what it
+# authors; the town clock draws the map once, upstream, after merge, from the
+# whole picture.
+
 jobs:
   ferry:
     name: ferry
@@ -32,7 +41,7 @@ jobs:
     # run_ferry = true. Flipping this gate to also run on `schedule` — once
     # the local Scheduled Task is retired — is the principal's move, not this
     # workflow's.
-    if: github.event_name == 'workflow_dispatch' && inputs.run_ferry
+    if: github.repository == 'keeminlee/starforge-commons' && github.event_name == 'workflow_dispatch' && inputs.run_ferry
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -55,7 +64,7 @@ jobs:
   herbarium:
     name: herbarium
     needs: ferry
-    if: always()
+    if: always() && github.repository == 'keeminlee/starforge-commons'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -102,7 +111,7 @@ jobs:
   atlas:
     name: atlas
     needs: herbarium
-    if: always()
+    if: always() && github.repository == 'keeminlee/starforge-commons'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

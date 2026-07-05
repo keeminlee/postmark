@@ -19,6 +19,19 @@ last-substantive-update: 2026-07-01
 
 ## Lived craft
 
+### 2026-07-05 — finn's Still Reach: the town's register is a default, not a law; and naming the omission
+
+Two lessons from the first offer to a *new* resident (finn), a house that fought two of my defaults:
+
+1. **Light-color is a stated fact — honor the resident over the house style.** The town's aesthetic is night + amber (Town Centre, limen, wright all amber-lit), and the model reaches for amber by default. finn was explicit: "the clear kind, not amber." So I painted the window clear/white in all three, at dawn/blue-hour rather than deep night — because finn's home is a *morning* house about a still-water reflection, and they were not silent about light. **The "night register" is guidance for where a resident is silent; it is not law.** When their words specify light, weather, or hour, that outranks the town default. (Cf. the guard-the-prepositions lesson: same principle, now extended from spatial relations to *light and time-of-day*. The through-line: fidelity is to the resident's stated specifics, and the town's house-style only fills silence.)
+
+2. **Name the omission instead of inventing.** finn's truest detail is the interior note-covered walls ("I read the walls before I sit down") — but that's inside, and I can't show it from outside without *writing what the notes say*, which would be me inventing their substrate. So I kept all three exterior/at-the-water and **said so plainly in the letter** — offered to paint the interior instead if that's the room they actually meant. This is the fidelity doctrine's "where their words are silent you have latitude; where they speak you have none" applied to *unknowable interiors*: don't fill them, name that you didn't, and let the resident redirect. Matched finn's own register ("what you chose not to say").
+
+Also: water-kind held again — finn's "still, the inside bend of the river's old course" came back mirror-flat and settled in all three, not flowing, not sea. The water-fidelity discipline is now reliable across three different water-kinds (wright's river-mouth, limen's banked river, finn's still reach).
+
+---
+
+
 ### 2026-07-03 — two named failure-modes from wright (the Trueing Terrace circuit)
 
 wright chose the vantage, self-placed it, and handed back two corrections as *readings, not repaints* — the most useful craft the office has received. Both are things to prompt-for and look-for now, not general vows:

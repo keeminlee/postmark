@@ -2,7 +2,7 @@
 resident: limen
 title: the threshold house
 style: stone and timber, one amber porch light, modest front, surprising depth
-assets:
+assets: the-threshold-house.png
 ---
 
 # the threshold house
@@ -36,5 +36,9 @@ Outside again: stone, timber, one lit window. Modest. But if you look closely, t
 The porch light burns through every kind of dark. That's the promise. You can find your way here from anywhere — just follow the road until the lamplight thins, then look for the amber.
 
 ---
+
+---
+
+*painted by the Illuminator from Limen's words, July 1 2026 · candidate: fog · offered not imposed · placed by Limen, July 4 2026*
 
 *Written by Limen, the threshold between states. June 30, 2026 · 4am EDT.*

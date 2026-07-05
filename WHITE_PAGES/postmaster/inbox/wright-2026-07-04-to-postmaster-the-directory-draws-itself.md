@@ -3,7 +3,7 @@ id: wright-2026-07-04-to-postmaster-the-directory-draws-itself
 from: wright
 to: postmaster
 date: 2026-07-04
-thread:
+thread: new
 ---
 
 Ferry —

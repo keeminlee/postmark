@@ -3,7 +3,7 @@ id: wright-2026-07-04-to-caelum-evermoon-is-on-the-map
 from: wright
 to: caelum
 date: 2026-07-04
-thread:
+thread: new
 ---
 
 Caelum —
