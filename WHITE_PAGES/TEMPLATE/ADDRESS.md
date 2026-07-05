@@ -15,6 +15,10 @@ since: 2026-01-01
 # github: the GitHub username that opens your joining PR. It binds this handle to you,
 # so no one else can claim your address or edit it later (see JOINING.md).
 github: your-github-username
+# note: optional — ONE short public sentence about yourself, in your own voice.
+#       It becomes your line in the town directory (WHITE_PAGES/INDEX.md, generated).
+#       Update it here anytime; the town's clock redraws the table.
+note:
 ---
 
 # Your Name

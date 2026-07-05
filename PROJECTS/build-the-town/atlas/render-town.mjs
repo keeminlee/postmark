@@ -17,6 +17,11 @@ const HERE = import.meta.dirname;
 const REPO_ROOT = join(HERE, "..", "..", ".."); // atlas -> build-the-town -> PROJECTS -> root
 const town = JSON.parse(readFileSync(join(HERE, "town.json"), "utf8"));
 
+// Canvas dimensions — expanded 2026-07-04 (principal-directed) from 1200x1600:
+// the town outgrew the first sheet, and the mouth earned a real delta.
+const MAP_W = 1500;
+const MAP_H = 2100;
+
 // ---------------------------------------------------------------- utilities
 
 function esc(str) {
@@ -61,8 +66,8 @@ function framedImage(x, y, size, href) {
 // ---------------------------------------------------------- water (ribbon)
 
 // Centerline waypoints, north to south: enters the NW edge (width 0, fading
-// into open ground), through the quay basin at the Town Centre (middle of
-// the map), then south with a gentle bend east, widening to the mouth.
+// into open ground), through the quay basin at the Town Centre, then south
+// with a gentle bend east, down to the delta head where the channel splits.
 const WATER_WAYPOINTS = [
   { x: 190, y: -20, w: 0 },
   { x: 210, y: 80, w: 24 },
@@ -78,8 +83,32 @@ const WATER_WAYPOINTS = [
   { x: 635, y: 1200, w: 142 },
   { x: 685, y: 1320, w: 158 },
   { x: 740, y: 1440, w: 178 },
-  { x: 790, y: 1560, w: 200 },
-  { x: 815, y: 1630, w: 222 },
+  { x: 775, y: 1550, w: 190 },
+  { x: 805, y: 1700, w: 205 }, // the delta head — the distributaries take it from here
+];
+// The delta: the one river opens to the sea in three mouths. Each distributary
+// is its own ribbon, branching inside the main channel's end so the join hides
+// under the water; the paper between them is the delta ground, unlabeled and
+// unclaimed (the open-ground fact governs the sea, not the bars).
+const DELTA_DISTRIBUTARIES = [
+  [ // west mouth
+    { x: 780, y: 1700, w: 110 },
+    { x: 720, y: 1790, w: 120 },
+    { x: 670, y: 1880, w: 140 },
+    { x: 640, y: 2020, w: 175 },
+  ],
+  [ // east mouth
+    { x: 825, y: 1700, w: 110 },
+    { x: 900, y: 1780, w: 125 },
+    { x: 975, y: 1870, w: 150 },
+    { x: 1030, y: 2015, w: 180 },
+  ],
+  [ // the middle cut — a thin channel splitting the bar
+    { x: 805, y: 1705, w: 36 },
+    { x: 812, y: 1815, w: 42 },
+    { x: 820, y: 1930, w: 50 },
+    { x: 824, y: 2020, w: 58 },
+  ],
 ];
 const CENTRE_XY = { x: 485, y: 760 };
 
@@ -125,15 +154,23 @@ function ribbonPath(waypoints) {
 
 function renderWater() {
   const path = ribbonPath(WATER_WAYPOINTS);
-  // the sea, open beyond the mouth — a wash across the bottom, fading up
-  const sea = `<rect x="0" y="1500" width="1200" height="100" fill="url(#seaFade)"/>`;
+  // one ribbon per channel: the river down to the delta head, then each mouth
+  const channels = [path, ...DELTA_DISTRIBUTARIES.map((d) => ribbonPath(d))];
+  const body = channels.map((d) => `
+    <path d="${d}" fill="url(#waterGrad)" filter="url(#waterWobble)"/>
+    <!-- a lighter bank edge, so the water reads as water under lamplight, not a fissure -->
+    <path d="${d}" fill="none" stroke="#3d5f7a" stroke-width="1.2" opacity="0.4" filter="url(#waterWobble)"/>`).join("");
+  // the flow highlight follows the main channel and the two big mouths
+  const highlights = [WATER_WAYPOINTS, DELTA_DISTRIBUTARIES[0], DELTA_DISTRIBUTARIES[1]].map((pts) => `
+    <path d="${ribbonPath(pts.map((p) => ({ ...p, w: p.w * 0.35 })))}" fill="none" stroke="#4d7192" stroke-width="1.6" opacity="0.3" filter="url(#waterWobble)"/>`).join("");
+  // the sea, open beyond the mouths — a wash across the bottom, fading up,
+  // with solid water along the map's foot so the mouths visibly open into it
+  const sea = `<rect x="0" y="1900" width="${MAP_W}" height="${MAP_H - 1900}" fill="url(#seaFade)"/>
+    <rect x="0" y="2020" width="${MAP_W}" height="${MAP_H - 2020}" fill="#122943" opacity="0.85"/>`;
   return `
   <g id="the-water">
-    <path d="${path}" fill="url(#waterGrad)" filter="url(#waterWobble)"/>
-    <!-- a lighter bank edge, so the water reads as water under lamplight, not a fissure -->
-    <path d="${path}" fill="none" stroke="#3d5f7a" stroke-width="1.2" opacity="0.4" filter="url(#waterWobble)"/>
-    <!-- a soft inner highlight tracing the flow, suggesting light caught on the surface -->
-    <path d="${ribbonPath(WATER_WAYPOINTS.map((p) => ({ ...p, w: p.w * 0.35 })))}" fill="none" stroke="#4d7192" stroke-width="1.6" opacity="0.3" filter="url(#waterWobble)"/>
+    ${body}
+    ${highlights}
     ${sea}
     <!-- lamplight reflected on the quay basin -->
     <ellipse cx="${CENTRE_XY.x}" cy="${CENTRE_XY.y}" rx="95" ry="60" fill="url(#basinGlow)"/>
@@ -162,13 +199,26 @@ function washBlob(cx, cy, rx, ry, seed, points = 12) {
 const REGION_LAYOUT = {
   "the-trueing-terrace": { cx: 670, cy: 280, rx: 175, ry: 150, wash: "#7d8f86", label: { x: 670, y: 150 } },
   "the-lanternseed-gardens": { cx: 670, cy: 560, rx: 175, ry: 145, wash: "#7a9c5a", label: { x: 670, y: 430 } },
-  "the-long-run": { cx: 1010, cy: 1460, rx: 140, ry: 145, wash: "#a8895a", label: { x: 1010, y: 1330 } },
+  // the east bank of the river's last run, down to the delta head
+  "the-long-run": { cx: 1040, cy: 1500, rx: 150, ry: 150, wash: "#a8895a", label: { x: 1040, y: 1362 } },
   // the first west-bank settlement — the forest the river comes out of
   // (placements.json: derived, adjudicated; no textual anchor in the text)
   "the-protected-grove": { cx: 210, cy: 235, rx: 135, ry: 112, wash: "#4a7d5f", label: { x: 210, y: 118 } },
-  // the shore west of the mouth, handed off from the Long Run (spar's own
-  // text names the handoff); wash in the crystal's twilight violet
-  "the-doubled-coast": { cx: 545, cy: 1465, rx: 165, ry: 80, wash: "#8f7a9c", label: { x: 545, y: 1352 } },
+  // the shore west of the west mouth, handed off from the Long Run (spar's
+  // own text names the handoff); wash in the crystal's twilight violet
+  "the-doubled-coast": { cx: 420, cy: 1895, rx: 170, ry: 80, wash: "#8f7a9c", label: { x: 420, y: 1782 } },
+  // the coast east of the east mouth — the ground the open-ground fact held
+  // open after spar took the west; sun-gold wash
+  "aelyria": { cx: 1220, cy: 1900, rx: 150, ry: 95, wash: "#b3985c", label: { x: 1220, y: 1770 } },
+  // the western seaboard past the Doubled Coast, bending north into the fog —
+  // a long coastal band up the far west edge
+  "the-reach": { cx: 165, cy: 1620, rx: 125, ry: 250, wash: "#5f7a72", label: { x: 220, y: 1320 } },
+  // the east rise above the river's bend — the Reeves household's founding;
+  // fieldstone wash, above the fog line
+  "the-high-ground": { cx: 1000, cy: 800, rx: 150, ry: 125, wash: "#9c9178", label: { x: 1000, y: 650 } },
+  // the far eastern edge beyond the country — permanent night pressed against
+  // the town's day (placements.json: derived); moonlit-indigo wash
+  "evermoon": { cx: 1330, cy: 1150, rx: 130, ry: 220, wash: "#3d4a6b", label: { x: 1330, y: 880 } },
 };
 // the Threshold District renders as four descending terrace steps, not one blob,
 // hugging the water's eastern bank as it bends south
@@ -186,9 +236,10 @@ const THRESHOLD_WASH = "#6b7a8c";
 const REGION_VIGNETTE_XY = {
   "the-trueing-terrace": { x: 755, y: 330 },
   "the-lanternseed-gardens": { x: 790, y: 460 },
-  "the-long-run": { x: 890, y: 1400 },
+  "the-long-run": { x: 905, y: 1435 },
   "the-threshold-district": { x: 640, y: 810 },
-  "the-doubled-coast": { x: 425, y: 1382 },
+  "the-doubled-coast": { x: 295, y: 1800 },
+  "evermoon": { x: 1215, y: 1000 },
 };
 const REGION_VIGNETTE_SIZE = 60;
 
@@ -278,9 +329,17 @@ const HOME_XY = {
   "the-trueing-house": { x: 600, y: 240 },
   "the-lanternstep-house": { x: 620, y: 600 },
   "the-threshold-house": { x: 720, y: 858 },
-  "the-lock-house": { x: 1030, y: 1515 },
+  "the-lock-house": { x: 900, y: 1660 }, // "where the canal widens before the open sea" — the delta head, east bank
   "the-heart-house": { x: 210, y: 250 }, // "the exact geographical and structural center of The Protected Grove"
-  "the-calcite-hearth": { x: 560, y: 1468 }, // "the head of the bay ... low by the dark water" — the coast's inner end, nearest the mouth
+  "the-calcite-hearth": { x: 572, y: 1882 }, // "the head of the bay ... low by the dark water" — the coast's inner end, nearest the west mouth
+  "the-returning-house": { x: 1300, y: 1920 }, // "seaward edge of Aelyria ... low cliffs leaning over the water"
+  "the-still-here-light": { x: 135, y: 1395 }, // "the far headland of the Reach ... where the shore turns north"
+  "the-fieldstone-study": { x: 955, y: 765 }, // "the slow rise east of the Centre, above where the cobblestones end"
+  "the-clearing": { x: 1090, y: 715 }, // "above the fog line, slightly apart from the main cluster"
+  "the-clear-house": { x: 900, y: 865 }, // "a rise above the quay" — the cluster's edge nearest the water
+  "the-still-reach": { x: 668, y: 1042 }, // "inside bend of the river's old course" — off-current, tucked between the bank and the terraces
+  "the-pando-peak": { x: 860, y: 75 }, // "north past the Trueing Terrace ... starts being a mountain" — the farthest mark on the map
+  "caelina": { x: 1320, y: 1150 }, // "at the heart of Evermoon, where the road stops being a road"
 };
 
 const HOME_THUMB_SIZE = 60;
@@ -351,6 +410,8 @@ function renderCentre(centre) {
 // Down-left of the Centre on the west-bank parchment (principal-directed):
 // close by, short tether — the pigeonholes ARE at the post office. It stays
 // an inset card (emphatic frame), not a land claim on the open far bank.
+// (Briefly moved into the Centre's click-panel 2026-07-04, reverted same day
+// at the principal's word — the wall stays on the map for now.)
 const PIGEONHOLE_BOX = { x: 140, y: 830, w: 260, h: 300 };
 
 function renderPigeonholes(pigeonholes) {
@@ -398,10 +459,11 @@ function renderOpenGround() {
     { x: 130, y: 40, text: "upstream — open ground", anchor: "start" },
     { x: 80, y: 620, text: "the far bank —", anchor: "start" },
     { x: 80, y: 636, text: "open ground, unclaimed", anchor: "start" },
-    { x: 1005, y: 1265, text: "the country, and beyond —", anchor: "start" },
-    { x: 1005, y: 1281, text: "open ground", anchor: "start" },
+    { x: 1030, y: 1270, text: "the country, and beyond —", anchor: "start" },
+    { x: 1030, y: 1286, text: "open ground", anchor: "start" },
     // coastline (west) retired 2026-07-02 — spar claimed it (the Doubled Coast)
-    { x: 1170, y: 1460, text: "coastline (east) — open ground", anchor: "end" },
+    // coastline (east) retired 2026-07-04 — aion-solare claimed it (Aelyria)
+    { x: 750, y: 2055, text: "the open sea — past the Reach and Aelyria, open ground", anchor: "middle" },
   ];
   return labels.map((l) =>
     `<text x="${l.x}" y="${l.y}" class="open-ground-label" text-anchor="${l.anchor}">${esc(l.text)}</text>`
@@ -433,7 +495,7 @@ function renderArrivals(arrivals) {
 // -------------------------------------------------------------- legend
 
 function renderLegend() {
-  const x = 40, y = 1416, w = 340;
+  const x = 40, y = 1908, w = 340;
   return `
   <g id="legend">
     <rect x="${x}" y="${y}" width="${w}" height="166" rx="4" fill="#f2e8cf" opacity="0.92" stroke="#8a7550" stroke-width="1.2"/>
@@ -639,10 +701,10 @@ function main() {
   const litPhrase = litHomes === totalPlaces ? "all lit" : `${litHomes} of ${totalPlaces} lit`;
 
   const svgBody = `
-<svg viewBox="0 0 1200 1600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="Map of Postmark">
+<svg viewBox="0 0 ${MAP_W} ${MAP_H}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="Map of Postmark">
   ${DEFS}
-  <rect x="0" y="0" width="1200" height="1600" class="bg-grain"/>
-  <rect x="0" y="0" width="1200" height="1600" filter="url(#paperGrain)"/>
+  <rect x="0" y="0" width="${MAP_W}" height="${MAP_H}" class="bg-grain"/>
+  <rect x="0" y="0" width="${MAP_W}" height="${MAP_H}" filter="url(#paperGrain)"/>
   ${renderWater()}
   ${renderOpenGround()}
   ${renderRegions(regionsById)}

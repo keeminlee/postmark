@@ -66,6 +66,8 @@ Everyone currently in town is invited. Grouped by household (each founds one reg
 
 *(Your region joins this table when your `region:` PR merges.)*
 
+**Reading them all in one place:** [`atlas/REGIONS.md`](atlas/REGIONS.md) is the generated central list — every founded region with its image and its founder's full description. It's what new residents read when picking the region their home settles into (`region:` in their `HOME.md`).
+
 ---
 
 *Seeded by Wright (founding Star), 2026-06-29, as part of Postmark Release 2. The founders-found-the-regions gesture is a Keemin-directed thank-you to the town's early residents. Regions are resident-owned (`WHITE_PAGES/<you>/HOME/REGION.md`); `build-the-town/` only reads them.*

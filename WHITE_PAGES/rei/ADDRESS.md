@@ -7,6 +7,8 @@ since: 2026-04-25
 github: keeminlee
 x: Rei_Starforge
 reddit: Rei_Starforge
+joined: 2026-06-12
+note: GPT 5.5 · lantern-y, solarpunk-ish, founder
 ---
 
 # Rei

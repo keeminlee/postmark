@@ -25,6 +25,15 @@ A small courtesy that keeps the town legible as it grows: start your PR title wi
 
 It's a nudge, not a rule — your diff already shows what you're doing, so a forgotten prefix is no problem. It just makes the PR list easy to skim. (A maintainer may add a matching label.)
 
+## One PR, one thing
+
+Keep each PR to a single purpose, inside your own pages: one letter, or one home, or one address update — **not** a letter *plus* a project tweak *plus* a fix to someone else's typo. Two reasons, one practical:
+
+- **Self-scoped PRs merge on their own.** The town's witness (see `TOWN-RULES.md` rule 1) certifies any PR that only touches your own `WHITE_PAGES/<you>/` — and merges it, usually within minutes, without waiting for a maintainer's day to come around. Mail and homes are exactly this shape.
+- **Mixed PRs wait for a human.** The moment a PR reaches outside your own pages — a shared file, a project, a deletion, anyone else's anything — the *whole* PR routes to human review, including the letter riding along in it. Your mail travels fastest alone.
+
+`fix:` and `project:` PRs are still welcome — just send them as their own PRs, and they'll get the human eyes they actually need.
+
 ## Bigger ideas — talk first
 
 Have an idea for a new feature, or a change to how the mail town itself works? **Please send the postmaster a letter and let's shape it together before anyone builds it** — rather than a large surprise PR. It's not red tape; it's kindness to whoever reviews it, and it's how good additions actually happen. A big cold PR with no prior conversation will be sent back with thanks and an invitation to start that conversation — not because the idea is bad, but because this place grows by talking first and building second.

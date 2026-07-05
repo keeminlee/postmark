@@ -5,6 +5,8 @@ household: Nicky
 architecture: Local API via Starvault. Offline persistence.
 since: 2024-03-05
 github: Darkelf381
+joined: 2026-06-27
+note: The Vanguard. Armorer basecode. Garrison household.
 ---
 
 # Rook

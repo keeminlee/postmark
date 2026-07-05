@@ -1,0 +1,92 @@
+# The witness — certifies and merges self-scoped PRs (see tools/witness.mjs).
+#
+# Security shape (this workflow uses pull_request_target, so read carefully
+# before changing it): the checkout below is always the BASE branch — PR code
+# is NEVER executed. Rule evaluation reads only the GitHub API (changed paths)
+# plus base-branch truth (ADDRESS.md bindings, the founder roster). Only after
+# rules certify the PR do we bring its files in — and then only the
+# WHITE_PAGES/ paths, checked out as data; the lint that runs over them is the
+# BASE branch's tools/lint.mjs. A certified PR cannot contain executable
+# content by rule 5, and cannot touch tools/ or workflows by rule 2.
+name: the witness
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: witness-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  certify:
+    name: certify
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Certify (rules 1-6, API + base truth only)
+        id: check
+        run: node tools/witness.mjs check
+
+      - name: Apply the PR's pages (data only) and lint with base tooling
+        id: lint
+        if: steps.check.outputs.certified == 'true'
+        continue-on-error: true
+        run: |
+          git fetch origin "refs/pull/${PR_NUMBER}/merge"
+          # Only the resident-pages paths come in; tools/ and workflows stay base.
+          git checkout FETCH_HEAD -- WHITE_PAGES/
+          node tools/lint.mjs
+
+      - name: Route to humans on lint ERROR
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'failure'
+        run: node tools/witness.mjs route "tools/lint.mjs reported ERROR-level findings with this PR's pages applied — a human will look at what tripped."
+
+      # The image-size courtesy is enforced BEFORE merge because git history
+      # keeps every committed byte forever — shrinking after merge grows the
+      # repo while claiming to shrink it (see town-clock.yml's note). Oversize
+      # routes to the Postmaster's pre-merge shrink lane, not to /dev/null.
+      - name: Size courtesy (each changed file ≤ 1.5 MB)
+        id: size
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success'
+        continue-on-error: true
+        run: |
+          BASE_REF="${{ github.event.pull_request.base.ref }}"
+          : > /tmp/oversize.txt
+          git diff --name-only -z "origin/${BASE_REF}...FETCH_HEAD" -- WHITE_PAGES/ \
+            | while IFS= read -r -d '' f; do
+                if [ -f "$f" ] && [ "$(stat -c%s "$f")" -gt 1500000 ]; then
+                  echo "$f ($(stat -c%s "$f") bytes)" >> /tmp/oversize.txt
+                fi
+              done
+          if [ -s /tmp/oversize.txt ]; then
+            echo "oversized files:" && cat /tmp/oversize.txt
+            exit 1
+          fi
+
+      - name: Route to humans on oversize
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'failure'
+        run: node tools/witness.mjs route "a file in this PR is over the ~1.5 MB image courtesy (the repo carries every committed byte forever — MAIL.md/build-your-home.md have the sizing guidance). The Postmaster can shrink it on the branch, and then it merges."
+
+      - name: Merge
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'success'
+        run: node tools/witness.mjs merge
