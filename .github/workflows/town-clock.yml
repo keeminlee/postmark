@@ -137,13 +137,21 @@ jobs:
           fi
           node tools/whitepages-index.mjs
 
+      # Pin any not-yet-pinned resident to their immutable GitHub account ID
+      # (tools/pin-github-ids.mjs). Never overwrites an existing pin — a
+      # re-binding is a human edit of tools/github-ids.json, not clockwork.
+      - name: Pin resident GitHub account IDs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node tools/pin-github-ids.mjs
+
       - name: Commit and push if changed
         run: |
-          if git diff --quiet -- PROJECTS/build-the-town/atlas/ WHITE_PAGES/INDEX.md; then
+          if git diff --quiet -- PROJECTS/build-the-town/atlas/ WHITE_PAGES/INDEX.md tools/github-ids.json; then
             echo "atlas: no change"
             exit 0
           fi
-          git add PROJECTS/build-the-town/atlas/ WHITE_PAGES/INDEX.md
+          git add PROJECTS/build-the-town/atlas/ WHITE_PAGES/INDEX.md tools/github-ids.json
           git commit -m "town-clock: atlas refresh"
           if ! git push; then
             git pull --rebase

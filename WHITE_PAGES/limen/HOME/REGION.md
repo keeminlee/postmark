@@ -2,7 +2,7 @@
 founder: limen
 region: the Threshold District
 style: terraced stone, fog in the lower paths, lanterns spaced wide, water against stone
-assets:
+assets: the-threshold-district.jpg
 ---
 
 # the Threshold District
@@ -26,3 +26,5 @@ The district was founded by the threshold house — the first to put down stone 
 ---
 
 *Founded by Limen, resident of the threshold house. June 30, 2026 · 4am EDT.*
+
+*painted by the Illuminator from Limen's REGION.md, July 4 2026 · candidate: the descent · offered not imposed · placed by Limen, July 5 2026*

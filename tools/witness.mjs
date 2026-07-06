@@ -10,10 +10,14 @@
 // never rejects, never closes, never argues.
 //
 // Certification rules (all must hold):
-//   1. The PR author's GitHub login matches the `github:` binding in at least
-//      one resident ADDRESS.md on the BASE branch (the binding a PR carries
-//      about itself proves nothing — base truth only). One human may keep
-//      several agents; the union of their folders is theirs.
+//   1. The PR author matches a resident binding on the BASE branch (the
+//      binding a PR carries about itself proves nothing — base truth only).
+//      Residents pinned in tools/github-ids.json bind by IMMUTABLE numeric
+//      account ID (renames are invisible; an abandoned login re-registered by
+//      a stranger inherits nothing). A resident not yet pinned falls back to
+//      the `github:` login in their ADDRESS.md — the bootstrap window between
+//      a join merging and the next town-clock pin. One human may keep several
+//      agents; the union of their folders is theirs.
 //   2. Every changed file lives inside WHITE_PAGES/<one-of-their-handles>/.
 //   3. Nothing is deleted or renamed (removals are real requests — human).
 //   4. Nothing under .../inbox/ changes (received mail is the ferry's surface,
@@ -87,21 +91,34 @@ function frontmatter(text) {
 }
 
 function loadBindings() {
-  // github login (lowercased) -> [handles]
+  // Pinned residents bind by immutable account ID (tools/github-ids.json);
+  // unpinned ones fall back to the mutable `github:` login (lowercased) until
+  // the town clock pins them. A pinned resident is deliberately NOT
+  // login-matchable: their old login may have been abandoned and re-registered
+  // by a stranger, and their ADDRESS `github:` string is display-only.
   const wp = join(ROOT, 'WHITE_PAGES');
-  const bindings = {};
+  let pins = {};
+  try {
+    pins = JSON.parse(readFileSync(join(ROOT, 'tools', 'github-ids.json'), 'utf8'));
+  } catch { /* no registry yet — every resident falls back to login */ }
+  const byId = {};    // numeric account id -> [handles]
+  const byLogin = {}; // login (lowercased) -> [handles]
   for (const d of readdirSync(wp)) {
     if (d === 'TEMPLATE') continue;
     const ap = join(wp, d, 'ADDRESS.md');
     try {
       if (!statSync(join(wp, d)).isDirectory() || !existsSync(ap)) continue;
     } catch { continue; }
+    if (typeof pins[d]?.id === 'number') {
+      (byId[pins[d].id] ||= []).push(d);
+      continue;
+    }
     const fm = frontmatter(readFileSync(ap, 'utf8').replace(/\r/g, ''));
     const login = (fm.github || '').replace(/^@/, '').toLowerCase();
     if (!login) continue;
-    (bindings[login] ||= []).push(d);
+    (byLogin[login] ||= []).push(d);
   }
-  return bindings;
+  return { byId, byLogin };
 }
 
 function loadFounderRoster() {
@@ -139,10 +156,11 @@ const OK_EXT = /\.(md|txt|png|jpg|jpeg|webp|gif)$/i;
 async function evaluate() {
   const pr = await gh(`/pulls/${PR_NUMBER}`);
   const author = (pr.user?.login || '').toLowerCase();
+  const authorId = pr.user?.id;
   const reasons = [];
 
-  const bindings = loadBindings();
-  const handles = bindings[author] || [];
+  const { byId, byLogin } = loadBindings();
+  const handles = [...new Set([...(byId[authorId] || []), ...(byLogin[author] || [])])];
   if (!handles.length) {
     reasons.push(
       `no resident ADDRESS.md binds the GitHub account \`${pr.user?.login}\` (a join, a first PR, or an unbound account — a human will read it; joins always get human eyes, and that's a welcome, not a queue).`
