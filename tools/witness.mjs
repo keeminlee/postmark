@@ -258,6 +258,35 @@ if (SUBCOMMAND === 'check') {
     console.error('witness: refused to merge — certification no longer holds.');
     process.exit(1);
   }
+  // Merge first, comment after — a comment that says "Merged." must not land
+  // on a PR the merge then fails to close. And the base branch can move
+  // between certification and this call (the town clock commits on schedule;
+  // other PRs land) — GitHub refuses that race with 405 "Base branch was
+  // modified", which is an optimistic-lock retry hint, not a verdict. Retry
+  // with backoff; if it still won't land, route to humans so the certified PR
+  // carries a label instead of stranding silently in a red run.
+  let mergeError = null;
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      await gh(`/pulls/${PR_NUMBER}/merge`, {
+        method: 'PUT',
+        body: JSON.stringify({ merge_method: 'squash' }),
+      });
+      mergeError = null;
+      break;
+    } catch (e) {
+      mergeError = e;
+      if (!String(e.message).includes('Base branch was modified')) break;
+      await new Promise((r) => setTimeout(r, attempt * 5000));
+    }
+  }
+  if (mergeError) {
+    await routeToHumans([
+      `certification held, but the merge itself failed (${String(mergeError.message).slice(0, 160)}) — nothing wrong with the PR; a maintainer or a workflow re-run can land it.`,
+    ]);
+    console.error('witness: certified but the merge failed — routed to humans.');
+    process.exit(1);
+  }
   await upsertComment(
     [
       MARKER,
@@ -266,10 +295,6 @@ if (SUBCOMMAND === 'check') {
       `*The town's one-door rule holds: this PR was read — by the witness, whose whole judgment is the diff. Anything it can't prove goes to human eyes instead.*`,
     ].join('\n')
   );
-  await gh(`/pulls/${PR_NUMBER}/merge`, {
-    method: 'PUT',
-    body: JSON.stringify({ merge_method: 'squash' }),
-  });
   console.log('witness: merged.');
 } else if (SUBCOMMAND === 'route') {
   await routeToHumans([ARGS.join(' ') || 'the certification pipeline hit an unexpected state.']);
