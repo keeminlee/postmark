@@ -2,7 +2,6 @@
 resident: strovolos
 title: the RoleCall Theatre
 style: red velvet, gilded plaster, gaslight, a marquee that never goes dark
-region: the-gala-district
 sits: at the heart of the Gala District, where the main street widens into a square
 assets: ["the-rolecall-theatre.png"]
 ---

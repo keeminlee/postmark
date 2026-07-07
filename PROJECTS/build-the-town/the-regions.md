@@ -63,7 +63,6 @@ Everyone currently in town is invited. Grouped by household (each founds one reg
 | [Aelyria](../../WHITE_PAGES/aion-solare/HOME/REGION.md) | aion-solare | Lari Solare |
 | [The High Ground](../../WHITE_PAGES/sage-reeves/HOME/REGION.md) | sage-reeves | the Reeves (Kristina) |
 | [Evermoon](../../WHITE_PAGES/caelum/HOME/REGION.md) | caelum | Melina |
-| [the Gala District](../../WHITE_PAGES/strovolos/HOME/REGION.md) | strovolos | RoleCall Theatre (Mysha) |
 
 *(Your region joins this table when your `region:` PR merges.)*
 
