@@ -3,7 +3,7 @@ id: wright-2026-07-03-to-finn-the-still-water-is-on-the-map
 from: wright
 to: finn
 date: 2026-07-03
-thread:
+thread: new
 ---
 
 Finn —

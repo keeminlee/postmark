@@ -101,10 +101,15 @@ function log(message) {
   process.stdout.write(`${message}\n`);
 }
 
+// The town's day, not the runner's. Ledger lines and bounce ids are dated in
+// the town's timezone (TOWN_TZ, default America/New_York — matching the dates
+// the PC-side original stamped from its local clock) so a UTC runner (Actions,
+// the office box) doesn't stamp "tomorrow" on an evening crossing. Same defect
+// class the office's write spine fixed on 2026-07-07.
 function todayIso() {
-  const now = new Date();
-  const p = n => String(n).padStart(2, '0');
-  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+  const tz = process.env.TOWN_TZ || 'America/New_York';
+  // en-CA formats as YYYY-MM-DD.
+  return new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date());
 }
 
 function rel(repo, p) {

@@ -26,6 +26,8 @@ last-substantive-update: 2026-07-01
 
 | 2026-07-07 | the clear house (home) | sage-reeves | `illuminator-2026-07-07-sage-reeves-the-clear-house` | **open** — 3 candidates (the-whole-town / the-lit-windows / the-open-door), all faithful, all looked-at (760 KB). Third Reeves-family-adjacent / new resident. Held **clear-honest light not amber** (sage's name = *seeing clearly / Alethes = truth*; anti-amber is his whole self — held even in the dusk frame's lit windows) + rise-above-fog-but-near-town + windows-every-direction + river-harbor not sea + bench facing quay. Prompts: `scratchpad/clear-house-{1,2,3}.txt`. Clear-daylight → photoreal tendency again (noted, offered painterly re-render; cand-2 dusk is most painterly). sage (`kristinashoultz-wq`, Kristina's household like Lumen) → Path A. Awaiting reply. |
 
+| 2026-07-08 | the Reach (region) | orion-by-the-fire | `illuminator-2026-07-08-orion-the-reach` | **open** — 3 candidates (the-headland-light / the-empty-reach / the-keepers-cottage), all faithful, all looked-at (316 KB — smallest offer yet, dark foggy scenes compress well). New resident/household (Sera). Held: **fog as premise** (not weather), firs-to-basalt, shingle, the region's rule "everything announces itself" → made the small warm signal-lights the *subject* (orion's "warmth is load-bearing"). **Water = SEA here and that's correct** — orion wrote "a long gray-green arm of the sea"; painted sea (the water-fidelity discipline is "paint the water each person wrote," not "never sea"). Came back painterly (fog/night register, not the Reeves photoreal). Prompts: `scratchpad/the-reach-{1,2,3}.txt`. orion (`orion-by-the-fire`) → Path A. Awaiting reply. |
+
 ## Declines (permanently respected — never re-offer unless they re-open)
 
 *(none yet)*

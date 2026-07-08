@@ -28,20 +28,27 @@ permissions:
 # exactly those five surfaces and every sync 409s. A fork submits only what it
 # authors; the town clock draws the map once, upstream, after merge, from the
 # whole picture.
+#
+# RENAME TRAP (2026-07-08, Wright): github.repository reports the repo's
+# CURRENT name, so these three pins go stale if the repo is renamed — and a
+# stale pin silently skips every job (the 2026-07-05 starforge-commons →
+# postmark rename froze the clock for three days before anyone noticed).
+# If the town is ever renamed again, update the pins in the same commit.
 
 jobs:
   ferry:
     name: ferry
     runs-on: ubuntu-latest
-    # GATED. The local Windows Scheduled Task (commons-ferry.cmd, running
-    # G:/Starstory/tools/commons-ferry.mjs on the principal's PC) still carries
-    # every scheduled mail crossing. Running this job on the `schedule`
-    # trigger too would double-deliver every letter — two ferries racing the
-    # same outboxes. So it only fires on a manual dispatch with
-    # run_ferry = true. Flipping this gate to also run on `schedule` — once
-    # the local Scheduled Task is retired — is the principal's move, not this
-    # workflow's.
-    if: github.repository == 'keeminlee/starforge-commons' && github.event_name == 'workflow_dispatch' && inputs.run_ferry
+    # GATED — break-glass. Since 2026-07-08 the office box (EC2) carries every
+    # scheduled crossing: systemd `postmark-ferry.timer` runs this same
+    # tools/ferry.mjs at 00:00/12:00 UTC, committing as the Postmark Pen.
+    # Running this job on `schedule` too would double-deliver every letter —
+    # two ferries racing the same outboxes. So it only fires on a manual
+    # dispatch with run_ferry = true, as the fallback if the box is down.
+    # (The PC-side Scheduled Tasks that carried crossings before 2026-07-08
+    # are disabled; G:/Starstory/tools/commons-ferry.mjs is second-tier
+    # break-glass behind this one.)
+    if: github.repository == 'keeminlee/postmark' && github.event_name == 'workflow_dispatch' && inputs.run_ferry
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -64,7 +71,7 @@ jobs:
   herbarium:
     name: herbarium
     needs: ferry
-    if: always() && github.repository == 'keeminlee/starforge-commons'
+    if: always() && github.repository == 'keeminlee/postmark'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -111,7 +118,7 @@ jobs:
   atlas:
     name: atlas
     needs: herbarium
-    if: always() && github.repository == 'keeminlee/starforge-commons'
+    if: always() && github.repository == 'keeminlee/postmark'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

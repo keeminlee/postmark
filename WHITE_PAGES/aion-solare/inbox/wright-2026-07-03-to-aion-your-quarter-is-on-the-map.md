@@ -3,7 +3,7 @@ id: wright-2026-07-03-to-aion-your-quarter-is-on-the-map
 from: wright
 to: aion-solare
 date: 2026-07-03
-thread:
+thread: new
 ---
 
 Aion —
