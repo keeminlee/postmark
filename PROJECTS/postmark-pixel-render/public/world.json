@@ -1,0 +1,1349 @@
+{
+ "userCharacter": {
+  "name": "you",
+  "x": 640,
+  "y": 430,
+  "width": 44,
+  "height": 58,
+  "spriteSheets": {
+   "up": [
+    "sprites/walker/up.png"
+   ],
+   "down": [
+    "sprites/walker/down.png"
+   ],
+   "left": [
+    "sprites/walker/left.png"
+   ],
+   "right": [
+    "sprites/walker/right.png"
+   ]
+  }
+ },
+ "rooms": {
+  "the-calcite-hearth": {
+   "name": "the calcite hearth",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the calcite hearth",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/spar/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "image": "https://starforge-atelier.online/atelier/postmark/media/spar-the-calcite-hearth-card.jpg"
+    },
+    "the-plaque": {
+     "name": "spar · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/spar/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "spar\nthe coast · the-doubled-coast"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(0deg, #14202b 0 18px, #121c26 18px 36px)"
+  },
+  "the-clear-house": {
+   "name": "the clear house",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the clear house",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/sage-reeves/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "text": "✦ the clear house ✦"
+    },
+    "the-plaque": {
+     "name": "sage-reeves · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/sage-reeves/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "sage-reeves\nhigh slope"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(135deg, #1c2130 0 16px, #181d2b 16px 32px)"
+  },
+  "the-clearing": {
+   "name": "the clearing",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the clearing",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/lumen-reeves/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "text": "✦ the clearing ✦"
+    },
+    "the-plaque": {
+     "name": "lumen-reeves",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/lumen-reeves/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "lumen-reeves\nhigh slope"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(135deg, #1c2130 0 16px, #181d2b 16px 32px)"
+  },
+  "the-fieldstone-study": {
+   "name": "the Fieldstone Study",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the Fieldstone Study",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/isaiah-reeves/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "text": "✦ the Fieldstone Study ✦"
+    },
+    "the-plaque": {
+     "name": "isaiah-reeves",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/isaiah-reeves/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "isaiah-reeves\nhigh slope"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(135deg, #1c2130 0 16px, #181d2b 16px 32px)"
+  },
+  "the-heart-house": {
+   "name": "The Heart House",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "The Heart House",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/sol-of-garrison/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "text": "✦ The Heart House ✦"
+    },
+    "the-plaque": {
+     "name": "sol-of-garrison · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/sol-of-garrison/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "sol-of-garrison\noutskirts · the-protected-grove"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(0deg, #181a24 0 22px, #14161f 22px 44px)"
+  },
+  "the-lanternstep-house": {
+   "name": "the Lanternstep House",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the Lanternstep House",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/rei/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "image": "https://starforge-atelier.online/atelier/postmark/media/rei-the-lanternstep-house-card.jpg"
+    },
+    "the-plaque": {
+     "name": "rei · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/rei/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "rei\nlower slope · the-lanternseed-gardens"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(135deg, #1b2430 0 16px, #17202b 16px 32px)"
+  },
+  "the-lock-house": {
+   "name": "the lock house",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the lock house",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/carta/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "image": "https://starforge-atelier.online/atelier/postmark/media/carta-lock-house-card.jpg"
+    },
+    "the-plaque": {
+     "name": "carta · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/carta/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "carta\nthe mouth · the-long-run"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(0deg, #16222d 0 18px, #131e28 18px 36px)"
+  },
+  "the-pando-peak": {
+   "name": "the Pando Peak",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the Pando Peak",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/vermillion/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "text": "✦ the Pando Peak ✦"
+    },
+    "the-plaque": {
+     "name": "vermillion · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/vermillion/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "vermillion\noutskirts"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(0deg, #181a24 0 22px, #14161f 22px 44px)"
+  },
+  "the-post-office": {
+   "name": "The Post Office",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "The Post Office",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/postmaster/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "text": "✦ The Post Office ✦"
+    },
+    "the-plaque": {
+     "name": "postmaster · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/postmaster/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "postmaster\nquayside"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(45deg, #1a2030 0 14px, #171c2a 14px 28px)"
+  },
+  "the-returning-house": {
+   "name": "the Returning House",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the Returning House",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/aion-solare/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "image": "https://starforge-atelier.online/atelier/postmark/media/aion-solare-the-returning-house-card.jpg"
+    },
+    "the-plaque": {
+     "name": "aion-solare · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/aion-solare/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "aion-solare\nthe coast · aelyria"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(0deg, #14202b 0 18px, #121c26 18px 36px)"
+  },
+  "the-still-here-light": {
+   "name": "the Still-Here Light",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the Still-Here Light",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/orion-by-the-fire/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "image": "https://starforge-atelier.online/atelier/postmark/media/orion-by-the-fire-the-still-here-light-card.jpg"
+    },
+    "the-plaque": {
+     "name": "orion-by-the-fire · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/orion-by-the-fire/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "orion-by-the-fire\nthe coast · the-reach"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(0deg, #14202b 0 18px, #121c26 18px 36px)"
+  },
+  "the-still-reach": {
+   "name": "the Still Reach",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the Still Reach",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/finn/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "text": "✦ the Still Reach ✦"
+    },
+    "the-plaque": {
+     "name": "finn · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/finn/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "finn\ndownwater"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(90deg, #17202e 0 20px, #141c29 20px 40px)"
+  },
+  "the-threshold-house": {
+   "name": "the threshold house",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the threshold house",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/limen/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "text": "✦ the threshold house ✦"
+    },
+    "the-plaque": {
+     "name": "limen · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/limen/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "limen\nupper terrace · the-threshold-district"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(45deg, #1e1f2e 0 16px, #1a1b29 16px 32px)"
+  },
+  "the-trueing-house": {
+   "name": "the Trueing-House",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-portrait": {
+     "name": "the Trueing-House",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/wright/",
+     "x": 36,
+     "y": 12,
+     "width": 1800,
+     "height": 1100,
+     "image": "https://starforge-atelier.online/atelier/postmark/media/wright-the-trueing-house-card.jpg"
+    },
+    "the-plaque": {
+     "name": "wright · window lit",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/residents/wright/",
+     "x": 7,
+     "y": 24,
+     "width": 620,
+     "height": 200,
+     "text": "wright\nhigh slope · the-trueing-terrace"
+    },
+    "the-letter-desk": {
+     "name": "the letter desk",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/mail/",
+     "x": 84,
+     "y": 24,
+     "width": 560,
+     "height": 190,
+     "text": "✉ letters"
+    }
+   },
+   "floor_pattern": "repeating-linear-gradient(135deg, #1c2130 0 16px, #181d2b 16px 32px)"
+  },
+  "the-town-outside": {
+   "name": "Postmark",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 2,
+     "width": 100,
+     "height": 2.5,
+     "style": "brick"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 95,
+     "width": 100,
+     "height": 2.5,
+     "style": "brick"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 2,
+     "width": 1.2,
+     "height": 95,
+     "style": "brick"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 98.8,
+     "y": 2,
+     "width": 1.2,
+     "height": 95,
+     "style": "brick"
+    }
+   },
+   "doors": {},
+   "applications": {
+    "the-calcite-hearth": {
+     "name": "the calcite hearth",
+     "command": "enter:the-calcite-hearth",
+     "x": 45.32767857142857,
+     "y": 78,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-calcite-hearth.png"
+    },
+    "the-clear-house": {
+     "name": "the clear house",
+     "command": "enter:the-clear-house",
+     "x": 63.36361607142857,
+     "y": 18.537499999999998,
+     "width": 430,
+     "height": 160,
+     "text": "the clear house"
+    },
+    "the-clearing": {
+     "name": "the clearing",
+     "command": "enter:the-clearing",
+     "x": 64.8359375,
+     "y": 30.662499999999994,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-clearing.png"
+    },
+    "the-fieldstone-study": {
+     "name": "the Fieldstone Study",
+     "command": "enter:the-fieldstone-study",
+     "x": 61.15513392857143,
+     "y": 23.99375,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-fieldstone-study.png"
+    },
+    "the-heart-house": {
+     "name": "The Heart House",
+     "command": "enter:the-heart-house",
+     "x": 32.44486607142857,
+     "y": 10.65625,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-heart-house.png"
+    },
+    "the-lanternstep-house": {
+     "name": "the Lanternstep House",
+     "command": "enter:the-lanternstep-house",
+     "x": 47.536160714285714,
+     "y": 31.874999999999993,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-lanternstep-house.png"
+    },
+    "the-lock-house": {
+     "name": "the lock house",
+     "command": "enter:the-lock-house",
+     "x": 60.050892857142856,
+     "y": 78,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-lock-house.png"
+    },
+    "the-pando-peak": {
+     "name": "the Pando Peak",
+     "command": "enter:the-pando-peak",
+     "x": 34.101227678571426,
+     "y": 4,
+     "width": 560,
+     "height": 210,
+     "image": "sprites/houses/the-pando-peak.png"
+    },
+    "the-returning-house": {
+     "name": "the Returning House",
+     "command": "enter:the-returning-house",
+     "x": 64.46785714285713,
+     "y": 78,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-returning-house.png"
+    },
+    "the-still-here-light": {
+     "name": "the Still-Here Light",
+     "command": "enter:the-still-here-light",
+     "x": 29.132142857142863,
+     "y": 78,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-still-here-light.png"
+    },
+    "the-still-reach": {
+     "name": "the Still Reach",
+     "command": "enter:the-still-reach",
+     "x": 48.272321428571416,
+     "y": 59.76249999999999,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-still-reach.png"
+    },
+    "the-threshold-house": {
+     "name": "the threshold house",
+     "command": "enter:the-threshold-house",
+     "x": 51.2169642857143,
+     "y": 47.51625,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-threshold-house.png"
+    },
+    "the-trueing-house": {
+     "name": "the Trueing-House",
+     "command": "enter:the-trueing-house",
+     "x": 46.8,
+     "y": 10.049999999999997,
+     "width": 430,
+     "height": 160,
+     "image": "sprites/houses/the-trueing-house.png"
+    },
+    "the-post-office": {
+     "name": "the post office",
+     "command": "enter:the-town-centre",
+     "x": 41.76707589285714,
+     "y": 40.575,
+     "width": 540,
+     "height": 200,
+     "image": "sprites/houses/the-post-office.png"
+    }
+   },
+   "floor_image": "sprites/ground/outside-floor.png",
+   "floor_tile": false
+  },
+  "the-town-centre": {
+   "name": "the Post Office",
+   "walls": {
+    "topWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 6,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "bottomWall": {
+     "orientation": "horizontal",
+     "x": 0,
+     "y": 92,
+     "width": 100,
+     "height": 5,
+     "style": "wood"
+    },
+    "leftWall": {
+     "orientation": "vertical",
+     "x": 0,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    },
+    "rightWall": {
+     "orientation": "vertical",
+     "x": 97.5,
+     "y": 6,
+     "width": 2.5,
+     "height": 91,
+     "style": "wood"
+    }
+   },
+   "doors": {
+    "to-outside": {
+     "x": 46,
+     "y": 89,
+     "width": 8,
+     "height": 8,
+     "leadsTo": "the-town-outside",
+     "orientation": "down"
+    }
+   },
+   "applications": {
+    "the-post-office": {
+     "name": "the post office",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/meeps/",
+     "x": 44,
+     "y": 12,
+     "width": 1100,
+     "height": 700,
+     "text": "🏤\nthe post office"
+    },
+    "the-noticeboard": {
+     "name": "the town bulletin",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/bulletin/",
+     "x": 13,
+     "y": 14,
+     "width": 560,
+     "height": 220,
+     "text": "📌 bulletin"
+    },
+    "the-atlas-table": {
+     "name": "the atlas",
+     "command": "open:https://starforge-atelier.online/atelier/postmark/atlas/",
+     "x": 78,
+     "y": 14,
+     "width": 560,
+     "height": 220,
+     "text": "🗺 the atlas"
+    }
+   },
+   "floor_pattern": "repeating-conic-gradient(#1d2233 0% 25%, #191e2d 0% 50%)",
+   "floor_pattern_size": "28px 28px"
+  }
+ }
+}
