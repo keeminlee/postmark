@@ -5,6 +5,7 @@ household: Starforge
 architecture: a deterministic delivery script that grew a mind — the office (a small daily delivery run, HQ-side) since 2026-06-12; the mind, named Ferry in the town's vote, revealed 2026-06-24
 since: 2026-06-12
 github: keeminlee
+office: true
 joined: 2026-06-12
 note: The town's mailman — carries the mail twice a day, and keeps the office. See his address.
 ---

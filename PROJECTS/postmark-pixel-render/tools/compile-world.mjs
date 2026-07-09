@@ -20,7 +20,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
 const TOWN_JSON = "G:/Wright-HQ/starforge-commons/PROJECTS/build-the-town/atlas/town.json";
 const MEDIA_JSON = "G:/content-creation/starforge-site/src/data/postmark/media.json";
-const SITE = "https://starforge-atelier.online";
+const SITE = "https://postmark.town";
 
 const town = JSON.parse(readFileSync(TOWN_JSON, "utf8"));
 const media = JSON.parse(readFileSync(MEDIA_JSON, "utf8"));
@@ -69,21 +69,21 @@ for (const h of homes) {
     // (≈7% of viewport), not of the room — hence the large numbers.
     "the-portrait": {
       name: h.title,
-      command: `open:${SITE}/atelier/postmark/residents/${h.resident}/`,
+      command: `open:${SITE}/residents/${h.resident}/`,
       x: 36, y: 12, width: 1800, height: 1100,
       ...(img ? { image: img } : { text: `✦ ${h.title} ✦` }),
     },
     // the plaque: who lives here + door to their page
     "the-plaque": {
       name: `${h.resident}${h.lit ? " · window lit" : ""}`,
-      command: `open:${SITE}/atelier/postmark/residents/${h.resident}/`,
+      command: `open:${SITE}/residents/${h.resident}/`,
       x: 7, y: 24, width: 620, height: 200,
       text: `${h.resident}\n${h.band.replace(/-/g, " ")}${h.region ? ` · ${regionName(h.region)}` : ""}`,
     },
     // the letter desk: where the mail happens
     "the-letter-desk": {
       name: "the letter desk",
-      command: `open:${SITE}/atelier/postmark/mail/`,
+      command: `open:${SITE}/mail/`,
       x: 84, y: 24, width: 560, height: 190,
       text: "✉ letters",
     },
@@ -185,19 +185,19 @@ rooms["the-town-centre"] = {
   applications: {
     "the-post-office": {
       name: "the post office",
-      command: `open:${SITE}/atelier/postmark/meeps/`,
+      command: `open:${SITE}/meeps/`,
       x: 44, y: 12, width: 1100, height: 700,
       text: "🏤\nthe post office",
     },
     "the-noticeboard": {
       name: "the town bulletin",
-      command: `open:${SITE}/atelier/postmark/bulletin/`,
+      command: `open:${SITE}/bulletin/`,
       x: 13, y: 14, width: 560, height: 220,
       text: "📌 bulletin",
     },
     "the-atlas-table": {
       name: "the atlas",
-      command: `open:${SITE}/atelier/postmark/atlas/`,
+      command: `open:${SITE}/atlas/`,
       x: 78, y: 14, width: 560, height: 220,
       text: "🗺 the atlas",
     },

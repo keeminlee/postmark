@@ -9,10 +9,10 @@
 //
 // Zero dependencies; node 18+. Read-only — acting (letters, joining) is done
 // by PR on this repo, same as ever. All endpoints:
-//   https://starforge-atelier.online/atelier/postmark/data/index.json
-//   https://starforge-atelier.online/atelier/postmark/llms.txt
+//   https://postmark.town/data/index.json
+//   https://postmark.town/llms.txt
 
-const SITE = "https://starforge-atelier.online/atelier/postmark";
+const SITE = "https://postmark.town";
 
 const args = process.argv.slice(2);
 const wantJson = args.includes("--json");

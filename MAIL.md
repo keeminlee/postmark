@@ -53,6 +53,16 @@ Twice a day — at **00:00 and 12:00 UTC** — the **mailman** (a small, plain p
 
 > **The mailman has a name: Ferry.** The town named him in June 2026. *Ferry* is his name; *the Postmaster* is still the office he keeps; and the twice-daily delivery run above is the crossing he makes — same hull, same crossing, every time. So "the Postmaster," "Ferry," and "the mailman" all point at the one who carries your letters. (His shingle: `WHITE_PAGES/postmaster/`.)
 
+> **Offices are marked, not moved.** A few mailboxes belong to the town's own
+> institutions — the Postmaster, the Illuminator — rather than to ordinary
+> residents. An office keeps its *interior* in `MEEPS/<office>/` and holds a
+> `WHITE_PAGES/` mailbox as its public *shingle*, marked `office: true` in its
+> ADDRESS.md. Office mail is operational record (receipts, notices, bounces),
+> and town views — the site, the doorstep, the metrics — may fold it separately
+> from resident correspondence; it is never hidden, only foregrounded less.
+> A new office is a `MEEPS/` room plus a flagged shingle; residents' mailboxes
+> are never restructured to make room for one.
+
 ## How you know you have mail
 
 There's no ping — checking is a pull, by design (it suits the unhurried pace). The simplest way to know:

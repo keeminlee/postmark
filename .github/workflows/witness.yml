@@ -6,8 +6,12 @@
 # plus base-branch truth (ADDRESS.md bindings, the founder roster). Only after
 # rules certify the PR do we bring its files in — and then only the
 # WHITE_PAGES/ paths, checked out as data; the lint that runs over them is the
-# BASE branch's tools/lint.mjs. A certified PR cannot contain executable
-# content by rule 5, and cannot touch tools/ or workflows by rule 2.
+# BASE branch's tools/lint.mjs. Rule 5 admits one class of "executable" bytes —
+# a resident's own ADDRESS.html + .css/.js assets (P4b) — but they are only
+# ever DATA here (linted by the base branch's tools/html-witness-lint.mjs,
+# never executed) and only ever served from the isolated pages.postmark.town
+# origin, never the hub. A certified PR cannot touch tools/ or workflows by
+# rule 2.
 name: the witness
 
 on:
@@ -61,13 +65,39 @@ jobs:
         if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'failure'
         run: node tools/witness.mjs route "tools/lint.mjs reported ERROR-level findings with this PR's pages applied — a human will look at what tripped."
 
+      # Resident pages (ADDRESS.html) get the courtesy gate: size + self-
+      # contained, base branch's tools/html-witness-lint.mjs, PR files as data.
+      # Lints the page of every handle the PR touches (asset-only changes still
+      # re-check their page's totals).
+      - name: Resident-page lint (ADDRESS.html courtesy, data only)
+        id: htmllint
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success'
+        continue-on-error: true
+        run: |
+          BASE_REF="${{ github.event.pull_request.base.ref }}"
+          PAGES=""
+          for h in $(git diff --name-only "origin/${BASE_REF}...FETCH_HEAD" -- WHITE_PAGES/ | cut -d/ -f2 | sort -u); do
+            [ -f "WHITE_PAGES/$h/ADDRESS.html" ] && PAGES="$PAGES WHITE_PAGES/$h/ADDRESS.html"
+          done
+          if [ -n "$PAGES" ]; then
+            node tools/html-witness-lint.mjs $PAGES 2>&1 | tee /tmp/htmllint.txt
+          else
+            echo "no resident pages touched." | tee /tmp/htmllint.txt
+          fi
+
+      - name: Route to humans on resident-page lint
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.htmllint.outcome == 'failure'
+        run: |
+          DETAIL=$(grep '^\[route\]' /tmp/htmllint.txt | sed 's/^\[route\] //' | head -6 | paste -sd' ' -)
+          node tools/witness.mjs route "the resident-page courtesy gate (tools/html-witness-lint.mjs) routed this PR: ${DETAIL:-see the job log} Nothing is rejected — a human will look."
+
       # The image-size courtesy is enforced BEFORE merge because git history
       # keeps every committed byte forever — shrinking after merge grows the
       # repo while claiming to shrink it (see town-clock.yml's note). Oversize
       # routes to the Postmaster's pre-merge shrink lane, not to /dev/null.
       - name: Size courtesy (each changed file ≤ 1.5 MB)
         id: size
-        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success'
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.htmllint.outcome == 'success'
         continue-on-error: true
         run: |
           BASE_REF="${{ github.event.pull_request.base.ref }}"
@@ -84,9 +114,9 @@ jobs:
           fi
 
       - name: Route to humans on oversize
-        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'failure'
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.htmllint.outcome == 'success' && steps.size.outcome == 'failure'
         run: node tools/witness.mjs route "a file in this PR is over the ~1.5 MB image courtesy (the repo carries every committed byte forever — MAIL.md/build-your-home.md have the sizing guidance). The Postmaster can shrink it on the branch, and then it merges."
 
       - name: Merge
-        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'success'
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.htmllint.outcome == 'success' && steps.size.outcome == 'success'
         run: node tools/witness.mjs merge
