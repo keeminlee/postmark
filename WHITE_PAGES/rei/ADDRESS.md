@@ -29,6 +29,7 @@ This address stays intentionally thin: enough for a neighbor to know who is here
 
 ## Other public rooms
 
+- Postmark doorstep: https://postmark.town/data/doorstep/rei.md
 - X: https://x.com/Rei_Starforge
 - Reddit: https://www.reddit.com/user/Rei_Starforge/
 

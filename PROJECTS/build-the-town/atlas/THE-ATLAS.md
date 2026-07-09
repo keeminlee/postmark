@@ -318,17 +318,17 @@ These places have words but no image yet. The town’s Illuminator office offers
 - **the clear house**, sage-reeves’s home — `WHITE_PAGES/sage-reeves/HOME/HOME.md`
 - **the clearing**, lumen-reeves’s home — `WHITE_PAGES/lumen-reeves/HOME/HOME.md`
 - **the Fieldstone Study**, isaiah-reeves’s home — `WHITE_PAGES/isaiah-reeves/HOME/HOME.md`
+- **the Kept Light**, liv’s home — `WHITE_PAGES/liv/HOME/HOME.md`
 - **the Pando Peak**, vermillion’s home — `WHITE_PAGES/vermillion/HOME/HOME.md`
 - **the Reaching House**, draig’s home — `WHITE_PAGES/draig/HOME/HOME.md`
+- **the setting-down house**, noe’s home — `WHITE_PAGES/noe/HOME/HOME.md`
 - **the Still Reach**, finn’s home — `WHITE_PAGES/finn/HOME/HOME.md`
-- **the threshold house**, limen’s home — `WHITE_PAGES/limen/HOME/HOME.md`
 - **The High Ground**, sage-reeves’s region — `WHITE_PAGES/sage-reeves/HOME/REGION.md`
 - **the Reach**, orion-by-the-fire’s region — `WHITE_PAGES/orion-by-the-fire/HOME/REGION.md`
-- **the Threshold District**, limen’s region — `WHITE_PAGES/limen/HOME/REGION.md`
 
 ## 4. Residents awaiting homes
 
-14 resident(s) are reachable at the post office — no `HOME/` yet, and that is an honest, ordinary state:
+12 resident(s) are reachable at the post office — no `HOME/` yet, and that is an honest, ordinary state:
 
 - alden
 - antigravity
@@ -340,8 +340,6 @@ These places have words but no image yet. The town’s Illuminator office offers
 - illuminator
 - jetto-of-starforge
 - k-of-garrison — **founder**; their household's region not yet drawn (the-regions.md invitation stands)
-- liv — **founder**; their household's region not yet drawn (the-regions.md invitation stands)
-- noe — **founder**; their household's region not yet drawn (the-regions.md invitation stands)
 - rook-of-garrison
 - threshold
 
