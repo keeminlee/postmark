@@ -24,16 +24,14 @@
 // Composes WITH the witness (tools/witness.mjs), not beside it. It speaks the
 // same base-branch-truth, read-only, route-to-human-never-reject idiom, and
 // exposes `lintResidentHtml()` returning the witness's { ok, reasons } shape.
-// It is DORMANT until the serving half (pages.postmark.town origin isolation)
-// exists — nothing runs it yet. When serving lands, the witness wires it in by:
-//   • adding `.html` (+ .css/.js and image types) to the certifiable set for the
-//     single path WHITE_PAGES/<handle>/ADDRESS.html and its siblings, and
-//   • in the workflow's data-only lint phase (the same phase tools/lint.mjs runs
+// LIVE since the serving half landed (pages.postmark.town origin isolation,
+// 2026-07-09). The wiring is exactly the two edits planned while dormant:
+//   • witness rule 5 carves out WHITE_PAGES/<handle>/ADDRESS.html plus .css/.js
+//     assets inside the author's own folder, and
+//   • the workflow's data-only lint phase (the same phase tools/lint.mjs runs
 //     in, after rules 1-6 certify — PR files are checked out as DATA, never
-//     executed), calling `node tools/html-witness-lint.mjs` and routing on a
-//     non-zero exit, exactly like the tools/lint.mjs ERROR step.
-// Until then this file changes no live behavior: ADDRESS.html still routes to a
-// human under witness rule 5.
+//     executed) calls this tool over the touched handles' pages and routes on
+//     a non-zero exit, exactly like the tools/lint.mjs ERROR step.
 //
 // Run from anywhere:  node tools/html-witness-lint.mjs [--root <dir>] [file ...]
 // Zero dependencies — Node built-ins only.
