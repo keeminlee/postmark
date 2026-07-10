@@ -196,8 +196,9 @@ const MUSHROOM_RARE = ["#e0524f", "#e0b23f"];   // red, gold
 function glowMushroom(x, y, color, scale) {
   const capY = -3.2 * scale;
   return `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)})">` +
-    `<circle cx="0" cy="${capY.toFixed(1)}" r="${(4.5 * scale).toFixed(1)}" fill="${color}" opacity="0.22"/>` +
-    `<line x1="0" y1="0" x2="0" y2="${capY.toFixed(1)}" stroke="#4a3d2f" stroke-width="${(0.7 * scale).toFixed(1)}"/>` +
+    `<circle cx="0" cy="${capY.toFixed(1)}" r="${(6.5 * scale).toFixed(1)}" fill="${color}" opacity="0.18"/>` +
+    `<circle cx="0" cy="${capY.toFixed(1)}" r="${(4.2 * scale).toFixed(1)}" fill="${color}" opacity="0.3"/>` +
+    `<line x1="0" y1="0" x2="0" y2="${capY.toFixed(1)}" stroke="#4a3d2f" stroke-width="${(0.9 * scale).toFixed(1)}"/>` +
     `<ellipse cx="0" cy="${capY.toFixed(1)}" rx="${(2.3 * scale).toFixed(1)}" ry="${(1.5 * scale).toFixed(1)}" fill="${color}" opacity="0.95"/>` +
     `<ellipse cx="0" cy="${capY.toFixed(1)}" rx="${(0.9 * scale).toFixed(1)}" ry="${(0.6 * scale).toFixed(1)}" fill="#ffffff" opacity="0.5"/>` +
     `</g>`;
@@ -207,20 +208,20 @@ function glowMushroom(x, y, color, scale) {
 // or HOME names mushrooms/fungus growing where they live — vermillion's Pando Peak caves).
 // placed pre-transform near the turtle's origin (0,0), same trick witheredBud uses, so
 // the cluster sits at the base of the trunk regardless of how tall the specimen grew.
-function addMushrooms(svg, handle, count = 5) {
+function addMushrooms(svg, handle, count = 8) {
   let h = hash(handle + "fungus");
   const rareSlot = h % count; // exactly one red-or-gold cap per cluster; the rest are blue/green
   let cluster = "";
   for (let i = 0; i < count; i++) {
     h = (Math.imul(h ^ i, 16777619)) >>> 0;
-    const x = ((h % 2000) / 1000 - 1) * 13;
+    const x = ((h % 2000) / 1000 - 1) * 17;
     h = (Math.imul(h ^ (i + 91), 16777619)) >>> 0;
-    const y = (h % 400) / 1000 * 2.5;
+    const y = (h % 400) / 1000 * 3;
     h = (Math.imul(h ^ (i + 47), 16777619)) >>> 0;
     const palette = i === rareSlot ? MUSHROOM_RARE : MUSHROOM_MAJOR;
     const color = palette[h % palette.length];
     h = (Math.imul(h ^ (i + 13), 16777619)) >>> 0;
-    const scale = 0.7 + (h % 500) / 1000;
+    const scale = 1.5 + (h % 700) / 1000; // notably larger than the first pass — reads as a real colony, not a couple of dots
     cluster += glowMushroom(x, y, color, scale);
   }
   return svg.replace(/\n  <\/g>\n<\/svg>$/, `\n  ${cluster}\n  </g>\n</svg>`);
