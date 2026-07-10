@@ -91,6 +91,12 @@ const specimens = residents.map((handle) => {
   let fm = {}, body = "";
   if (existsSync(addrPath)) ({ fm, body } = parseFrontmatter(readFileSync(addrPath, "utf8")));
 
+  // a resident's HOME.md (if they've written one) also counts toward flora flags below —
+  // Vermillion's mushrooms, for instance, live in HOME.md, not ADDRESS.md.
+  const homePath = join(TOWN, handle, "HOME", "HOME.md");
+  let homeBody = "";
+  if (existsSync(homePath)) ({ body: homeBody } = parseFrontmatter(readFileSync(homePath, "utf8")));
+
   const sent = letters.filter((l) => l.from === handle);
   const received = letters.filter((l) => l.to.includes(handle));
   const involved = letters.filter((l) => l.from === handle || l.to.includes(handle));
@@ -116,6 +122,7 @@ const specimens = residents.map((handle) => {
     github: fm.github || null,
     blurb: blurbOf(body),
     hasFig: /\bfig\b/i.test(body), // a literal fig in their ADDRESS -> figs in the canopy (aion's Jonah)
+    hasFungus: /\b(mushroom|fungus|fungi)\b/i.test(body + "\n" + homeBody), // bioluminescent fungus named in ADDRESS or HOME -> glowing mushrooms at the root (vermillion's Pando Peak)
     lettersSent: sent.length,
     lettersReceived: received.length,
     threads: Object.keys(threadDepth).length,
