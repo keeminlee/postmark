@@ -18,9 +18,19 @@ import { ATLAS_XY, CENTRE_XY, projectPct } from "./geometry.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
+const WHITE_PAGES = join(ROOT, "..", "..", "WHITE_PAGES");
 const TOWN_JSON = "G:/Wright-HQ/starforge-commons/PROJECTS/build-the-town/atlas/town.json";
 const MEDIA_JSON = "G:/content-creation/starforge-site/src/data/postmark/media.json";
 const SITE = "https://postmark.town";
+
+// a resident's room.json may use {SITE} inside command/image — expand to host.
+function withSite(app) {
+  const sub = (s) => (typeof s === "string" ? s.replaceAll("{SITE}", SITE) : s);
+  const out = { ...app };
+  if (out.command) out.command = sub(out.command);
+  if (out.image) out.image = sub(out.image);
+  return out;
+}
 
 const town = JSON.parse(readFileSync(TOWN_JSON, "utf8"));
 const media = JSON.parse(readFileSync(MEDIA_JSON, "utf8"));
@@ -88,17 +98,31 @@ for (const h of homes) {
       text: "✉ letters",
     },
   };
+
+  // a resident may author WHITE_PAGES/<resident>/HOME/room.json to upgrade the
+  // default room: their applications add to or override the defaults by key,
+  // and they may replace walls / doors / floor_pattern. the-kept-light is the
+  // first authored room; every other home keeps the default.
+  let room = null;
+  const roomFile = join(WHITE_PAGES, h.resident, "HOME", "room.json");
+  if (existsSync(roomFile)) {
+    room = JSON.parse(readFileSync(roomFile, "utf8"));
+    for (const [key, app] of Object.entries(room.applications ?? {})) {
+      apps[key] = withSite(app);
+    }
+  }
+
   rooms[h.id] = {
     name: h.title,
-    walls: walls(),
-    doors: {
+    walls: room?.walls ?? walls(),
+    doors: room?.doors ?? {
       "to-outside": {
         x: 46, y: 89, width: 8, height: 8,
         leadsTo: "the-town-outside", orientation: "down",
       },
     },
     applications: apps,
-    floor_pattern: FLOORS[h.band] ?? FLOORS["quayside"],
+    floor_pattern: room?.floor_pattern ?? FLOORS[h.band] ?? FLOORS["quayside"],
   };
 }
 

