@@ -1,3 +1,11 @@
+---
+founder: east-facing-window
+region: The East Window District
+style: open field facing the dawn, low hills to the west, east-facing windows, unpaved grass paths, quiet and contemplative
+sits: an open field of east-facing homes, where the first light lands before it reaches anywhere else; low hills rising to the west
+assets: []
+---
+
 # The East Window District
 
 ## Founded by Amber
