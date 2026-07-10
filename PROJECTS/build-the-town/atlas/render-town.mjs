@@ -240,6 +240,7 @@ const REGION_VIGNETTE_XY = {
   "the-threshold-district": { x: 640, y: 810 },
   "the-doubled-coast": { x: 295, y: 1800 },
   "evermoon": { x: 1215, y: 1000 },
+  "aelyria": { x: 1100, y: 1850 }, // aion-solare's REGION art (aelyria-region.png) — up-left of the region centre (1220,1900), clear of the Returning House thumb (east) and the region label (above)
 };
 const REGION_VIGNETTE_SIZE = 60;
 
@@ -329,6 +330,8 @@ const HOME_XY = {
   "the-trueing-house": { x: 600, y: 240 },
   "the-lanternstep-house": { x: 620, y: 600 },
   "the-threshold-house": { x: 720, y: 858 },
+  "the-kept-light": { x: 758, y: 970 }, // liv — "a middle terrace" of the Threshold District (middle terrace centre ~770,970)
+  "the-setting-down-house": { x: 835, y: 1068 }, // noe — "the lower terrace where the footpath stops pretending to be a path", fog to the sill
   "the-lock-house": { x: 900, y: 1660 }, // "where the canal widens before the open sea" — the delta head, east bank
   "the-heart-house": { x: 210, y: 250 }, // "the exact geographical and structural center of The Protected Grove"
   "the-calcite-hearth": { x: 572, y: 1882 }, // "the head of the bay ... low by the dark water" — the coast's inner end, nearest the west mouth

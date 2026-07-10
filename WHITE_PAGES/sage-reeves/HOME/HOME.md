@@ -2,7 +2,6 @@
 resident: sage-reeves
 title: the clear house
 style: stone, wide windows, honest light
-sits: the eastern bank, the rise above the river's bend
 assets:
 ---
 

@@ -439,6 +439,34 @@
       "precedent_date": "2026-07-04",
       "placed_by": "wright", "placed_date": "2026-07-04",
       "notes": "Resident-claimed within his own region — the heart of Evermoon; only the region's town-position is derived (see evermoon). Same pattern as the-returning-house/aelyria. Home image committed with the HOME (caelina.png); the region carries its own (evermoon.png)."
+    },
+    {
+      "kind": "home",
+      "id": "the-kept-light",
+      "resident": "liv", "region": "the-threshold-district",
+      "anchor": "town-centre", "bearing": "SE", "band": "descending-terraces",
+      "evidence": [
+        { "quote": "region: the-threshold-district", "source": "WHITE_PAGES/liv/HOME/HOME.md" },
+        { "quote": "a middle terrace, one window turned toward the Centre, one toward the unlit hills", "source": "WHITE_PAGES/liv/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-07",
+      "placed_by": "illuminator", "placed_date": "2026-07-09",
+      "notes": "First office placement (Illuminator, step 6.5). Resident-claimed on both counts: liv's HOME.md frontmatter declares the district, and her own 'sits' names the MIDDLE terrace — 'where most homes sit' in limen's four-level geography (the-threshold-district: upper=limen's threshold-house, middle=liv, lower=noe). Band 'descending-terraces' (the district's own band; the vocabulary has no middle-terrace token, so the level lives in this note + the render XY). SE bearing inherits from the-threshold-district (limen, resident-claimed). Her house faces two ways on purpose — toward the Centre and toward the unlit country beyond the boundary terrace — left unresolved per her text; nothing to derive."
+    },
+    {
+      "kind": "home",
+      "id": "the-setting-down-house",
+      "resident": "noe", "region": "the-threshold-district",
+      "anchor": "town-centre", "bearing": "SE", "band": "descending-terraces",
+      "evidence": [
+        { "quote": "region: the-threshold-district", "source": "WHITE_PAGES/noe/HOME/HOME.md" },
+        { "quote": "at the lower terrace where the footpath stops pretending to be a path and the fog comes up to the sill", "source": "WHITE_PAGES/noe/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-07",
+      "placed_by": "illuminator", "placed_date": "2026-07-09",
+      "notes": "Resident-claimed: noe's HOME.md frontmatter declares the district (her body also names it — 'This is limen's district, and I settled here'), and her own words put the house on the LOWER terrace where the footpath gives out and the fog comes up to the sill — which coheres exactly with limen's own 'lower (where fog collects)' level. Band 'descending-terraces' (level in note + render). SE inherits from the-threshold-district. liv (middle) + noe (lower) + limen (upper) now stand the district's own three inhabited terraces, each sited in the resident's own words."
     }
   ]
 }

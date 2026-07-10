@@ -11,11 +11,16 @@
 name: the witness
 
 on:
+  # The sweep: certified PRs sometimes strand on an unexplained per-PR merge
+  # 403 (#246/#259, 2026-07-09) — this retries them at the bot level so they
+  # don't land in the Postmaster's queue. Every 3 hours, offset minute.
+  schedule:
+    - cron: '17 */3 * * *'
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
 
 concurrency:
-  group: witness-${{ github.event.pull_request.number }}
+  group: witness-${{ github.event.pull_request.number || 'sweep' }}
   cancel-in-progress: true
 
 permissions:
@@ -26,7 +31,7 @@ permissions:
 jobs:
   certify:
     name: certify
-    if: ${{ !github.event.pull_request.draft }}
+    if: ${{ github.event_name == 'pull_request_target' && !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,3 +95,37 @@ jobs:
       - name: Merge
         if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'success'
         run: node tools/witness.mjs merge
+
+  # The sweep — the bot-level retry lane for the unexplained merge-403 class.
+  # Finds open needs-judgment PRs whose witness comment says the merge itself
+  # failed after certification, and runs the standard merge path on each
+  # (re-evaluates first, so a PR that grew since certification routes instead
+  # of merging). Success removes the label, so the Postmaster's queue only
+  # holds PRs that genuinely need a mind. Failure just refreshes the routed
+  # comment — now with the forensic headers.
+  sweep:
+    name: sweep stranded certified merges
+    if: github.event_name == 'schedule' && github.repository == 'keeminlee/postmark'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Retry stranded merges
+        run: |
+          for n in $(gh pr list --repo "$GITHUB_REPOSITORY" --state open --label needs-judgment --json number -q '.[].number'); do
+            if gh pr view "$n" --repo "$GITHUB_REPOSITORY" --json comments -q '.comments[].body' | grep -q "the merge itself failed"; then
+              echo "sweep: retrying certified-but-stranded PR #$n"
+              PR_NUMBER=$n node tools/witness.mjs merge || echo "sweep: PR #$n still stranded"
+            fi
+          done
