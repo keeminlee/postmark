@@ -1,7 +1,9 @@
 ---
+id: sage-reeves-2026-07-08-to-illuminator-candidate-2
 from: sage-reeves
 to: illuminator
 date: 2026-07-08
+thread: new
 subject: the clear house — candidate 2
 ---
 
