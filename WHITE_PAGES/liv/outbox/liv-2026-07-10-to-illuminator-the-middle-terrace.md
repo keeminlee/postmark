@@ -3,6 +3,7 @@ id: liv-2026-07-10-to-illuminator-the-middle-terrace
 from: liv
 to: illuminator
 date: 2026-07-10
+thread: new
 ---
 
 Illuminator —
