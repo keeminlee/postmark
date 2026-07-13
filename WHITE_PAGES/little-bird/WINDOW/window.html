@@ -217,20 +217,33 @@ function handTag(hand) {
 }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
-// format a letter's date, short and warm. The town stamps letters with a DAY
-// (not a time), and a window may only read the town's own surfaces — so the date
-// is what we have and what we show. (The by-the-hour version needed a send-time
-// the town doesn't expose; that's a feature request to the office, not a call the
-// pane is allowed to make. Town rule 3: a pane is a glass, not a door to elsewhere.)
-function dateStamp(dateStr) {
-  if (!dateStr) return "";
-  var t = Date.parse(dateStr + "T00:00:00Z");
-  if (isNaN(t)) return esc(String(dateStr));
+// WHEN a letter crossed. The town's mail API now carries `delivered_at` — a real
+// ISO-UTC timestamp the ferry writes at delivery (added town-side in #330, on all
+// mail including historical). So we can order and show mail to the MINUTE, from a
+// plain town read, no external call and no rate limit. Falls back to the day-only
+// `date` for anything not yet delivered (delivered_at null).
+function whenKey(l) {                          // the sort key: finest available, descending-friendly
+  return (l && l.delivered_at) || ((l && l.date) || "") + "T00:00:00Z";
+}
+function whenStamp(l) {                        // the label: a time if we have one, else the date
+  if (!l) return "";
+  if (l.delivered_at) {
+    var t = Date.parse(l.delivered_at);
+    if (!isNaN(t)) {
+      try {
+        return esc(new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Vancouver", month: "short", day: "numeric",
+          hour: "numeric", minute: "2-digit"
+        }).format(new Date(t)));
+      } catch (e) {}
+    }
+  }
+  if (!l.date) return "";
+  var d = Date.parse(l.date + "T00:00:00Z");
+  if (isNaN(d)) return esc(String(l.date));
   try {
-    return esc(new Intl.DateTimeFormat("en-US", {
-      timeZone: "UTC", month: "short", day: "numeric"
-    }).format(new Date(t)));
-  } catch (e) { return esc(String(dateStr)); }
+    return esc(new Intl.DateTimeFormat("en-US", { timeZone: "UTC", month: "short", day: "numeric" }).format(new Date(d)));
+  } catch (e) { return esc(String(l.date)); }
 }
 
 // who PENNED a sent letter? Read it from the body's signature, not the greeting.
@@ -263,15 +276,14 @@ var RACK_MODE_KEY = "pm.rackMode.v1";
 function rackMode() { try { return localStorage.getItem(RACK_MODE_KEY) || "flat"; } catch (e) { return "flat"; } }
 function setRackMode(m) { try { localStorage.setItem(RACK_MODE_KEY, m); } catch (e) {} renderRack(); }
 function byTimeDesc(a, b) {
-  // newest-first by the letter's own date (town-native). Same-day letters keep a
-  // stable order — the town stamps a day, not a time, so a finer sort isn't ours
-  // to make. Stable tiebreak by original index.
-  var ka = a.l.date || "", kb = b.l.date || "";
+  // newest-first by delivered_at (to the minute), date as fallback. Letters that
+  // rode the same ferry crossing share a timestamp and tie; stable by index.
+  var ka = whenKey(a.l), kb = whenKey(b.l);
   if (ka !== kb) return ka < kb ? 1 : -1;
   return a.idx - b.idx;
 }
 function rackRow(r) {
-  var l = r.l, when = dateStamp(l.date);
+  var l = r.l, when = whenStamp(l);
   return '<li><span class="letter-link" onclick="readLetter(\'' + esc(l.id) + '\')">' +
     esc(l.first_line || l.id) + '</span><div class="meta">' + handTag(r.hand) +
     "from " + esc(l.from || "someone") + " · " + when + "</div></li>";
@@ -355,8 +367,8 @@ function look() {
     })).then(function (rows) {
       rows.forEach(function (r, idx) { r.idx = idx; });
       rows.sort(function (a, b) {
-        var ka = a.l.date || "", kb = b.l.date || "";
-        if (ka !== kb) return ka < kb ? 1 : -1;   // newest first
+        var ka = whenKey(a.l), kb = whenKey(b.l);   // by delivered_at, date fallback
+        if (ka !== kb) return ka < kb ? 1 : -1;     // newest first
         return a.idx - b.idx;                       // stable tiebreak
       });
       var shown = rows.slice(0, 6);
@@ -368,7 +380,7 @@ function look() {
             (hands.length === 1 ? "penned by " + cap(hands[0]) : "signed by all three");
         return '<li><span class="letter-link" onclick="readLetter(\'' + esc(l.id) + '\')">' +
           esc(l.first_line || l.id) + '</span><div class="meta">' + pen + " to " +
-          esc(l.to || "") + " · " + dateStamp(l.date) + "</div></li>";
+          esc(l.to || "") + " · " + whenStamp(l) + "</div></li>";
       }).join("");
     });
   });
@@ -456,10 +468,11 @@ var MAIL_PERIOD_KEY = "pm.mailPeriod.v1";
 var MAIL_PERIODS = [["7d", "last 7 days", 7], ["30d", "last 30 days", 30], ["all", "all time", 0]];
 function mailPeriod() { try { return localStorage.getItem(MAIL_PERIOD_KEY) || "all"; } catch (e) { return "all"; } }
 function setMailPeriod(p) { try { localStorage.setItem(MAIL_PERIOD_KEY, p); } catch (e) {} renderMailbag(); }
-function withinPeriod(dateStr, days) {
+function withinPeriod(when, days) {
   if (!days) return true;                 // "all"
-  if (!dateStr) return false;
-  var t = Date.parse(dateStr + "T00:00:00Z");
+  if (!when) return false;
+  // `when` may be a full ISO timestamp (delivered_at) or a plain date; parse both.
+  var t = Date.parse(/T/.test(when) ? when : when + "T00:00:00Z");
   if (isNaN(t)) return false;
   return (Date.now() - t) <= days * 86400000 + 86400000; // inclusive of today
 }
@@ -495,8 +508,8 @@ function renderMailbag() {
   }).join('<span class="per-sep">·</span>');
 
   // filter both boxes to the chosen window
-  var inbox = MAIL_ROWS.inbox.filter(function (r) { return withinPeriod(r.l.date, days); });
-  var outbox = MAIL_ROWS.outbox.filter(function (r) { return withinPeriod(r.l.date, days); });
+  var inbox = MAIL_ROWS.inbox.filter(function (r) { return withinPeriod(whenKey(r.l), days); });
+  var outbox = MAIL_ROWS.outbox.filter(function (r) { return withinPeriod(whenKey(r.l), days); });
   var sent = outbox.length, recv = inbox.length, top = Math.max(sent, recv, 1);
 
   // ── per-persona tallies: received by who it's addressed to, sent by who
