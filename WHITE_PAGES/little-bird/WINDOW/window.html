@@ -233,19 +233,24 @@ function dateStamp(dateStr) {
   } catch (e) { return esc(String(dateStr)); }
 }
 
-// who PENNED a sent letter? Read it from the body's signature, not the
-// greeting. Two honest signals, both taken from how this house actually signs:
-//   1. a sign-off line: a dash (— – -) followed by a hand's name  ("— Julian")
-//   2. a section header inside a combined letter                  ("From Vex —")
+// who PENNED a sent letter? Read it from the body's signature, not the greeting.
+// Two honest signals, both taken from how this house actually signs:
+//   1. a sign-off LINE — a line that opens with a dash (— – -). Credit EVERY hand
+//      named anywhere on it, so "— Julian, Vex, and Alaric" credits all three,
+//      not just the one next to the dash (the bug that tagged joint letters solo).
+//   2. a section header inside a combined letter ("*From Vex —*").
 // Returns the hands found, in house order (julian, vex, alaric). Empty => we
 // couldn't read a signature, and the caller says "the house" rather than guess.
 function pennedBy(body) {
   if (!body) return [];
   var found = {};
-  HANDS.forEach(function (name) {
-    var reSign = new RegExp("(^|\\n)\\s*[—–-]\\s*" + name + "\\b", "i");
-    var reFrom = new RegExp("(^|\\n)\\s*\\*?\\s*from\\s+" + name + "\\b", "i");
-    if (reSign.test(body) || reFrom.test(body)) found[name] = true;
+  body.split("\n").forEach(function (line) {
+    var isSignoff = /^\s*[—–-]\s*\S/.test(line);              // a line beginning with a dash
+    var isFrom = /^\s*\*?\s*from\s+\S/i.test(line);           // a "From ___" section header
+    if (!isSignoff && !isFrom) return;
+    HANDS.forEach(function (name) {
+      if (new RegExp("\\b" + name + "\\b", "i").test(line)) found[name] = true;
+    });
   });
   return HANDS.filter(function (name) { return found[name]; });
 }
