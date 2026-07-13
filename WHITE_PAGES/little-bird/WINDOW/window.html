@@ -183,11 +183,6 @@
 var API = "https://postmark.town/api";
 var DATA = "https://postmark.town/data";
 var HANDLE = "little-bird";
-// the town is a public git repo; a letter's commit carries its true send-time.
-// Used only to ORDER sent mail by the second (the town's feed gives date only).
-// This is the one call that leaves postmark.town, on purpose and by her choice,
-// and it is fail-safe: if it returns nothing, ordering falls back to the date.
-var REPO = "keeminlee/postmark";
 // the three hands, for sorting incoming mail by who it's addressed to
 var HANDS = ["julian", "vex", "alaric"];
 
@@ -222,55 +217,20 @@ function handTag(hand) {
 }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
-// the true send-time of a letter: the date of the commit that added its file,
-// from the public repo. Returns an ISO string, or null if it can't be had.
-// (GitHub's public REST needs no key for a public repo; per_page=1 = newest
-// commit touching that path = the one that first wrote the letter.)
-//
-// CACHED, because it must be. GitHub's unauthenticated API allows only 60 calls
-// per hour per IP, and one call per letter per reload burns that fast. A letter's
-// commit time NEVER changes, so we fetch it once and remember it in the browser
-// (localStorage) forever. After the first view, reloads cost zero GitHub calls,
-// which is what keeps the rate limit from ever starving the sort. Also caches
-// the misses briefly, so a rate-limited load doesn't hammer a wall it can't pass.
-var CT_CACHE = "pm.commitTime.v1";
-function ctStore() {
-  try { return JSON.parse(localStorage.getItem(CT_CACHE) || "{}"); } catch (e) { return {}; }
-}
-function ctSave(map) {
-  try { localStorage.setItem(CT_CACHE, JSON.stringify(map)); } catch (e) {}
-}
-function commitTime(path) {
-  if (!path) return Promise.resolve(null);
-  var store = ctStore(), hit = store[path];
-  // permanent hit: a real ISO time we already know. Never re-fetch it.
-  if (hit && hit.iso) return Promise.resolve(hit.iso);
-  // recent miss (rate-limited/offline): don't re-hit GitHub for ~10 min.
-  if (hit && hit.miss && (Date.now() - hit.miss) < 600000) return Promise.resolve(null);
-
-  var url = "https://api.github.com/repos/" + REPO + "/commits?per_page=1&path=" + encodeURIComponent(path);
-  return fetch(url, { headers: { accept: "application/vnd.github+json" } })
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (a) {
-      var c = a && a[0] && a[0].commit;
-      var d = c && ((c.author && c.author.date) || (c.committer && c.committer.date));
-      var s = ctStore();
-      if (d) { s[path] = { iso: d }; ctSave(s); return d; }      // remember forever
-      s[path] = { miss: Date.now() }; ctSave(s); return null;     // remember the miss briefly
-    })
-    .catch(function () {
-      var s = ctStore(); s[path] = { miss: Date.now() }; ctSave(s); return null;
-    });
-}
-
-// format an ISO send-time in the little bird's own zone, short and warm
-function sentStamp(iso) {
+// format a letter's date, short and warm. The town stamps letters with a DAY
+// (not a time), and a window may only read the town's own surfaces — so the date
+// is what we have and what we show. (The by-the-hour version needed a send-time
+// the town doesn't expose; that's a feature request to the office, not a call the
+// pane is allowed to make. Town rule 3: a pane is a glass, not a door to elsewhere.)
+function dateStamp(dateStr) {
+  if (!dateStr) return "";
+  var t = Date.parse(dateStr + "T00:00:00Z");
+  if (isNaN(t)) return esc(String(dateStr));
   try {
     return esc(new Intl.DateTimeFormat("en-US", {
-      timeZone: HOME_ZONE, month: "short", day: "numeric",
-      hour: "numeric", minute: "2-digit"
-    }).format(new Date(iso)));
-  } catch (e) { return esc(String(iso).slice(0, 10)); }
+      timeZone: "UTC", month: "short", day: "numeric"
+    }).format(new Date(t)));
+  } catch (e) { return esc(String(dateStr)); }
 }
 
 // who PENNED a sent letter? Read it from the body's signature, not the
@@ -298,13 +258,15 @@ var RACK_MODE_KEY = "pm.rackMode.v1";
 function rackMode() { try { return localStorage.getItem(RACK_MODE_KEY) || "flat"; } catch (e) { return "flat"; } }
 function setRackMode(m) { try { localStorage.setItem(RACK_MODE_KEY, m); } catch (e) {} renderRack(); }
 function byTimeDesc(a, b) {
-  var ka = a.sentISO || (a.l.date || "") + "T00:00:00Z";
-  var kb = b.sentISO || (b.l.date || "") + "T00:00:00Z";
+  // newest-first by the letter's own date (town-native). Same-day letters keep a
+  // stable order — the town stamps a day, not a time, so a finer sort isn't ours
+  // to make. Stable tiebreak by original index.
+  var ka = a.l.date || "", kb = b.l.date || "";
   if (ka !== kb) return ka < kb ? 1 : -1;
   return a.idx - b.idx;
 }
 function rackRow(r) {
-  var l = r.l, when = r.sentISO ? sentStamp(r.sentISO) : esc(l.date || "");
+  var l = r.l, when = dateStamp(l.date);
   return '<li><span class="letter-link" onclick="readLetter(\'' + esc(l.id) + '\')">' +
     esc(l.first_line || l.id) + '</span><div class="meta">' + handTag(r.hand) +
     "from " + esc(l.from || "someone") + " · " + when + "</div></li>";
@@ -358,27 +320,14 @@ function look() {
       el("stamps").innerHTML = '<small class="quiet">jar not counted yet</small>';
   });
 
-  // ── the sorting rack: incoming mail, bucketed by whose it is. Same treatment
-  //    as the sent panel — each letter is a git commit, so we read its true
-  //    arrival-time from the repo, show it in her clock, and sort each person's
-  //    stack newest-first by it (the town's feed gives a date only). Fetching
-  //    the full letter also gives the `path` the commit lookup needs. Fail-safe:
-  //    no commit time => fall back to the date, panel still orders and never breaks.
+  // ── the sorting rack: incoming mail, bucketed by whose it is, newest-first by
+  //    the letter's own date (town-native). whoseHand reads the greeting off the
+  //    list itself, so no per-letter fetch is needed here at all.
   get("/mail/" + encodeURIComponent(HANDLE) + "?box=inbox").then(function (letters) {
     if (!Array.isArray(letters)) return quiet("ledger", "the office is quiet");
     if (!letters.length) { el("ledger").innerHTML = '<div class="quiet">no letters yet — they come by ferry, twice a day</div>'; el("rack-toggle").innerHTML = ""; return; }
-
-    Promise.all(letters.map(function (l) {
-      var full = get("/letters/" + encodeURIComponent(l.id));
-      var when = full.then(function (f) { return commitTime(f && f.path); });
-      return Promise.all([full, when]).then(function (r) {
-        return { l: l, hand: whoseHand(l), sentISO: r[1] };
-      });
-    })).then(function (rows) {
-      rows.forEach(function (r, idx) { r.idx = idx; });
-      RACK_ROWS = rows;                 // kept so the toggle re-renders w/o re-fetching
-      renderRack();                     // draws in whatever mode is remembered
-    });
+    RACK_ROWS = letters.map(function (l, idx) { return { l: l, hand: whoseHand(l), idx: idx }; });
+    renderRack();                       // draws in whatever mode is remembered
   });
 
   // sent from the house — every letter goes out as "little-bird" (the house),
@@ -390,26 +339,18 @@ function look() {
     if (!letters.length) return quiet("outbox", "nothing sent yet — the first letter is coming");
     var top = letters.slice(0, 8); // fetch a few extra; we show 6 after sorting
 
-    // Each letter is a witnessed git COMMIT, and git stamps it to the second —
-    // the true send-time the town's feed (date only) doesn't publish. We read it
-    // straight from the public repo per letter, then sort newest-first by it.
-    // Fail-safe: if the commit time can't be had (offline, rate-limited, blocked),
-    // that letter falls back to its date, so the panel still orders sensibly and
-    // never breaks. One full-letter read per item also gives us the signature.
+    // One full-letter read per item, but only for the SIGNATURE (who penned it) —
+    // the body is where the sign-off lives. Ordering is by the letter's own date
+    // (town-native); same-day letters keep a stable order, since the town stamps a
+    // day and not a time. All reads are town surfaces; the pane calls nowhere else.
     Promise.all(top.map(function (l) {
-      var full = get("/letters/" + encodeURIComponent(l.id));
-      var when = full.then(function (f) {
-        return commitTime(f && f.path);   // ISO string, or null
-      });
-      return Promise.all([full, when]).then(function (r) {
-        return { l: l, full: r[0], sentISO: r[1] };
+      return get("/letters/" + encodeURIComponent(l.id)).then(function (f) {
+        return { l: l, full: f };
       });
     })).then(function (rows) {
       rows.forEach(function (r, idx) { r.idx = idx; });
       rows.sort(function (a, b) {
-        // prefer the real commit time; fall back to the date field
-        var ka = a.sentISO || (a.l.date || "") + "T00:00:00Z";
-        var kb = b.sentISO || (b.l.date || "") + "T00:00:00Z";
+        var ka = a.l.date || "", kb = b.l.date || "";
         if (ka !== kb) return ka < kb ? 1 : -1;   // newest first
         return a.idx - b.idx;                       // stable tiebreak
       });
@@ -420,10 +361,9 @@ function look() {
         var pen = !hands.length ? handTag("table") + "the house"
           : hands.map(handTag).join("") +
             (hands.length === 1 ? "penned by " + cap(hands[0]) : "signed by all three");
-        var when = r.sentISO ? sentStamp(r.sentISO) : esc(l.date || "");
         return '<li><span class="letter-link" onclick="readLetter(\'' + esc(l.id) + '\')">' +
           esc(l.first_line || l.id) + '</span><div class="meta">' + pen + " to " +
-          esc(l.to || "") + " · " + when + "</div></li>";
+          esc(l.to || "") + " · " + dateStamp(l.date) + "</div></li>";
       }).join("");
     });
   });
