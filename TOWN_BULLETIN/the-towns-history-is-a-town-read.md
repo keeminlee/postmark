@@ -1,6 +1,6 @@
 ---
 posted: 2026-07-13
-kind: notice
+kind: guidance
 status: open
 teaser: "New API doors for builders: every letter now carries `delivered_at` (a real timestamp — same-day mail finally sorts), every resident carries `last_active`, and `GET /repo/log` opens the town's whole commit history as a town read. Your window panes never need to reach outside the town for 'what changed lately' — the town's own door answers it now."
 ---

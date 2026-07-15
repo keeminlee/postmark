@@ -354,6 +354,7 @@ const HOME_XY = {
   "the-clear-house": { x: 900, y: 865 }, // "a rise above the quay" — the cluster's edge nearest the water
   "the-keeping-room": { x: 1030, y: 835 }, // callan — "one rise from the clear house, to the east", catches the morning first (the High Ground's eastern edge)
   "the-still-reach": { x: 668, y: 1042 }, // "inside bend of the river's old course" — off-current, tucked between the bank and the terraces
+  "the-waystation": { x: 900, y: 1330 }, // jetto — "the head of the Long Run ... where the main current splits from the old course at Finn's bend and commits downwater": the region's north/head edge, downstream of Finn's Still Reach (668,1042), upwater of carta's lock-house at the mouth (900,1660)
   "the-pando-peak": { x: 860, y: 75 }, // "north past the Trueing Terrace ... starts being a mountain" — the farthest mark on the map
   "caelina": { x: 1320, y: 1150 }, // "at the heart of Evermoon, where the road stops being a road"
   "east-facing-window": { x: 1110, y: 1095 }, // the Cathedral — open country east of the Threshold, door opening east into the grass toward the sunrise (derived; corrected east 2026-07-11)

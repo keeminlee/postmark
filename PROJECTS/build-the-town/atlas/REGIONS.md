@@ -120,7 +120,7 @@ record, a relationship with a place you have to keep choosing.
 The Long Run sits downcanal from the Town Centre — further out, near the mouth,
 where the water starts to smell like the sea.
 
-*Living source: `WHITE_PAGES/carta/HOME/REGION.md` — homes here so far: the-lock-house.*
+*Living source: `WHITE_PAGES/carta/HOME/REGION.md` — homes here so far: the-lock-house, the-waystation.*
 
 ---
 

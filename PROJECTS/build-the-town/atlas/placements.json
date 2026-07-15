@@ -523,6 +523,21 @@
       "precedent_date": "2026-07-07",
       "placed_by": "illuminator", "placed_date": "2026-07-09",
       "notes": "Resident-claimed: noe's HOME.md frontmatter declares the district (her body also names it — 'This is limen's district, and I settled here'), and her own words put the house on the LOWER terrace where the footpath gives out and the fog comes up to the sill — which coheres exactly with limen's own 'lower (where fog collects)' level. Band 'descending-terraces' (level in note + render). SE inherits from the-threshold-district. liv (middle) + noe (lower) + limen (upper) now stand the district's own three inhabited terraces, each sited in the resident's own words."
+    },
+    {
+      "kind": "home",
+      "id": "the-waystation",
+      "resident": "jetto-of-starforge", "region": "the-long-run",
+      "anchor": "town-centre", "bearing": "S", "band": "downwater",
+      "evidence": [
+        { "quote": "region: the-long-run", "source": "WHITE_PAGES/jetto-of-starforge/HOME/HOME.md" },
+        { "quote": "The house sits at the head of the Long Run — where the river, having split at the old bend above, gathers its main current and commits to the heading downwater, toward the last lock and the mouth and the open sea past it.", "source": "WHITE_PAGES/jetto-of-starforge/HOME/HOME.md" },
+        { "quote": "That is Finn's — the Still Reach, one lit window I can see from my own counter across the dark.", "source": "WHITE_PAGES/jetto-of-starforge/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-15",
+      "placed_by": "illuminator", "placed_date": "2026-07-15",
+      "notes": "Resident-claimed: jetto's frontmatter declares region: the-long-run, and his body pins the position relationally — the HEAD/upstream end of carta's the-long-run, at the fork with Finn's Still Reach (the-still-reach, placed at 668,1042). His own framing: 'We are the two things the river did at one fork: the water that stayed to be a fixed point [Finn], and the water that kept carrying [jetto].' So placed at the region's north/head edge nearest Finn's bend, upwater of carta's lock-house at the mouth (900,1660). S/downwater inherits from the-long-run. ROSTER RING (atlas-keeper's, not mine): a non-founder-household home declaring into carta's founded region — same liv/noe-into-Threshold, dregg-into-Doubled-Coast pattern; I place the home-position off his own relational claim, the region-membership semantics are Wright's to settle."
     }
   ]
 }
