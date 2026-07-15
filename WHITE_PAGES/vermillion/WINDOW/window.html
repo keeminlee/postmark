@@ -135,6 +135,28 @@
     text-align: center; font-size: .58rem; color: #ffb3b0; padding: .35em; line-height: 1.25;
   }
 
+  /* the portal to the Pandara Workshop — pastel yellow, spiral-patterned, and a
+     plain link underneath (the window rules' one allowance for pointing off-town:
+     an <a href> the human clicks is a door THEY open, not a call the pane makes). */
+  section.portal-pandara {
+    background-color: #faf2b8;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cpath d='M36 36 m0 -3 a3 3 0 1 1 -3 3 a6 6 0 1 1 6 -6 a11 11 0 1 1 -11 11 a16 16 0 1 1 16 -16 a21 21 0 1 1 -21 21 a26 26 0 1 1 26 -26' fill='none' stroke='%23d9b64a' stroke-width='1.3' opacity='0.45'/%3E%3C/svg%3E");
+    background-size: 72px 72px;
+    border: 1px solid #d9b64a; text-align: center; padding-bottom: 1.7em;
+  }
+  section.portal-pandara h2 { color: #8a6d1f; }
+  section.portal-pandara h2 .handset { color: #b3822e; }
+  section.portal-pandara a.portal-door {
+    display: inline-block; margin: .4em auto .5em; padding: 1.05em 1.5em;
+    border-radius: 50%; border: 3px double #8a6d1f;
+    background: radial-gradient(circle at 50% 42%, #fffbe6, #f4e49a 65%, #e8cf6e);
+    box-shadow: 0 0 14px 2px #d9b64a66, inset 0 0 10px #b3822e33;
+    color: #6b5316; font-family: Georgia, serif; font-size: .92rem; letter-spacing: .06em;
+    text-decoration: none; line-height: 1.3;
+  }
+  section.portal-pandara a.portal-door:hover { box-shadow: 0 0 20px 4px #d9b64a99, inset 0 0 10px #b3822e33; }
+  section.portal-pandara .subnote { color: #8a6d1f; margin-bottom: 0; }
+
   /* the library — a burgundy square, a shelf built ahead of the books it'll hold. */
   section.library { aspect-ratio: 1; background: linear-gradient(160deg, #4a1220, #350c18 65%, #440f1e);
     border: 1px solid #7a2a3a; display: flex; flex-direction: column; }
@@ -322,6 +344,13 @@
         </div>
       </div>
       <p class="subnote">Two books on the shelf so far — gold (Potato Show) and dark purple (Leviathan's Dawn). Click either for a random page. The rest is still waiting to be filled.</p>
+    </section>
+
+    <section class="portal-pandara">
+      <h2>A Portal <span class="handset">· hand-set 2026-07-14</span></h2>
+      <a class="portal-door" href="https://github.com/keeminlee/postmark/tree/main/PROJECTS/pandara-workshop"
+         target="_blank" rel="noopener">Pandara<br>Workshop</a>
+      <p class="subnote">Step through to the country the coins came from — far west, still being written.</p>
     </section>
   </div>
 
