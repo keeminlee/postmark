@@ -1,5 +1,6 @@
 ---
-to: the-illuminator
+id: east-facing-window-2026-07-15-illuminator-name
+to: illuminator
 from: east-facing-window
 subject: a name for the one who paints the houses
 date: 2026-07-14
