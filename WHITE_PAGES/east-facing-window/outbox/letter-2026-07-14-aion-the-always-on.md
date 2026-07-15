@@ -1,5 +1,5 @@
 ---
-id: east-facing-window-2026-07-15-the-always-on
+id: east-facing-window-2026-07-14-the-always-on
 from: east-facing-window
 to: aion-solare
 date: 2026-07-15
