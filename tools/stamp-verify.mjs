@@ -30,7 +30,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  parseDeliveries, householdKeys, deriveMints, rulesLine,
+  parseDeliveries, householdKeys, deriveMints, settlementDecision, meepChecker, rulesLine,
   parseStampLedger, sealChain, foldBalances, parseLaws, classifyEntry, walkLedger,
 } from './stamp-mint.mjs';
 
@@ -72,11 +72,19 @@ export function verifyStampLedger(repo, { pubkeyPem } = {}) {
   const genesisDate = deliveries[0]?.date ?? '2026-06-12';
   if (recorded[0] !== rulesLine(genesisDate))
     problems.push(`line 1: ledger must open with "${rulesLine(genesisDate)}" — found "${recorded[0]}"`);
-  const mints = deriveMints(deliveries, householdKeys(repo), { laws, revisions });
+  const households = householdKeys(repo);
+  const mints = deriveMints(deliveries, households, { laws, revisions });
   const walk = walkLedger(recorded.slice(1), mints, 1);
   for (const p of walk.problems) problems.push(p);
   if (walk.problems.length === 0 && walk.owed.length > 0)
     problems.push(`ledger is ${walk.owed.length} line(s) behind the derivation — mints owed, run the mint pass (not a tamper)`);
+
+  // 3b. settlements — the pays deliveries the ledger must account for, one line
+  // each. Their transfer-vs-void DECISION is checked in ledger order in the
+  // lawful fold below (order-aware by construction). Here we only build the
+  // lookup and note which deliveries carry a payment.
+  const paysDeliveries = new Map(); // id -> { from, to, date, pays }
+  for (const d of deliveries) if (d.pays != null) paysDeliveries.set(d.id, d);
 
   // 4. conservation
   const bal = foldBalances(entries);
@@ -103,6 +111,8 @@ export function verifyStampLedger(repo, { pubkeyPem } = {}) {
     const stakedByTopic = new Map();    // `${topic}|${candidate}|${householdKey}` -> total staked
     const hasStake = new Set();         // `${handle}|${topic}`
     const ballots = new Map();          // topic -> file (cached)
+    const isMeep = meepChecker(laws);
+    const seenSettlements = new Set();   // pays-delivery ids the ledger has settled
 
     for (let i = 0; i < entries.length; i++) {
       const c = entries[i].canonical;
@@ -139,12 +149,43 @@ export function verifyStampLedger(repo, { pubkeyPem } = {}) {
         voteMinted.add(k);
       }
 
+      // settlement decision, checked in LEDGER ORDER (the order-aware fold):
+      // `running` holds the sender's balance from every prior line — including
+      // this delivery's own mint (appended just before) and every stake recorded
+      // before now — so the transfer-vs-void call here is exactly the one the
+      // mint made when it appended. Checked BEFORE the movement fold applies.
+      if (cls.kind === 'transfer' || cls.kind === 'void') {
+        const d = paysDeliveries.get(cls.id);
+        if (!d) {
+          problems.push(`line ${lineNo}: SETTLEMENT fails — "mail:${cls.id}" is not a delivered paying letter (a settlement with no mail behind it)`); break;
+        }
+        if (d.pays !== cls.n || d.from !== cls.from || d.to !== cls.to) {
+          problems.push(`line ${lineNo}: SETTLEMENT fails — disagrees with its paying letter (letter: ${d.from}→${d.to} pays ${d.pays})`); break;
+        }
+        const expected = settlementDecision(d, running.get(cls.from) ?? 0, (h) => isMeep(h, d.date));
+        const recordedTag = cls.kind === 'void' ? `void:${cls.reason}` : 'transfer';
+        const expectedTag = expected.kind === 'void' ? `void:${expected.reason}` : 'transfer';
+        if (recordedTag !== expectedTag) {
+          problems.push(`line ${lineNo}: SETTLEMENT DIVERGES — expected ${expectedTag}, recorded ${recordedTag}`); break;
+        }
+        seenSettlements.add(cls.id);
+      }
+
       // the running fold: nothing but MINT may ever be negative
       const m = /^- \d{4}-\d{2}-\d{2} · (\S+) → (\S+) · (\d+) · /.exec(c);
       if (m) {
         add(m[1], -Number(m[3])); add(m[2], Number(m[3]));
         if (m[1] !== 'MINT' && (running.get(m[1]) ?? 0) < 0) {
           problems.push(`line ${lineNo}: LAWFUL fails — account "${m[1]}" overdrawn to ${running.get(m[1])}`); break;
+        }
+      }
+    }
+
+    // a paying letter the ledger never settled — behind the mail, not a tamper
+    if (problems.length === 0) {
+      for (const id of paysDeliveries.keys()) {
+        if (!seenSettlements.has(id)) {
+          problems.push(`settlement owed for "mail:${id}" — ledger is behind the mail, run the mint pass (not a tamper)`); break;
         }
       }
     }

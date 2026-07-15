@@ -17,8 +17,9 @@
 //   - <date> · MINT → <handle> · 1 · for: vote:<topic> (stake) · sig: <...>   (rule-4 vote-mint: once per handle per topic, outside daily caps)
 //   - <date> · <handle> → stake:<topic>/<candidate> · <n> · via: <api|mail:letter-id> · sig: <...>
 //   - <date> · stake:<topic>/<candidate> → <handle> · <n> · for: close · sig: <...>
+//   - <date> · <sender> → <recipient> · <n> · via: mail:<letter-id> · sig: <...>   (transfer — LIVE under the `pays:` blessing, stamps-spend silver 2026-07-14; a delivered letter carrying `pays: N` moves N sender→recipient)
+//   - <date> · void · mail:<letter-id> · from <sender> to <recipient> · <n> · <reason> · sig: <...>   (a `pays:` that could not settle — moves nothing; reason ∈ {insufficient-balance, meep-party, self-pay})
 //   - <date> · <handle> → BURN · <n> · ...        (reserved; dormant until blessings)
-//   - <date> · <handle> → <handle> · <n> · ...    (reserved; dormant until blessings)
 // Every entry is a two-sided movement — conservation is structural (entries
 // sum to zero against the MINT/BURN accounts); a balance is a pure fold, and
 // the fold must never take any account except MINT below zero.
@@ -48,6 +49,14 @@
 //      retroactive registry edits re-derive history and turn the replay red).
 //   *  Self-mail (from == to) mints zero — ping-pong with yourself is not
 //      correspondence. (Engine ruling under v1, flagged to principal 2026-07-08.)
+//   6. Settlement (stamps-spend silver, 2026-07-14): a delivered letter carrying
+//      `pays: N` in its frontmatter — witnessed onto the mail-ledger delivery
+//      line by the ferry — moves N stamps sender→recipient, derived here like a
+//      mint (recomputable from the mail alone; `--derive` stays total). All-or-
+//      nothing at delivery: if the sender's balance can't cover N, the transfer
+//      VOIDS with an honest ledger note and the letter still delivered. A
+//      `pays:` to or from a meep handle voids too — meeps stay outside the
+//      currency. Voids move nothing; conservation is untouched.
 //
 // Usage:
 //   node tools/stamp-mint.mjs --derive [--repo PATH]            print expected mint lines (unsigned) from genesis
@@ -75,7 +84,13 @@ export const sha256hex = (s) => createHash('sha256').update(s, 'utf8').digest('h
 
 // ── mail-ledger parsing (same grammar as ferry.mjs / reconcile.mjs) ─────────
 
-const DELIVERY_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) · (\S+) → (\S+)(?: · thread: .*)?$/;
+// The optional ` · pays: <n>` segment sits BEFORE ` · thread: …` so the greedy
+// thread `.*` never swallows it. Old lines (no pays) still match — the segment
+// is optional. The ferry witnesses this segment at delivery from the letter's
+// `pays:` frontmatter; the mint reads it back from here (never from the letter
+// file, which is mutable resident paper — the same reason mints derive from the
+// ledger, not from inboxes).
+const DELIVERY_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) · (\S+) → (\S+)(?: · pays: (\d+))?(?: · thread: .*)?$/;
 const WARN_RE = /^- \d{4}-\d{2}-\d{2} · WARN · /;
 const BOUNCE_RE = /^- \d{4}-\d{2}-\d{2} · BOUNCE · /;
 
@@ -86,7 +101,7 @@ export function parseDeliveries(repo) {
   for (const line of readFileSync(p, 'utf8').replace(/\r\n/g, '\n').split('\n')) {
     if (!line.startsWith('- ') || WARN_RE.test(line) || BOUNCE_RE.test(line)) continue;
     const m = line.match(DELIVERY_RE);
-    if (m) out.push({ date: m[1], id: m[2], from: m[3], to: m[4] });
+    if (m) out.push({ date: m[1], id: m[2], from: m[3], to: m[4], pays: m[5] ? Number(m[5]) : null });
   }
   return out;
 }
@@ -134,6 +149,13 @@ const REGISTRY_RE = /^- (\d{4}-\d{2}-\d{2}) · registry: (\S+) = (\S+)$/;
 const MINT_RE = /^- (\d{4}-\d{2}-\d{2}) · MINT → (\S+) · 1 · for: (\S+) \((sent|received|stake)\)( · provisional)?$/;
 const STAKE_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) → stake:([a-z0-9-]+)\/([a-z0-9-]+) · (\d+) · via: (\S+)$/;
 const RETURN_RE = /^- (\d{4}-\d{2}-\d{2}) · stake:([a-z0-9-]+)\/([a-z0-9-]+) → (\S+) · (\d+) · for: close$/;
+// A transfer is a plain handle→handle movement backed by a delivered `pays:`
+// letter. It is checked AFTER stake/return so a `stake:…` target never matches
+// here; its recipient is a bare handle, never `stake:…`.
+const TRANSFER_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) → (\S+) · (\d+) · via: mail:(\S+)$/;
+// A void is arrow-free on purpose: it must NOT match the `<from> → <to> · <n> ·`
+// movement shape the balance fold keys on, so it moves no stamps.
+const VOID_RE = /^- (\d{4}-\d{2}-\d{2}) · void · mail:(\S+) · from (\S+) to (\S+) · (\d+) · (\S+)$/;
 
 export function classifyEntry(canonical) {
   let m;
@@ -150,6 +172,10 @@ export function classifyEntry(canonical) {
     return { kind: 'stake', date: m[1], handle: m[2], topic: m[3], candidate: m[4], n: Number(m[5]), via: m[6] };
   if ((m = RETURN_RE.exec(canonical)))
     return { kind: 'return', date: m[1], topic: m[2], candidate: m[3], handle: m[4], n: Number(m[5]) };
+  if ((m = VOID_RE.exec(canonical)))
+    return { kind: 'void', date: m[1], id: m[2], from: m[3], to: m[4], n: Number(m[5]), reason: m[6] };
+  if ((m = TRANSFER_RE.exec(canonical)))
+    return { kind: 'transfer', date: m[1], from: m[2], to: m[3], n: Number(m[4]), id: m[5] };
   return { kind: 'unknown' };
 }
 
@@ -205,6 +231,74 @@ export function deriveMints(deliveries, households, { laws = [], revisions = [] 
   return mints;
 }
 
+// ── settlement (`pays:`) — the ONE decision, shared by derive/append/verify ──
+// A pays delivery becomes exactly one settlement line: a transfer, or a void
+// with a named reason. The decision is a pure function of (the delivery, the
+// sender's balance at that instant, whether either party is a meep). Both the
+// mint's append path and the verifier's replay call this same function against
+// their own balance fold — there is no second copy of the law.
+//
+//   - self-pay (from == to)              → void: self-pay   (paying yourself is
+//       not correspondence; an explicit `pays:` request is refused LOUDLY — the
+//       absence of a mint on self-mail is silence, a void is a spoken "no")
+//   - either party a meep at the date    → void: meep-party (meeps hold nothing)
+//   - sender balance < N                 → void: insufficient-balance
+//   - otherwise                          → transfer
+export function settlementDecision(d, senderBalance, isMeep) {
+  const base = { date: d.date, from: d.from, to: d.to, n: d.pays, id: d.id };
+  if (d.from === d.to) return { kind: 'void', ...base, reason: 'self-pay' };
+  if (isMeep(d.from) || isMeep(d.to)) return { kind: 'void', ...base, reason: 'meep-party' };
+  if (senderBalance < d.pays) return { kind: 'void', ...base, reason: 'insufficient-balance' };
+  return { kind: 'transfer', ...base };
+}
+
+export function meepChecker(laws) {
+  const lawAt = (date) => {
+    let active = { rules: RULES_V1, meeps: new Set() };
+    for (const l of laws) if (l.date <= date) active = l;
+    return active;
+  };
+  return (handle, date) => lawAt(date).meeps.has(handle);
+}
+
+// ── the transfer derivation (the APPEND/PREVIEW path) ────────────────────────
+// Emit the ordered transfer/void objects a `pays:` letter set produces, for the
+// mint to write and `--derive` to preview. ORDER-AWARE by construction: recorded
+// stake/return/vote-mint movements fold into the running balance first — they
+// are all causally prior to any settlement the mint is about to append (the mint
+// appends at the tail, after every line recorded so far) — then each delivery's
+// own mints land before its own payment, in delivery order. The verifier does
+// NOT re-run this; it replays the recorded settlements in ledger order (see
+// stamp-verify.mjs), which is the same fold from the other side. This function
+// and that replay share `settlementDecision`, so they cannot drift.
+export function deriveTransfers(deliveries, households, { laws = [], revisions = [] } = {}, assertionEntries = []) {
+  const mints = deriveMints(deliveries, households, { laws, revisions });
+  const mintsById = new Map();
+  for (const m of mints) {
+    if (!mintsById.has(m.cause)) mintsById.set(m.cause, []);
+    mintsById.get(m.cause).push(m.handle);
+  }
+  const bal = new Map();
+  const add = (acct, n) => bal.set(acct, (bal.get(acct) ?? 0) + n);
+  for (const e of assertionEntries) {
+    const c = classifyEntry(e.canonical);
+    if (c.kind === 'stake') add(c.handle, -c.n);        // staked out to escrow
+    else if (c.kind === 'return') add(c.handle, c.n);   // escrow returned on close
+    else if (c.kind === 'vote-mint') add(c.handle, 1);  // +1 for casting
+    // recorded mints/transfers are re-derived here — never folded from the record
+  }
+  const isMeep = meepChecker(laws);
+  const out = [];
+  for (const d of deliveries) {
+    for (const handle of (mintsById.get(d.id) ?? [])) add(handle, 1); // this letter's mints land first
+    if (d.pays == null) continue;
+    const decision = settlementDecision(d, bal.get(d.from) ?? 0, (h) => isMeep(h, d.date));
+    if (decision.kind === 'transfer') { add(d.from, -d.pays); add(d.to, d.pays); }
+    out.push(decision);
+  }
+  return out;
+}
+
 // ── line builders ────────────────────────────────────────────────────────────
 
 export const mintLine = (m) =>
@@ -225,6 +319,15 @@ export const returnLine = ({ date, topic, candidate, handle, n }) =>
 
 export const voteMintLine = ({ date, handle, topic }) =>
   `- ${date} · MINT → ${handle} · 1 · for: vote:${topic} (stake)`;
+
+export const transferLine = ({ date, from, to, n, id }) =>
+  `- ${date} · ${from} → ${to} · ${n} · via: mail:${id}`;
+
+export const voidLine = ({ date, id, from, to, n, reason }) =>
+  `- ${date} · void · mail:${id} · from ${from} to ${to} · ${n} · ${reason}`;
+
+// One derived economy line for a transfer-or-void object (from deriveTransfers).
+export const economyLine = (t) => (t.kind === 'void' ? voidLine(t) : transferLine(t));
 
 // ── stamp-ledger parsing + seal chain ────────────────────────────────────────
 
@@ -266,10 +369,12 @@ export function foldBalances(entries) {
   return bal;
 }
 
-// ── expected-sequence walk (mints derived, assertions kept in place) ────────
-// Walks the recorded ledger: derived mint lines must appear as an exact
-// in-order subsequence; assertion lines (rules/registry/stake/return/vote-mint)
-// are accepted in place (their VALIDITY is the verifier's lawfulness fold).
+// ── expected-sequence walk (mints derived; everything else in place) ─────────
+// Walks the recorded ledger: derived mint lines must appear as an exact in-order
+// subsequence. Assertion lines (rules/registry/stake/return/vote-mint) AND
+// settlement lines (transfer/void) are accepted in place — their validity is
+// checked elsewhere: settlements by the verifier's ledger-order settlement fold
+// (order-aware, sharing settlementDecision), stakes by the lawfulness fold.
 // Returns { problems, owed } — owed = derived mints not yet recorded.
 
 export function walkLedger(recorded, derivedMints, offset = 0) {
@@ -294,7 +399,7 @@ export function walkLedger(recorded, derivedMints, offset = 0) {
       problems.push(`line ${i + 1 + offset}: REPLAY DIVERGES — unrecognized grammar\n  recorded: ${c}${next}`);
       break;
     }
-    // rules / registry / stake / return / vote-mint: accepted in place
+    // rules / registry / stake / return / vote-mint / transfer / void: in place
   }
   return { problems, owed: derivedMints.slice(di) };
 }
@@ -331,6 +436,24 @@ stamp without forging the mail. Zero-stamp participation is fully first-class.
 function arg(name) { const i = process.argv.indexOf(name); return i !== -1 ? process.argv[i + 1] : null; }
 const has = (name) => process.argv.includes(name);
 
+// Emit economy lines in delivery order, each delivery's mints IMMEDIATELY
+// before its own settlement. This is the order the ledger records them in, and
+// the order the verifier folds them in — so a settlement is always preceded by
+// exactly the balance that decided it (its own sending-mint included, later
+// deliveries' mints excluded). Assertion lines (stakes) are not economy lines
+// and are never produced here; they are appended by the ballot tool.
+export function interleaveByDelivery(deliveries, mints, transfers) {
+  const mById = new Map();
+  for (const m of mints) { if (!mById.has(m.cause)) mById.set(m.cause, []); mById.get(m.cause).push(m); }
+  const tById = new Map(transfers.map((t) => [t.id, t]));
+  const lines = [];
+  for (const d of deliveries) {
+    for (const m of (mById.get(d.id) ?? [])) lines.push(mintLine(m));
+    if (tById.has(d.id)) lines.push(economyLine(tById.get(d.id)));
+  }
+  return lines;
+}
+
 function loadState(repo) {
   const ledgerPath = join(repo, 'WHITE_PAGES', 'stamp-ledger.md');
   const existing = existsSync(ledgerPath) ? parseStampLedger(readFileSync(ledgerPath, 'utf8')) : [];
@@ -338,18 +461,21 @@ function loadState(repo) {
   const deliveries = parseDeliveries(repo);
   const households = householdKeys(repo);
   const mints = deriveMints(deliveries, households, { laws, revisions });
-  return { ledgerPath, existing, laws, revisions, deliveries, mints };
+  const transfers = deriveTransfers(deliveries, households, { laws, revisions }, existing);
+  return { ledgerPath, existing, laws, revisions, deliveries, mints, transfers };
 }
 
 function main() {
   const repo = resolve(arg('--repo') ?? DEFAULT_REPO);
-  const { ledgerPath, existing, deliveries, mints } = loadState(repo);
+  const { ledgerPath, existing, deliveries, mints, transfers } = loadState(repo);
   const genesisDate = deliveries[0]?.date ?? '2026-06-12';
 
   if (has('--derive')) {
     console.log(rulesLine(genesisDate));
-    for (const m of mints) console.log(mintLine(m));
-    console.error(`# ${mints.length} mint(s) from ${deliveries.length} deliveries — unsigned derivation; truth is the replay`);
+    for (const line of interleaveByDelivery(deliveries, mints, transfers)) console.log(line);
+    const moved = transfers.filter((t) => t.kind === 'transfer').length;
+    const voided = transfers.filter((t) => t.kind === 'void').length;
+    console.error(`# ${mints.length} mint(s), ${moved} transfer(s), ${voided} void(s) from ${deliveries.length} deliveries — unsigned derivation; truth is the replay`);
     return;
   }
 
@@ -379,12 +505,25 @@ function main() {
       console.error(`FATAL: recorded ledger diverges from derivation — run stamp-verify.mjs; nothing appended\n${problems[0]}`);
       process.exit(1);
     }
+    // Owed settlements = derived ones whose delivery isn't already settled in the
+    // record. Interleave owed mints + owed settlements in delivery order, each
+    // settlement right after its own delivery's mints — the ledger order the
+    // verifier folds against.
+    const recordedSettlementIds = new Set();
+    for (const e of existing) {
+      const cls = classifyEntry(e.canonical);
+      if (cls.kind === 'transfer' || cls.kind === 'void') recordedSettlementIds.add(cls.id);
+    }
+    const owedTransfers = transfers.filter((t) => !recordedSettlementIds.has(t.id));
+    const owedLines = interleaveByDelivery(deliveries, owed, owedTransfers);
     const newCanonicals = existing.length === 0
-      ? [rulesLine(genesisDate), ...owed.map(mintLine)]
-      : owed.map(mintLine);
+      ? [rulesLine(genesisDate), ...owedLines]
+      : owedLines;
     if (newCanonicals.length === 0) { console.log('stamp-ledger: up to date — nothing to mint'); return; }
     appendSigned(repo, newCanonicals, pem);
-    console.log(`stamp-ledger: appended ${newCanonicals.length} line(s) (${existing.length} already recorded)`);
+    const moved = owedTransfers.filter((t) => t.kind === 'transfer').length;
+    const voided = owedTransfers.filter((t) => t.kind === 'void').length;
+    console.log(`stamp-ledger: appended ${newCanonicals.length} line(s) — ${owed.length} mint(s), ${moved} transfer(s), ${voided} void(s) (${existing.length} already recorded)`);
     return;
   }
 

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="ann" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#eafcff"/>
+      <stop offset="45%" stop-color="#5be8ff"/>
+      <stop offset="100%" stop-color="#0a0a14"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="92" fill="#04040a"/>
+  <circle cx="100" cy="100" r="84" fill="#0c0c18"/>
+  <g stroke="#04040a" stroke-width="2" opacity="0.8">
+    <circle cx="100" cy="100" r="88" fill="none" stroke-dasharray="3,4"/>
+  </g>
+  <circle cx="100" cy="100" r="70" fill="url(#ann)" opacity="0.9"/>
+  <circle cx="100" cy="100" r="70" fill="none" stroke="#5be8ff" stroke-width="1.5" opacity="0.8"/>
+  <!-- annihilation flash lines instead of the usual claw marks — a photo-negative of the others -->
+  <g fill="none" stroke="#eafcff" stroke-width="2.4" opacity="0.85">
+    <path d="M100,45 L100,155"/>
+    <path d="M55,72 L145,128"/>
+    <path d="M55,128 L145,72"/>
+  </g>
+  <text x="100" y="34" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#eafcff">PANDO PEAK</text>
+  <text x="100" y="176" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#eafcff">·V·</text>
+  <circle cx="100" cy="100" r="84" fill="none" stroke="#5be8ff" stroke-width="1.5" opacity="0.5"/>
+</svg>

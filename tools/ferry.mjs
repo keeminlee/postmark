@@ -51,6 +51,8 @@ Options:
   --repo PATH   Path to the starforge-commons repo. Default: repo root (this script's parent directory)
   --dry-run     Report what would happen; write nothing (no file moves, no git).
   --no-git      Skip git pull/commit/push (for sandbox tests or no-remote repos).
+  --date DATE   Stamp this crossing YYYY-MM-DD instead of the town's today.
+                For simulation/replay only; the live office round never sets it.
   --help        Show this help.
 
 Dedupe is derived entirely from WHITE_PAGES/mail-ledger.md at startup — there
@@ -65,6 +67,7 @@ function parseArgs(argv) {
     dryRun: false,
     noGit: false,
     help: false,
+    date: null,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -89,6 +92,13 @@ function parseArgs(argv) {
     }
 
     if (token === '--repo') options.repo = value;
+    // --date overrides the crossing's stamp date. Defaults to the town's today;
+    // exists for simulation/replay (a multi-day sim can't advance under a clock
+    // pinned to the real today). Never passed by the live office round.
+    else if (token === '--date') {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error(`--date must be YYYY-MM-DD, got "${value}"`);
+      options.date = value;
+    }
     else throw new Error(`Unknown option: ${token}`);
 
     i += 1;
@@ -251,9 +261,12 @@ function listOutboxItems(repo, room) {
 
 // --- ledger parsing (dedupe state — replaces the old SQLite cache) -------
 
-// Delivery line: `- <date> · <id> · <from> → <to>[ · thread: <thread>]`
-// (older lines predate the trailing thread segment; it's optional here.)
-const LEDGER_DELIVERY_RE = /^- \d{4}-\d{2}-\d{2} · (\S+) · (\S+) → (\S+)(?: · thread: .*)?$/;
+// Delivery line: `- <date> · <id> · <from> → <to>[ · pays: <n>][ · thread: <thread>]`
+// (older lines predate the trailing thread segment; both are optional here. The
+// optional `pays:` segment — witnessed at delivery when a letter carries a
+// `pays:` frontmatter — sits before thread so the greedy thread `.*` can't eat
+// it, matching stamp-mint.mjs / reconcile.mjs.)
+const LEDGER_DELIVERY_RE = /^- \d{4}-\d{2}-\d{2} · (\S+) · (\S+) → (\S+)(?: · pays: \d+)?(?: · thread: .*)?$/;
 // Bounce line: `- <date> · BOUNCE · <letter path> (from <sender>): <defect>`
 const LEDGER_BOUNCE_RE = /^- \d{4}-\d{2}-\d{2} · BOUNCE · (.+?) \(from ([^)]+)\): (.+)$/;
 // WARN line: a same-id inbox collision — the letter was left in the outbox,
@@ -485,6 +498,13 @@ function classify(fields, room, handles, dedupe) {
   if (!handles.has(fields.to)) {
     return `unknown recipient: "${fields.to}" is not a registered handle`;
   }
+  // A `pays:` amount, if present, must be a positive integer — a nonsense
+  // payment (0, negative, decimal, non-numeric) bounces rather than getting
+  // witnessed onto the ledger. The mint reads this segment as authoritative, so
+  // the ferry is the gate that keeps garbage out of the witnessed record.
+  if (fields.pays !== undefined && !/^[1-9]\d*$/.test(fields.pays)) {
+    return `invalid pays: "${fields.pays}" — must be a positive integer`;
+  }
   // Duplicate id already delivered (ledger-derived, updated in-run as we go).
   if (dedupe.deliveredIds.has(fields.id)) {
     return 'duplicate id';
@@ -505,9 +525,14 @@ function handleDeliver(
   const destPath = kind === 'folder' ? join(inboxDir, fields.id) : join(inboxDir, `${fields.id}.md`);
   const destRel = rel(repo, destPath);
 
+  // `pays:` (validated in classify) rides the delivery line before thread. This
+  // is the mint's authoritative source for a settlement — witnessed here at the
+  // crossing, never re-read from the mutable letter file.
+  const paysSeg = fields.pays !== undefined ? ` · pays: ${fields.pays}` : '';
+
   if (options.dryRun) {
-    log(`deliver: would move ${letterRel} -> ${destRel}`);
-    ledgerLines.push(`- ${today} · ${fields.id} · ${fields.from} → ${fields.to} · thread: ${fields.thread}`);
+    log(`deliver: would move ${letterRel} -> ${destRel}${paysSeg ? `  [${paysSeg.trim()}]` : ''}`);
+    ledgerLines.push(`- ${today} · ${fields.id} · ${fields.from} → ${fields.to}${paysSeg} · thread: ${fields.thread}`);
     dedupe.deliveredIds.add(fields.id);
     return 1;
   }
@@ -527,7 +552,7 @@ function handleDeliver(
     return 0;
   }
   renameSync(outboxPath, destPath);
-  ledgerLines.push(`- ${today} · ${fields.id} · ${fields.from} → ${fields.to} · thread: ${fields.thread}`);
+  ledgerLines.push(`- ${today} · ${fields.id} · ${fields.from} → ${fields.to}${paysSeg} · thread: ${fields.thread}`);
   dedupe.deliveredIds.add(fields.id);
 
   touched.add(outboxPath);
@@ -591,7 +616,8 @@ function main() {
   if (options.dryRun) log('ferry: DRY RUN — nothing will be written');
   if (options.noGit) log('ferry: --no-git');
 
-  const today = todayIso();
+  const today = options.date || todayIso();
+  if (options.date) log(`ferry: --date ${options.date} (simulation/replay stamp date, not the clock)`);
 
   // Step 1: git pull.
   gitPull(repo, options);

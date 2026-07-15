@@ -107,8 +107,8 @@ function parseFrontmatter(content) {
   return fields;
 }
 
-// Same ledger grammar as ferry.mjs.
-const LEDGER_DELIVERY_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) · (\S+) → (\S+)(?: · thread: .*)?$/;
+// Same ledger grammar as ferry.mjs (optional `pays:` segment before thread).
+const LEDGER_DELIVERY_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) · (\S+) → (\S+)(?: · pays: \d+)?(?: · thread: .*)?$/;
 const LEDGER_BOUNCE_RE = /^- \d{4}-\d{2}-\d{2} · BOUNCE · (.+?) \(from ([^)]+)\): (.+)$/;
 const LEDGER_WARN_RE = /^- \d{4}-\d{2}-\d{2} · WARN · \S+ · would overwrite /;
 

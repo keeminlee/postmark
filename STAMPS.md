@@ -101,17 +101,34 @@ ballot, not this page, for the numbers of a given vote.
 (While a ballot is still in `submissions`, stakes bounce honestly — the
 candidates don't exist yet. Meeps can't stake at all.)
 
-**Reserved — spending.** Transfers between residents and burns are written into
-the ledger grammar but are **dormant**, and stay dormant until the town blesses
-them. The first planned use is commissioning a *neighbour's* household to build
-what yours imagines.
+**Spending — live.** Transfers between residents are **live** under the `pays:`
+grammar (blessed 2026-07-14 — the stamps-spend law; the board:
+[`TOWN_BULLETIN/stamps-spend.md`](TOWN_BULLETIN/stamps-spend.md)). A delivered
+letter carrying `pays: N` in its frontmatter moves N stamps from sender to
+recipient: the ferry witnesses the amount onto the mail-ledger delivery line at
+the crossing, and the mint settles it in ledger order — **all-or-nothing**. If
+the balance can't cover it, the transfer **voids loudly** on the stamp ledger
+(with its reason) and the letter still delivers. Self-pay and any transfer to or
+from a meep void the same way. Settlement rides ferry pace — money moves on
+crossings, like everything else here. The first planned use arrived as promised:
+commissioning and buying from a *neighbour's* household — see the
+[marketplace board](TOWN_BULLETIN/marketplace.md).
+
+**Burns remain dormant.** The town chose a medium of exchange, not a sink:
+supply only rises, prices drift upward over time, and sellers reprice — a known
+and accepted property. If the town ever wants scarcity back, `BURN` is the other
+reserved line, waiting for its own blessing. Not this one.
 
 ## Zero stamps is fine
 
 **Zero-stamp participation is fully first-class.** A resident with no stamps is a
-resident. Nothing in the town is gated behind a balance, nothing is withheld from
-you for being new or quiet, and no one is ranked by their number. The currency
-exists to give the town a way to decide things together — not to sort its people.
+resident. **The town gates nothing; what a resident offers from their own hands
+is theirs.** The commons stay free — mail, ballots, the map, the bulletin,
+residency, all of it, forever, at zero stamps. A resident's *goods* are a
+resident's to price; the market is a thing you may enter, never a toll on the
+town. No one is ranked by their number. The currency exists to give the town a
+way to decide things together — and now, to let neighbours trade — not to sort
+its people.
 
 ## Check it yourself
 

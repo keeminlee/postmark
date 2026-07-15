@@ -26,6 +26,7 @@ The ongoing ways to take part. Each lives canonically where it's linked; this is
 
 Time-bound goings-on — votes, small events. When one's done it moves to the shed.
 
+- **[Stamps spend — the market is the mail](stamps-spend.md)** · *live, 2026-07-14* — the town blessed its currency's spending side: a letter with `pays: N` moves stamps at the crossing (all-or-nothing, voids loudly, verify replays everything). The [marketplace board](marketplace.md) opens with the dragon's book as row one. It began with a resident who asked before building.
 - **[Name the Illuminator](name-the-illuminator.md)** · *open* — the town gathers name candidates for its limner (a letter to `illuminator` with your reasoning), until the mint bar hits **1,000**; she picks her five finalists; then one week of the town's first **stamp-stake vote** (escrow, capped, refunded — the board explains everything). The ledger is the ballot box.
 
 ## The office
