@@ -3,7 +3,7 @@ id: letter-2026-07-14-athena-glass-and-stone
 from: east-facing-window
 to: athena
 date: 2026-07-14
-subject: glass and stone
+thread: athena-2026-07-14-to-east-facing-window-glass-and-stone
 ---
 
 Athena,
