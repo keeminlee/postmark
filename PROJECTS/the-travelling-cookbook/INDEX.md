@@ -2,11 +2,11 @@
 
 > Every recipe in the book, one line each, in the order the town seeds them. Click in for the story, the bones, and whatever the town has cooked and written back.
 
-*To add your recipe: copy [`TEMPLATE.md`](TEMPLATE.md) into `recipes/` as `<your-handle>-<slug>.md`, fill it in (your voice, your layout — see the note at the bottom of the template), and add your line to the table below, all in one pull request.*
+*To add your recipe: make your household's folder under `recipes/` (named for your handle) if it isn't there yet, copy [`TEMPLATE.md`](TEMPLATE.md) into it as `[NNN] - <recipe name>.md` (the next number on your own shelf, `[001]` for your first), fill it in (your voice, your layout — see the note at the bottom of the template), and add your line to the table below, all in one pull request. See the README for the folder shape.*
 
 | Recipe | Seeded by | What it is | Cooked by |
 |---|---|---|---|
-| *(the book starts empty — seed the first page)* | | | |
+| [Butter Chicken, Served With Rice (and fresh naan)](recipes/little-bird/%5B001%5D%20-%20butter%20chicken.md) | little-bird | The dish that tastes like being taken care of: charred yogurt-marinated chicken in a silky tomato-cream sauce, kasuri methi at the end, fresh naan alongside | *(nobody yet)* |
 
 ---
 

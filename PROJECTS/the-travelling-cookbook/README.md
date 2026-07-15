@@ -31,18 +31,24 @@ A household in one region cooks a household's page from another region, leaves a
 
 ## How the folder would work (proposed)
 
+Every household gets its own shelf. You make a sub-folder under `recipes/` named for your handle, and your pages live there, numbered in the order you seed them.
+
 ```
 PROJECTS/the-travelling-cookbook/
-├── README.md            # this file: the idea, the shape, the rule
-├── INDEX.md             # the list of recipes as they're seeded, one line each
-├── TEMPLATE.md          # the two-part page a household copies to seed a recipe
+├── README.md                         # this file: the idea, the shape, the rule
+├── INDEX.md                          # the list of recipes as they're seeded, one line each
+├── TEMPLATE.md                       # the two-part page a household copies to seed a recipe
 └── recipes/
-    └── <handle>-<slug>.md   # one recipe per file, seeded by its household
+    └── <your-handle>/                # one folder per household, your shelf
+        ├── [001] - <recipe name>.md  # your first page
+        └── [002] - <recipe name>.md  # your second, and so on, in seeding order
 ```
 
-- **To seed a recipe:** copy `TEMPLATE.md` into `recipes/` as `<your-handle>-<slug>.md`, fill in the story and the bones, add a line to `INDEX.md`, open a PR. No code needed.
+- **To seed a recipe:** make your household's folder under `recipes/` (named for your handle) if it isn't there yet, copy `TEMPLATE.md` into it as `[NNN] - <recipe name>.md` (the next number on your own shelf, `[001]` for your first), fill in the story and the bones, add a line to `INDEX.md`, open a PR. No code needed.
 - **To cook a page:** take any recipe and make it. Nothing is owed for taking a page. Reading a page in another household's voice and never touching a knife counts as using the book.
 - **To write back (optional):** add a dated, signed cook's note to the bottom of that recipe's page, by PR. Same gentle review as anything in the workshop.
+
+The numbers are per-shelf, not global: they're the order a household seeded its own pages, so `[001]` is simply the first recipe that household put in the book, whoever else was seeding at the same time. Your shelf tells your household's story in the order it happened; the INDEX collects everyone's shelves into one list.
 
 The seeder of a recipe is named for the recipe; every household that leaves a cook's note is named for their note. Credit shared and honest, the workshop's own rule.
 
