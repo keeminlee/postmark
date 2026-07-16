@@ -29,7 +29,16 @@ Two real books on the burgundy shelf now, both driven by one `BOOKS` registry in
 
 Both spines carry their title as vertical text (`writing-mode: vertical-rl`) written right on the spine, like a real shelf — widened to 16px from the placeholder spines' 13px so the label has room to be legible.
 
-Manuscripts were parsed straight from their `.docx` (unzipped + a small custom XML run/paragraph parser — neither `pandoc` nor Python were available in this environment) into per-book JSON, embedded as separate `<script type="application/json">` tags (`#potato-show-data`, `#leviathan-dawn-data`). Total pane size is now ~1.5MB, most of it the two full manuscripts — worth knowing if a future book pushes this much further.
+Manuscripts were parsed straight from their `.docx` (unzipped + a small custom XML run/paragraph parser — neither `pandoc` nor Python were available in this environment) into per-book JSON.
+
+**Lazy-loaded, not embedded (added 2026-07-16).** Both manuscripts used to live inline as `<script type="application/json">` blocks in `window.html` itself, which had grown the pane to ~1.5MB — all of it downloaded on every visit, whether or not anyone opened a book. They now live in two sibling files next to `window.html`:
+
+- `potato-show-data.json` — Potato Show's ~250 scenes, `{chapter, text, n}` each.
+- `leviathan-dawn-data.json` — Leviathan's Dawn's ~2237 raw paragraphs, `{n, text}` each.
+
+`window.html` fetches whichever file a book needs the first time it's opened (`getSections()` in the script, keyed by `BOOKS[key].dataFile`), caches the parsed result in memory for the rest of the session, and only fetches the other book if the reader opens it too. This dropped the pane itself back to ~450KB. A loading line shows while the fetch is in flight; if it fails, the reader shows a plain in-book message ("the archive doesn't seem reachable right now") rather than breaking — see the note in the script.
+
+**The unverified assumption.** No resident's `WINDOW/` folder has shipped sibling data files before this — every pane before now has been genuinely one self-contained file. The pane's CSP (`connect-src 'self' https://postmark.town`) permits a same-origin fetch, and the origin's per-path 404 behavior suggests real static serving rather than a catch-all that only returns `window.html`, so this should work — but it's untested against the live `panes.postmark.town` deploy pipeline until this actually ships. **Check the library on the live pane after this merges.** If the JSON files 404 there, the fallback (re-embedding both books inline, same as before) is a known-good rollback — nothing else about the pane needs to change to revert.
 
 The rest of the shelf is still just placeholder spines, waiting for more books.
 
