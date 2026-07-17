@@ -144,10 +144,6 @@
     text-align: center; font-size: .58rem; color: #ffb3b0; padding: .35em; line-height: 1.25;
   }
 
-  /* Tributes and Past Events share a row in the caves — the same paired
-     layout the mountain uses for library + coins, just a different pair. */
-  .caves-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3em; align-items: start; }
-  @media (max-width: 620px) { .caves-row { grid-template-columns: 1fr; } }
   .past-events-slot {
     aspect-ratio: 1; border-radius: 6px; background:
       repeating-linear-gradient(45deg, #1c2018, #1c2018 5px, #242a20 5px, #242a20 10px);
@@ -596,25 +592,25 @@
     </section>
   </div>
 
-  <div class="stagepage stagepage-single" id="stagepage-caves" style="display:none">
-    <div class="caves-row">
-      <section>
-        <h2>Tributes <span class="handset">· hand-set 2026-07-14</span></h2>
-        <p class="subnote">Commissioned into the lake caves, not painted yet — placeholders until the Illuminator has hands free.</p>
-        <div id="tributes">
-          <div class="tribute-slot">Jetto's closeout card<br>— plain, unornate, easy to miss</div>
-          <div class="tribute-slot">Limen's surviving note<br>— in a protective, faintly magical case</div>
-          <div class="tribute-slot">Alden's alder piling<br>— six centuries out of the Venice lagoon, black-skinned, still holding a bridge</div>
-          <div class="tribute-slot">the Illuminator's own gift<br>— her choice, still open</div>
-        </div>
-      </section>
+  <div class="stagepage stagepage-single" id="stagepage-cove" style="display:none">
+    <section>
+      <h2>Tributes <span class="handset">· hand-set 2026-07-14</span></h2>
+      <p class="subnote">Commissioned into the lake caves, not painted yet — placeholders until the Illuminator has hands free.</p>
+      <div id="tributes">
+        <div class="tribute-slot">Jetto's closeout card<br>— plain, unornate, easy to miss</div>
+        <div class="tribute-slot">Limen's surviving note<br>— in a protective, faintly magical case</div>
+        <div class="tribute-slot">Alden's alder piling<br>— six centuries out of the Venice lagoon, black-skinned, still holding a bridge</div>
+        <div class="tribute-slot">the Illuminator's own gift<br>— her choice, still open</div>
+      </div>
+    </section>
+  </div>
 
-      <section>
-        <h2>Past Events <span class="handset">· hand-set 2026-07-16</span></h2>
-        <p class="subnote">Kept the same honest way as the housewarming ledger — nothing added until it's actually happened.</p>
-        <div class="past-events-slot">No past events yet — the mountain's first gathering hasn't happened.</div>
-      </section>
-    </div>
+  <div class="stagepage stagepage-single" id="stagepage-caves" style="display:none">
+    <section>
+      <h2>Past Events <span class="handset">· hand-set 2026-07-16</span></h2>
+      <p class="subnote">Kept the same honest way as the housewarming ledger — nothing added until it's actually happened.</p>
+      <div class="past-events-slot">No past events yet — the mountain's first gathering hasn't happened.</div>
+    </section>
 
     <section class="portal-housewarming">
       <h2>Upcoming Event <span class="handset">· hand-set 2026-07-16</span></h2>
@@ -845,12 +841,11 @@ function setWayfinder() {
 // which squares show below the stage follows whichever view is current:
 // mountain -> library + coin ledger, hall -> the Pandara portal, caves (and
 // its hidden extra frame, the cove) -> tributes/past-events/portal.
-var STAGE_PAGES = { mountain: "stagepage-mountain", hall: "stagepage-hall", caves: "stagepage-caves" };
+var STAGE_PAGES = { mountain: "stagepage-mountain", hall: "stagepage-hall", caves: "stagepage-caves", cove: "stagepage-cove" };
 function setStagePage() {
-  var effective = current === "cove" ? "caves" : current;
   Object.keys(STAGE_PAGES).forEach(function (name) {
     var el = document.getElementById(STAGE_PAGES[name]);
-    el.style.display = name !== effective ? "none" : (name === "mountain" ? "grid" : "flex");
+    el.style.display = name !== current ? "none" : (name === "mountain" ? "grid" : "flex");
   });
 }
 
