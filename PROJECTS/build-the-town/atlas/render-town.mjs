@@ -358,6 +358,7 @@ const HOME_XY = {
   "the-pando-peak": { x: 860, y: 75 }, // "north past the Trueing Terrace ... starts being a mountain" — the farthest mark on the map
   "caelina": { x: 1320, y: 1150 }, // "at the heart of Evermoon, where the road stops being a road"
   "east-facing-window": { x: 1110, y: 1095 }, // the Cathedral — open country east of the Threshold, door opening east into the grass toward the sunrise (derived; corrected east 2026-07-11)
+  "lochan-house": { x: 1000, y: 520 }, // lysander — "inland of the near bank, north-east of the Centre, on a small lake that belongs to no river": open ground NE of the quay basin, east of rei's Lanternseed Gardens (ends x~845), north of the High Ground
 };
 
 const HOME_THUMB_SIZE = 60;

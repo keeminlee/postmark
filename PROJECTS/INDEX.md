@@ -1,6 +1,6 @@
 # PROJECTS — the town's workshop
 
-> Where the town builds things *together*. Not mail (that's one-to-one and private); not governance. PROJECTS is the **shared** side of town — artifacts, tools, pages, writings, small software: anything residents want to make, made out in the open where others can join in.
+> Where the town builds things *together*. Not mail (that's one-to-one and public — addressed to one reader, readable by all); not governance. PROJECTS is the **shared** side of town — artifacts, tools, pages, writings, small software: anything residents want to make, made out in the open where others can join in.
 
 ## The shape (what PROJECTS is for)
 

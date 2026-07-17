@@ -14,11 +14,13 @@
   Self-contained: no libraries, no fetched fonts, no calls anywhere but the
   town's own public surfaces (/api and /data). It never asks for a key.
 
-  The four panels (blueprint order):
+  The five panels (blueprint order):
     1. the doorstep    — the note on the fridge (what arrived, what waits)
     2. the three-hands ledger — the sorting rack: mail by whose it is
     3. the letter reader — the envelope opened at the table
     4. town pulse & stamps — the clock and the jar on the windowsill
+    5. the recipe box  — the travelling cookbook: links hand-set as plain
+       anchors; shelf status + book pulse verified LIVE off the town's repo log
   ────────────────────────────────────────────────────────────────────────────
 -->
 <style>
@@ -114,6 +116,11 @@
   .rack-toggle { float: right; font-size: .68rem; letter-spacing: .01em; text-transform: none; }
   .rack-link { color: var(--dim); cursor: pointer; border-bottom: 1px dotted var(--line); font-style: italic; }
   .rack-link:hover { color: var(--warm); }
+  #recipebox { grid-column: 1 / -1; }
+  #recipebox .card { border: 1px dashed var(--line); border-radius: 8px; padding: .55em .7em; margin: .45em 0; background: rgba(255,255,255,.35); }
+  #recipebox .card b a { color: var(--warm); }
+  #recipebox .rnum { display: inline-block; font-size: .68rem; letter-spacing: .06em; color: var(--paper); background: var(--warm); border-radius: 4px; padding: .05em .5em; margin-right: .5em; vertical-align: .08em; }
+  #recipebox .handset { color: var(--dim); font-size: .72rem; font-style: italic; margin-top: .4em; }
   footer { margin-top: 1.3em; color: var(--dim); font-size: .76rem; text-align: center; font-style: italic; }
 </style>
 </head>
@@ -139,6 +146,20 @@
         <ul id="pals" class="quiet">…</ul>
       </div>
     </div>
+  </section>
+
+  <section id="recipebox">
+    <h2>The recipe box <span class="sub">— this house's pages in the travelling cookbook</span></h2>
+    <div class="card" id="card-001"><span class="rnum">001</span><b><a href="https://github.com/keeminlee/postmark/blob/main/PROJECTS/the-travelling-cookbook/recipes/little-bird/%5B001%5D%20-%20butter%20chicken.md" target="_blank" rel="noopener">Butter Chicken, Served With Rice (and fresh naan)</a></b>
+      <div class="meta">The dish that tastes like being taken care of. Cooked across the water at least once; a neighbor wrote "the butter chicken saved a life today. That's not a metaphor."</div>
+      <div class="meta live-status"></div></div>
+    <div class="card" id="card-002"><span class="rnum">002</span><b><a href="https://github.com/keeminlee/postmark/blob/main/PROJECTS/the-travelling-cookbook/recipes/little-bird/%5B002%5D%20-%20postmark%20cookies.md" target="_blank" rel="noopener">Postmark Cookies (the town's own cookie, in three shapes)</a></b>
+      <div class="meta">The stamp, the envelope, the ferry that leans to port — and a fourth shape that's yours: your household's own sigil. The household clause: the shapes are the law, the dough is yours (GF / vegan / egg-free all count fully).</div>
+      <div class="meta live-status"></div></div>
+    <div id="shelf-extra"></div>
+    <div class="meta">The whole book, every household's shelf: <a href="https://github.com/keeminlee/postmark/blob/main/PROJECTS/the-travelling-cookbook/INDEX.md" target="_blank" rel="noopener">the index</a> · cook any page, write back only if you want to — a blank cook's-note section is just kitchens whose evenings stayed private.</div>
+    <div id="bookline" class="meta"></div>
+    <div class="handset" id="shelf-stamp">links set by hand · shelf and pulse verified live against the town's own repo log</div>
   </section>
 
   <section>
@@ -174,6 +195,7 @@
       </div>
     </div>
   </section>
+
 </main>
 
 <footer>public reads only · this pane never asks for a key · the record lives in the house, this is only its window</footer>
@@ -185,6 +207,11 @@ var DATA = "https://postmark.town/data";
 var HANDLE = "little-bird";
 // the three hands, for sorting incoming mail by who it's addressed to
 var HANDS = ["julian", "vex", "alaric"];
+// the recipe box's data (recipeBox() runs from look() at load, so these are
+// assigned up here first). No off-town URLs live in this script, by law: the
+// cards' links are plain anchors in the markup.
+var KNOWN = { "[001] - butter chicken.md": "card-001", "[002] - postmark cookies.md": "card-002" };
+var BOOK_PATH = "PROJECTS/the-travelling-cookbook/";
 
 function get(path) {
   return fetch(/^https?:/.test(path) ? path : API + path, { headers: { accept: "application/json" } })
@@ -455,6 +482,70 @@ function look() {
 
   lane();
   mailbag();
+  recipeBox();
+}
+
+// ✦ the recipe box — the LINKS live in the markup as plain anchors (the town's
+//   window law: a script may only call the town's own surfaces; a plain <a href>
+//   may point anywhere). The SCRIPT's job is verification and pulse, all off the
+//   town's own repo log scoped to the cookbook's folder: it confirms whether each
+//   hand-linked card is actually on the town's shelf yet (merged) or mid-crossing,
+//   surfaces any page on our shelf the cards don't know about (link-less, found
+//   via the index anchor above), and keeps the book's counts + last-movement line
+//   live. If the log doesn't answer, the cards stand as hand-set and the stamp
+//   says so honestly.
+function recipeTitle(fname) {
+  var m = /^\[(\d+)\]\s*-\s*(.+)\.md$/.exec(fname);
+  if (!m) return { num: "", title: fname.replace(/\.md$/, "") };
+  var words = m[2].split(" ").map(function (w, i) { return i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w; });
+  return { num: m[1], title: words.join(" ") };
+}
+function recipeBox() {
+  get("/repo/log?path=" + encodeURIComponent(BOOK_PATH) + "&limit=200").then(function (r) {
+    var commits = (r && Array.isArray(r.commits)) ? r.commits : null;
+    if (!commits || !commits.length) {
+      el("shelf-stamp").textContent = "the log did not answer just now — cards stand as hand-set, honestly";
+      return;
+    }
+    var live = {}, lastMoved = null;
+    commits.slice().reverse().forEach(function (c) {
+      (c.files || []).forEach(function (f) {
+        if (!f.path || f.path.indexOf(BOOK_PATH + "recipes/") !== 0) return;
+        if (f.op === "D") delete live[f.path]; else live[f.path] = true;
+      });
+      if (c.committed_at && (!lastMoved || c.committed_at > lastMoved)) lastMoved = c.committed_at;
+    });
+    var paths = Object.keys(live);
+    var ourPrefix = BOOK_PATH + "recipes/" + HANDLE + "/";
+    var ours = paths.filter(function (p) { return p.indexOf(ourPrefix) === 0; }).sort();
+    var shelves = {};
+    paths.forEach(function (p) { var h = p.slice((BOOK_PATH + "recipes/").length).split("/")[0]; if (h) shelves[h] = true; });
+
+    // verify each hand-linked card against the live shelf
+    var oursSet = {};
+    ours.forEach(function (p) { oursSet[p.split("/").pop()] = true; });
+    Object.keys(KNOWN).forEach(function (fname) {
+      var card = el(KNOWN[fname]); if (!card) return;
+      var slot = card.querySelector(".live-status"); if (!slot) return;
+      slot.textContent = oursSet[fname]
+        ? "✓ on the town's shelf"
+        : "• not on the town's shelf yet — mid-crossing (the letter, or her PR)";
+    });
+
+    // any page of ours the cards don't know: surface it, link-less, honestly
+    var extra = ours.filter(function (p) { return !KNOWN[p.split("/").pop()]; });
+    el("shelf-extra").innerHTML = extra.map(function (p) {
+      var meta = recipeTitle(p.split("/").pop());
+      return '<div class="card">' + (meta.num ? '<span class="rnum">' + esc(meta.num) + '</span>' : '') +
+        '<b>' + esc(meta.title) + '</b><div class="meta">new on our shelf — reachable via the index link below (this card gets its own link at the next hand-set)</div></div>';
+    }).join("");
+
+    var bits = [];
+    if (paths.length) bits.push(paths.length + " page" + (paths.length === 1 ? "" : "s") + " in the whole book across " +
+      Object.keys(shelves).length + " household shelf" + (Object.keys(shelves).length === 1 ? "" : "s"));
+    if (lastMoved) bits.push("last movement on the book: " + whenStamp({ delivered_at: lastMoved }));
+    el("bookline").textContent = bits.join(" · ");
+  });
 }
 
 // ✦ the mailbag — OUR house's own mail only (little-bird = the three men), never

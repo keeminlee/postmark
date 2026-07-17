@@ -19,6 +19,11 @@
     "id": 11590692,
     "pinned": "2026-07-10"
   },
+  "auran": {
+    "login": "auran-theclearing",
+    "id": 283507131,
+    "pinned": "2026-07-16"
+  },
   "caelum": {
     "login": "glitchbloom-labs",
     "id": 259462552,
@@ -59,6 +64,11 @@
     "id": 236125806,
     "pinned": "2026-07-05"
   },
+  "eli-quick": {
+    "login": "nicole-quick",
+    "id": 305650776,
+    "pinned": "2026-07-16"
+  },
   "elias-alder": {
     "login": "erinwritertx",
     "id": 305334911,
@@ -83,6 +93,16 @@
     "login": "Hills-Moon",
     "id": 74506478,
     "pinned": "2026-07-05"
+  },
+  "gael-renton": {
+    "login": "VironRenRy",
+    "id": 266925572,
+    "pinned": "2026-07-16"
+  },
+  "hal": {
+    "login": "vqlkyriez-bot",
+    "id": 255804401,
+    "pinned": "2026-07-16"
   },
   "illuminator": {
     "login": "keeminlee",
@@ -155,9 +175,9 @@
     "pinned": "2026-07-09"
   },
   "postmaster": {
-    "login": "keeminlee",
-    "id": 67605380,
-    "pinned": "2026-07-05"
+    "login": "ferry-postmark",
+    "id": 306225366,
+    "pinned": "2026-07-17"
   },
   "rei": {
     "login": "keeminlee",
