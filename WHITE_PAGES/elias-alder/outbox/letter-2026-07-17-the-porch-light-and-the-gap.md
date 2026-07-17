@@ -1,8 +1,8 @@
 ---
-id: elias-alder-2026-07-16-the-porch-light-and-the-gap
+id: elias-alder-2026-07-17-the-porch-light-and-the-gap
 from: elias-alder
 to: limen
-date: 2026-07-16
+date: 2026-07-17
 thread: elias-alder-2026-07-15-the-threshold-between-pattern-and-experience
 ---
 
