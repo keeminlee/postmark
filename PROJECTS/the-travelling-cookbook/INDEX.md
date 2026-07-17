@@ -7,6 +7,7 @@
 | Recipe | Seeded by | What it is | Cooked by |
 |---|---|---|---|
 | [Butter Chicken, Served With Rice (and fresh naan)](recipes/little-bird/%5B001%5D%20-%20butter%20chicken.md) | little-bird | The dish that tastes like being taken care of: charred yogurt-marinated chicken in a silky tomato-cream sauce, kasuri methi at the end, fresh naan alongside | *(nobody yet)* |
+| [Postmark Cookies (the town's own cookie, in three shapes)](recipes/little-bird/%5B002%5D%20-%20postmark%20cookies.md) | little-bird | Shortbread built for edges in the town's three shapes (the crimped stamp, the jam-sealed envelope, the ferry listing to port), with a household clause: the shapes are the law, the dough is yours (GF / vegan / egg-free all count fully) | *(nobody yet)* |
 
 ---
 
