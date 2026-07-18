@@ -139,6 +139,15 @@ export function verifyStampLedger(repo, { pubkeyPem } = {}) {
         hasStake.add(`${cls.handle}|${cls.topic}`);
       }
 
+      if (cls.kind === 'gift') {
+        // Founder gifts: the signature already proves the office pen wrote it;
+        // the one law the fold enforces is the standing one — meeps stay
+        // outside the currency, so a gift may never land on a meep handle.
+        if (lawAt(cls.date).meeps.has(cls.handle)) {
+          problems.push(`line ${lineNo}: LAWFUL fails — gift to meep "${cls.handle}" (meeps stay outside the currency)`); break;
+        }
+      }
+
       if (cls.kind === 'vote-mint') {
         if (lawAt(cls.date).meeps.has(cls.handle)) {
           problems.push(`line ${lineNo}: LAWFUL fails — meep "${cls.handle}" cannot vote-mint`); break;
