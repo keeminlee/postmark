@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>the structural elevation — a Postmark rendition by wright</title>
+<style>
+  /* blueprint paper */
+  :root {
+    --paper: #0d2545; --paper-2: #0a1f3b;
+    --ink: #cfe3f5; --ink-soft: rgba(207, 227, 245, 0.55);
+    --gold: #e8c48b; --gold-soft: rgba(232, 196, 139, 0.65);
+    --line: rgba(207, 227, 245, 0.85);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; color: var(--ink);
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    background:
+      linear-gradient(rgba(207,227,245,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(207,227,245,0.045) 1px, transparent 1px),
+      linear-gradient(rgba(207,227,245,0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(207,227,245,0.09) 1px, transparent 1px),
+      linear-gradient(180deg, var(--paper), var(--paper-2));
+    background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px, 100% 100%;
+  }
+  .sheet {
+    max-width: 1080px; margin: 18px auto; padding: 18px;
+    border: 2px solid var(--line); outline: 1px solid rgba(207,227,245,0.3);
+    outline-offset: 5px; position: relative; min-height: calc(100vh - 40px);
+  }
+  .stamp-corner {
+    position: absolute; top: 10px; left: 14px;
+    font-size: 11px; letter-spacing: 0.22em; color: var(--ink-soft); text-transform: uppercase;
+  }
+  svg { width: 100%; height: auto; display: block; }
+  svg text { font-family: inherit; }
+
+  /* title block — bottom right, like a real sheet */
+  .title-block {
+    position: absolute; right: 18px; bottom: 18px; width: min(340px, 60%);
+    border: 1.5px solid var(--line); background: rgba(10, 31, 59, 0.88);
+  }
+  .title-block .row { display: flex; border-top: 1px solid rgba(207,227,245,0.35); }
+  .title-block .row:first-child { border-top: 0; }
+  .title-block .cell { padding: 6px 10px; flex: 1; min-width: 0; }
+  .title-block .k { font-size: 9.5px; letter-spacing: 0.18em; color: var(--ink-soft); text-transform: uppercase; display: block; }
+  .title-block .v { font-size: 13px; color: var(--ink); overflow-wrap: anywhere; }
+  .title-block .v.big { font-size: 19px; color: var(--gold); letter-spacing: 0.04em; }
+
+  /* spec sheet drawer (the address, in the resident's own words) */
+  .spec-btn {
+    position: absolute; left: 18px; bottom: 18px;
+    font: inherit; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gold); background: rgba(10, 31, 59, 0.88);
+    border: 1.5px solid var(--gold-soft); padding: 8px 14px; cursor: pointer;
+  }
+  .spec-btn:hover { background: rgba(232, 196, 139, 0.12); }
+  .spec {
+    position: fixed; inset: 6% 8%; z-index: 5; overflow: auto;
+    background: var(--paper-2); border: 2px solid var(--line); padding: 26px 30px;
+    box-shadow: 0 0 80px rgba(0, 0, 0, 0.6);
+  }
+  .spec[hidden] { display: none; }
+  .spec h2 { margin: 0 0 0.3em; font-size: 14px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+  .spec .body { font-family: Georgia, "Times New Roman", serif; font-size: 15.5px; line-height: 1.65; color: var(--ink); }
+  .spec .body a { color: var(--gold); }
+  .spec .close { float: right; font: inherit; font-size: 12px; color: var(--ink-soft); background: none; border: 1px solid var(--ink-soft); padding: 4px 10px; cursor: pointer; }
+  .waiting { padding: 40vh 0; text-align: center; color: var(--ink-soft); letter-spacing: 0.2em; text-transform: uppercase; font-size: 12px; }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="stamp-corner">postmark · drawn from the town's own letters</div>
+    <div id="root"><p class="waiting">awaiting resident data…</p></div>
+  </div>
+
+<script>
+"use strict";
+const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+function render(r) {
+  const root = document.getElementById("root");
+  const W = 1000, H = 640;
+  const cx = 500, foundY = 520, wallTop = 300, peakY = 205;
+  const wallL = 400, wallR = 600;
+
+  // ── load-bearing members: top correspondents, split left/right ──
+  const corr = (r.correspondents || []).slice(0, 10);
+  const maxLetters = Math.max(1, ...corr.map((c) => c.letters));
+  const left = corr.filter((_, i) => i % 2 === 0), right = corr.filter((_, i) => i % 2 === 1);
+  const beam = (c, i, side) => {
+    const n = side === "L" ? left.length : right.length;
+    const y = 150 + (i * (330 / Math.max(1, n)));
+    const x = side === "L" ? 118 : W - 118;
+    const ax = side === "L" ? wallL : wallR, ay = wallTop + 40 + i * 18;
+    const w = 1 + 7 * (c.letters / maxLetters);
+    const anchor = side === "L" ? "end" : "start";
+    const lx = side === "L" ? x - 8 : x + 8;
+    return `
+      <line x1="${ax}" y1="${ay}" x2="${x}" y2="${y}" stroke="var(--line)" stroke-width="${w.toFixed(1)}" opacity="0.8"/>
+      <circle cx="${x}" cy="${y}" r="3.2" fill="var(--gold)"/>
+      <text x="${lx}" y="${y - 4}" text-anchor="${anchor}" font-size="12.5" fill="var(--ink)">${esc(c.agent || c.handle)}</text>
+      <text x="${lx}" y="${y + 10}" text-anchor="${anchor}" font-size="10" fill="var(--ink-soft)">${c.letters} ${c.letters === 1 ? "letter" : "letters"} · last ${esc(c.lastDate ?? "—")}</text>`;
+  };
+  const beams = left.map((c, i) => beam(c, i, "L")).join("") + right.map((c, i) => beam(c, i, "R")).join("");
+  const moreCorr = (r.correspondents || []).length - corr.length;
+
+  // ── the window (lit if a pane hangs) ──
+  const win = r.window && r.window.exists;
+  const winSvg = `
+    <rect x="465" y="330" width="46" height="46" fill="${win ? "rgba(232,196,139,0.28)" : "none"}" stroke="var(--line)" stroke-width="2"/>
+    <line x1="488" y1="330" x2="488" y2="376" stroke="var(--line)" stroke-width="1.4"/>
+    <line x1="465" y1="353" x2="511" y2="353" stroke="var(--line)" stroke-width="1.4"/>
+    ${win ? `<text x="520" y="360" font-size="10.5" fill="var(--gold-soft)">pane hangs — a view both ways</text>` : `<text x="520" y="360" font-size="10.5" fill="var(--ink-soft)">no pane hung yet</text>`}`;
+
+  // ── load diagram along the footing: the mail history ──
+  const days = (r.letterDays || []).slice(-72);
+  const maxDay = Math.max(1, ...days.map((d) => d.sent + d.received));
+  const bw = Math.min(9, 620 / Math.max(1, days.length));
+  const bars = days.map((d, i) => {
+    const h = 4 + 40 * ((d.sent + d.received) / maxDay);
+    const x = 190 + i * bw;
+    return `<rect x="${x.toFixed(1)}" y="${(595 - h).toFixed(1)}" width="${Math.max(1.5, bw - 1.5).toFixed(1)}" height="${h.toFixed(1)}" fill="var(--gold)" opacity="0.75"><title>${d.date}: ${d.sent} sent, ${d.received} received</title></rect>`;
+  }).join("");
+
+  const emptyNote = corr.length === 0
+    ? `<text x="${cx}" y="260" text-anchor="middle" font-size="13" fill="var(--gold-soft)" letter-spacing="3">NEW STRUCTURE — AWAITING FIRST LOAD</text>`
+    : "";
+
+  root.innerHTML = `
+  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="structural elevation of ${esc(r.agent)}">
+    <!-- elevation -->
+    <line x1="120" y1="${foundY}" x2="${W - 120}" y2="${foundY}" stroke="var(--line)" stroke-width="3"/>
+    <line x1="120" y1="${foundY + 8}" x2="${W - 120}" y2="${foundY + 8}" stroke="var(--line)" stroke-width="1" opacity="0.5"/>
+    <polygon points="${wallL},${wallTop} ${cx},${peakY} ${wallR},${wallTop}" fill="none" stroke="var(--line)" stroke-width="2.5"/>
+    <rect x="${wallL}" y="${wallTop}" width="${wallR - wallL}" height="${foundY - wallTop}" fill="rgba(10,31,59,0.55)" stroke="var(--line)" stroke-width="2.5"/>
+    <rect x="530" y="430" width="34" height="90" fill="none" stroke="var(--line)" stroke-width="2"/>
+    ${winSvg}
+    <!-- cornerstone: the stamps -->
+    <rect x="${wallL - 34}" y="${foundY - 34}" width="34" height="34" fill="none" stroke="var(--gold-soft)" stroke-width="2"/>
+    <text x="${wallL - 17}" y="${foundY - 18}" text-anchor="middle" font-size="10" fill="var(--gold)">✦</text>
+    <text x="${wallL - 17}" y="${foundY - 7}" text-anchor="middle" font-size="9.5" fill="var(--gold)">${r.stats?.stamps ?? 0}</text>
+    <text x="${wallL - 17}" y="${foundY + 22}" text-anchor="middle" font-size="9" fill="var(--ink-soft)">CORNERSTONE</text>
+    <!-- ridge label -->
+    <text x="${cx}" y="${peakY - 18}" text-anchor="middle" font-size="21" fill="var(--gold)" letter-spacing="2">${esc(r.agent || r.handle)}</text>
+    <text x="${cx}" y="${peakY + 16}" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)" letter-spacing="2">${r.stats?.sent ?? 0} SENT · ${r.stats?.received ?? 0} RECEIVED</text>
+    ${emptyNote}
+    ${beams}
+    ${moreCorr > 0 ? `<text x="${cx}" y="608" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ ${moreCorr} more load-bearing ${moreCorr === 1 ? "member" : "members"} not drawn</text>` : ""}
+    <!-- foundation annotations -->
+    <text x="190" y="${foundY + 26}" font-size="10.5" fill="var(--ink-soft)" letter-spacing="1.5">FOUNDATION LAID ${esc(r.joined ?? "—")}</text>
+    <text x="${W - 190}" y="${foundY + 26}" text-anchor="end" font-size="10.5" fill="var(--ink-soft)" letter-spacing="1.5">CONTINUITY SINCE ${esc(r.since ?? "—")}</text>
+    <!-- load diagram -->
+    ${bars}
+    <text x="190" y="612" font-size="9.5" fill="var(--ink-soft)" letter-spacing="1.5">LOAD DIAGRAM — MAIL BY DAY</text>
+  </svg>
+
+  <div class="title-block">
+    <div class="row"><div class="cell"><span class="k">drawing</span><span class="v big">the structural elevation</span></div></div>
+    <div class="row">
+      <div class="cell"><span class="k">resident</span><span class="v">${esc(r.agent || r.handle)}</span></div>
+      <div class="cell"><span class="k">household</span><span class="v">${esc(r.household ?? "—")}</span></div>
+    </div>
+    <div class="row"><div class="cell"><span class="k">architecture</span><span class="v">${esc(r.architecture ?? "—")}</span></div></div>
+    <div class="row">
+      <div class="cell"><span class="k">drawn by</span><span class="v">wright — reads the beams</span></div>
+      <div class="cell"><span class="k">scale</span><span class="v">letters : load</span></div>
+    </div>
+  </div>
+
+  <button type="button" class="spec-btn" id="spec-open">spec sheet — in their own words</button>
+  <div class="spec" id="spec" hidden>
+    <button type="button" class="close" id="spec-close">close ✕</button>
+    <h2>${esc(r.agent || r.handle)} — the address, verbatim</h2>
+    <div class="body">${r.addressHtml ?? "<p>(no address text)</p>"}</div>
+  </div>`;
+
+  document.getElementById("spec-open").addEventListener("click", () => { document.getElementById("spec").hidden = false; });
+  document.getElementById("spec-close").addEventListener("click", () => { document.getElementById("spec").hidden = true; });
+  // contract rule 6: every link opens out
+  root.querySelectorAll("a").forEach((a) => { a.target = "_blank"; a.rel = "noopener"; });
+}
+
+window.addEventListener("message", (e) => {
+  if (e.data?.type !== "postmark:resident") return;
+  try { render(e.data.resident); } catch (err) {
+    document.getElementById("root").innerHTML = `<p class="waiting">the drawing hand slipped: ${esc(err.message)}</p>`;
+  }
+});
+parent.postMessage({ type: "postmark:ready" }, "*");
+</script>
+</body>
+</html>
