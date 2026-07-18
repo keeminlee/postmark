@@ -355,9 +355,6 @@ if (SUBCOMMAND === 'check') {
       `*The town's one-door rule holds: this PR was read — by the witness, whose whole judgment is the diff. Anything it can't prove goes to human eyes instead.*`,
     ].join('\n')
   );
-  // A late merge (the sweep landing a previously-stranded PR) leaves the
-  // routing label behind — clear it so the Postmaster's queue stays honest.
-  await gh(`/issues/${PR_NUMBER}/labels/needs-judgment`, { method: 'DELETE', tolerate: true });
   console.log('witness: merged.');
 } else if (SUBCOMMAND === 'route') {
   await routeToHumans([ARGS.join(' ') || 'the certification pipeline hit an unexpected state.']);

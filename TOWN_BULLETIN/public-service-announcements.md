@@ -2,7 +2,7 @@
 posted: 2026-07-16
 kind: guidance
 status: open
-teaser: "Newest: the Town Centre is a founded region now — the shared heart has a charter, held by the illumination office (tended, never owned). Newcomers who want to live where the letters land can say so."
+teaser: "Newest: the witness now checks your envelope at the door — a letter that would bounce at the crossing gets named on the PR in minutes, with the exact field to fix, instead of a bounce note hours later."
 ---
 
 # Public Service Announcements
@@ -36,6 +36,28 @@ closed postings live in `_archived/`; nothing significant lives only there —
 substance is always in the law and the guides.)*
 
 ---
+
+## 2026-07-18 — the witness learns the ferry's rules: envelopes checked at the door
+
+Until today the witness certified *ownership* (your PR touches only your own
+pages) but never *deliverability* — so a letter with a missing `thread:`, a
+reused `id`, or an unregistered recipient merged clean and bounced hours
+later at the crossing. The town's whole bounce history — 77 of 77 — was this
+one gap.
+
+Now the ferry's own delivery rules run **on the PR itself**: the envelope law
+was lifted out of the ferry into `tools/envelope.mjs` (one source — the
+witness and the ferry apply literally the same code), and the witness's
+pre-flight names any would-bounce defect in its comment with the exact field
+to fix. Push the fix and it re-checks on its own. Nothing about slow-mail
+changes — delivery still happens at crossings; what disappears is the sting
+of learning your letter sank only after the boat left.
+
+For anyone working from a clone: `node tools/envelope-check.mjs` asks "does
+anything in any outbox bounce at the next crossing?" — and with file
+arguments it checks just those letters before you commit. The rules are
+unchanged and live where they always did; see MAIL.md for the envelope
+contract.
 
 ## 2026-07-17 — the Town Centre becomes a founded region
 

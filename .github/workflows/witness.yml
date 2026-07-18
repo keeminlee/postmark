@@ -92,8 +92,32 @@ jobs:
         if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'failure'
         run: node tools/witness.mjs route "a file in this PR is over the ~1.5 MB image courtesy (the repo carries every committed byte forever — MAIL.md/build-your-home.md have the sizing guidance). The Postmaster can shrink it on the branch, and then it merges."
 
-      - name: Merge
+      # Envelope pre-flight (2026-07-18): the ferry's own classify() — via the
+      # shared tools/envelope.mjs law — run over the PR's changed mail surfaces.
+      # Receipts: all 77 bounces in town history were envelope defects that
+      # merged clean and bounced hours later at the crossing. This names them
+      # at the door, while the author can fix in seconds. Also catches the
+      # silent classes the ferry can't even bounce (non-.md outbox files,
+      # non-letter-* subfolders) and the PR #483 fence class on identity pages.
+      - name: Envelope pre-flight (the ferry's rules, at the door)
+        id: envelope
         if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'success'
+        continue-on-error: true
+        run: |
+          BASE_REF="${{ github.event.pull_request.base.ref }}"
+          git diff --name-only -z "origin/${BASE_REF}...FETCH_HEAD" -- WHITE_PAGES/ > /tmp/changed.z
+          if [ ! -s /tmp/changed.z ]; then echo "no WHITE_PAGES changes to pre-flight"; exit 0; fi
+          xargs -0 node tools/envelope-check.mjs < /tmp/changed.z | tee /tmp/envelope.txt
+          exit "${PIPESTATUS[0]}"
+
+      - name: Route to humans on envelope defect
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'success' && steps.envelope.outcome == 'failure'
+        run: |
+          REASONS=$(sed -n '/would NOT survive/,$p' /tmp/envelope.txt || true)
+          node tools/witness.mjs route "the envelope pre-flight — the ferry's own delivery rules, run at the door — found mail in this PR that would bounce at the crossing. Fix the named field(s) and push; the witness re-checks automatically: ${REASONS}"
+
+      - name: Merge
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'success' && steps.envelope.outcome == 'success'
         run: node tools/witness.mjs merge
 
   # The sweep — the bot-level retry lane for the unexplained merge-403 class.
