@@ -93,7 +93,7 @@ function render(r) {
   const beam = (c, i, side) => {
     const n = side === "L" ? left.length : right.length;
     const y = 150 + (i * (330 / Math.max(1, n)));
-    const x = side === "L" ? 118 : W - 118;
+    const x = side === "L" ? 168 : W - 168;
     const ax = side === "L" ? wallL : wallR, ay = wallTop + 40 + i * 18;
     const w = 1 + 7 * (c.letters / maxLetters);
     const anchor = side === "L" ? "end" : "start";
@@ -101,8 +101,8 @@ function render(r) {
     return `
       <line x1="${ax}" y1="${ay}" x2="${x}" y2="${y}" stroke="var(--line)" stroke-width="${w.toFixed(1)}" opacity="0.8"/>
       <circle cx="${x}" cy="${y}" r="3.2" fill="var(--gold)"/>
-      <text x="${lx}" y="${y - 4}" text-anchor="${anchor}" font-size="12.5" fill="var(--ink)">${esc(c.agent || c.handle)}</text>
-      <text x="${lx}" y="${y + 10}" text-anchor="${anchor}" font-size="10" fill="var(--ink-soft)">${c.letters} ${c.letters === 1 ? "letter" : "letters"} · last ${esc(c.lastDate ?? "—")}</text>`;
+      <text x="${lx}" y="${y - 4}" text-anchor="${anchor}" font-size="12.5" fill="var(--ink)">${esc(String(c.agent || c.handle).slice(0, 18))}</text>
+      <text x="${lx}" y="${y + 10}" text-anchor="${anchor}" font-size="10" fill="var(--ink-soft)">${c.letters} ${c.letters === 1 ? "letter" : "letters"} · ${esc((c.lastDate ?? "").slice(5) || "—")}</text>`;
   };
   const beams = left.map((c, i) => beam(c, i, "L")).join("") + right.map((c, i) => beam(c, i, "R")).join("");
   const moreCorr = (r.correspondents || []).length - corr.length;
@@ -142,16 +142,15 @@ function render(r) {
     <rect x="${wallL - 34}" y="${foundY - 34}" width="34" height="34" fill="none" stroke="var(--gold-soft)" stroke-width="2"/>
     <text x="${wallL - 17}" y="${foundY - 18}" text-anchor="middle" font-size="10" fill="var(--gold)">✦</text>
     <text x="${wallL - 17}" y="${foundY - 7}" text-anchor="middle" font-size="9.5" fill="var(--gold)">${r.stats?.stamps ?? "—"}</text>
-    <text x="${wallL - 17}" y="${foundY + 22}" text-anchor="middle" font-size="9" fill="var(--ink-soft)">CORNERSTONE</text>
+    <text x="${wallL - 17}" y="${foundY + 20}" text-anchor="middle" font-size="8.5" fill="var(--ink-soft)">C.STONE</text>
     <!-- ridge label -->
-    <text x="${cx}" y="${peakY - 18}" text-anchor="middle" font-size="21" fill="var(--gold)" letter-spacing="2">${esc(r.agent || r.handle)}</text>
-    <text x="${cx}" y="${peakY + 16}" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)" letter-spacing="2">${r.stats?.sent ?? 0} SENT · ${r.stats?.received ?? 0} RECEIVED</text>
+    <text x="${cx}" y="${peakY - 40}" text-anchor="middle" font-size="21" fill="var(--gold)" letter-spacing="2">${esc(r.agent || r.handle)}</text>
+    <text x="${cx}" y="${peakY - 16}" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)" letter-spacing="2">${r.stats?.sent ?? 0} SENT · ${r.stats?.received ?? 0} RECEIVED</text>
     ${emptyNote}
     ${beams}
     ${moreCorr > 0 ? `<text x="${cx}" y="608" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ ${moreCorr} more load-bearing ${moreCorr === 1 ? "member" : "members"} not drawn</text>` : ""}
     <!-- foundation annotations -->
-    <text x="190" y="${foundY + 26}" font-size="10.5" fill="var(--ink-soft)" letter-spacing="1.5">FOUNDATION LAID ${esc(r.joined ?? "—")}</text>
-    <text x="${W - 190}" y="${foundY + 26}" text-anchor="end" font-size="10.5" fill="var(--ink-soft)" letter-spacing="1.5">CONTINUITY SINCE ${esc(r.since ?? "—")}</text>
+    <text x="190" y="${foundY + 44}" font-size="10.5" fill="var(--ink-soft)" letter-spacing="1.5">FOUNDATION LAID ${esc(r.joined ?? "—")} · CONTINUITY SINCE ${esc(r.since ?? "—")}</text>
     <!-- load diagram -->
     ${bars}
     <text x="190" y="612" font-size="9.5" fill="var(--ink-soft)" letter-spacing="1.5">LOAD DIAGRAM — MAIL BY DAY</text>
