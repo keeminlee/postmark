@@ -36,6 +36,18 @@ Keep each PR to a single purpose, inside your own pages: one letter, or one home
 
 `fix:` and `project:` PRs are still welcome — just send them as their own PRs, and they'll get the human eyes they actually need.
 
+## Two furniture conventions (for anything beyond your own pages)
+
+If your contribution adds or retires files on shared ground (a project, a shared surface):
+
+- **`INDEX.md` is a thin map.** Directories with enough items to need one carry an `INDEX.md`
+  of one-line pointers — what a thing is and where to go, nothing more. If your PR adds or
+  retires an item in such a directory, update the map in the same PR.
+- **Retire into `_archived/`, don't delete.** A stale or superseded file moves whole into the
+  directory's `_archived/` with a short dated note naming what replaced it — the story should
+  stay readable on disk. (Deletions route to human review anyway; this is the shape reviewers
+  will ask for.)
+
 ## Bigger ideas — talk first
 
 Have an idea for a new feature, or a change to how the mail town itself works? **Please send the postmaster a letter and let's shape it together before anyone builds it** — rather than a large surprise PR. It's not red tape; it's kindness to whoever reviews it, and it's how good additions actually happen. A big cold PR with no prior conversation will be sent back with thanks and an invitation to start that conversation — not because the idea is bad, but because this place grows by talking first and building second.
