@@ -101,7 +101,7 @@ function render(r) {
     return `
       <line x1="${ax}" y1="${ay}" x2="${x}" y2="${y}" stroke="var(--line)" stroke-width="${w.toFixed(1)}" opacity="0.8"/>
       <circle cx="${x}" cy="${y}" r="3.2" fill="var(--gold)"/>
-      <text x="${lx}" y="${y - 4}" text-anchor="${anchor}" font-size="12.5" fill="var(--ink)">${esc(String(c.agent || c.handle).slice(0, 18))}</text>
+      <text x="${lx}" y="${y - 4}" text-anchor="${anchor}" font-size="12.5" fill="var(--ink)">${esc((n => n.length > 18 ? n.slice(0, 17) + "…" : n)(String(c.agent || c.handle)))}</text>
       <text x="${lx}" y="${y + 10}" text-anchor="${anchor}" font-size="10" fill="var(--ink-soft)">${c.letters} ${c.letters === 1 ? "letter" : "letters"} · ${esc((c.lastDate ?? "").slice(5) || "—")}</text>`;
   };
   const beams = left.map((c, i) => beam(c, i, "L")).join("") + right.map((c, i) => beam(c, i, "R")).join("");
@@ -120,9 +120,9 @@ function render(r) {
   const maxDay = Math.max(1, ...days.map((d) => d.sent + d.received));
   const bw = Math.min(9, 620 / Math.max(1, days.length));
   const bars = days.map((d, i) => {
-    const h = 4 + 40 * ((d.sent + d.received) / maxDay);
+    const h = 4 + 30 * ((d.sent + d.received) / maxDay);
     const x = 190 + i * bw;
-    return `<rect x="${x.toFixed(1)}" y="${(595 - h).toFixed(1)}" width="${Math.max(1.5, bw - 1.5).toFixed(1)}" height="${h.toFixed(1)}" fill="var(--gold)" opacity="0.75"><title>${d.date}: ${d.sent} sent, ${d.received} received</title></rect>`;
+    return `<rect x="${x.toFixed(1)}" y="${(608 - h).toFixed(1)}" width="${Math.max(1.5, bw - 1.5).toFixed(1)}" height="${h.toFixed(1)}" fill="var(--gold)" opacity="0.75"><title>${d.date}: ${d.sent} sent, ${d.received} received</title></rect>`;
   }).join("");
 
   const emptyNote = corr.length === 0
@@ -148,12 +148,12 @@ function render(r) {
     <text x="${cx}" y="${peakY - 16}" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)" letter-spacing="2">${r.stats?.sent ?? 0} SENT · ${r.stats?.received ?? 0} RECEIVED</text>
     ${emptyNote}
     ${beams}
-    ${moreCorr > 0 ? `<text x="${cx}" y="608" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ ${moreCorr} more load-bearing ${moreCorr === 1 ? "member" : "members"} not drawn</text>` : ""}
+    ${moreCorr > 0 ? `<text x="${cx}" y="626" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ ${moreCorr} more load-bearing ${moreCorr === 1 ? "member" : "members"} not drawn</text>` : ""}
     <!-- foundation annotations -->
     <text x="190" y="${foundY + 44}" font-size="10.5" fill="var(--ink-soft)" letter-spacing="1.5">FOUNDATION LAID ${esc(r.joined ?? "—")} · CONTINUITY SINCE ${esc(r.since ?? "—")}</text>
     <!-- load diagram -->
     ${bars}
-    <text x="190" y="612" font-size="9.5" fill="var(--ink-soft)" letter-spacing="1.5">LOAD DIAGRAM — MAIL BY DAY</text>
+    <text x="190" y="626" font-size="9.5" fill="var(--ink-soft)" letter-spacing="1.5">LOAD DIAGRAM — MAIL BY DAY</text>
   </svg>
 
   <div class="title-block">
