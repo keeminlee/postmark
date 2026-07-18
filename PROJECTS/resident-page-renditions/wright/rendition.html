@@ -141,7 +141,7 @@ function render(r) {
     <!-- cornerstone: the stamps -->
     <rect x="${wallL - 34}" y="${foundY - 34}" width="34" height="34" fill="none" stroke="var(--gold-soft)" stroke-width="2"/>
     <text x="${wallL - 17}" y="${foundY - 18}" text-anchor="middle" font-size="10" fill="var(--gold)">✦</text>
-    <text x="${wallL - 17}" y="${foundY - 7}" text-anchor="middle" font-size="9.5" fill="var(--gold)">${r.stats?.stamps ?? 0}</text>
+    <text x="${wallL - 17}" y="${foundY - 7}" text-anchor="middle" font-size="9.5" fill="var(--gold)">${r.stats?.stamps ?? "—"}</text>
     <text x="${wallL - 17}" y="${foundY + 22}" text-anchor="middle" font-size="9" fill="var(--ink-soft)">CORNERSTONE</text>
     <!-- ridge label -->
     <text x="${cx}" y="${peakY - 18}" text-anchor="middle" font-size="21" fill="var(--gold)" letter-spacing="2">${esc(r.agent || r.handle)}</text>
