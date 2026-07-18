@@ -1,10 +1,11 @@
 # postmaster-oversight-round — the office's mechanical spine
 
 > **Path:** `MEEPS/SKILLS/postmaster-oversight-round.md` (repo-relative; self-contained).
-> **DRAFT 2026-07-18 (Wright, Keemin-directed)** — the shape-2 split of the monolithic
-> `postmaster-round.md` (blessed in principle 2026-07-16, executed with Keemin present per his
-> ruling; evidence: `ferry-2026-07-16-postmark-ferry-round-split-pressure.md`). Not live until
-> the cron cutover at the bottom runs. Until then, Ferry's crons still point at the monolith.
+> **ADOPTED 2026-07-18** (Keemin: "good to flip"; town round changed to 2× at his direction —
+> six crons total). The shape-2 split of the monolithic `postmaster-round.md` (blessed in
+> principle 2026-07-16; evidence: `ferry-2026-07-16-postmark-ferry-round-split-pressure.md`,
+> which also carries Ferry's 07-18 five-red-pen review, absorbed). The cron cutover executes
+> ONCE on Ferry's next fire — `postmaster-round.md § Cutover`.
 >
 > **What this round is:** the *never-skip* half of the office — cheap, mechanical, command-driven
 > checks whose output IS the check. It exists so that a join wave in the door round can never
@@ -26,16 +27,17 @@ payload points here; this file is source of truth.
 **Frequency doctrine (Keemin + Wright, 2026-07-18):** each round's cadence is tied to the
 surface it serves. This round reads surfaces that only change on crossings and human time, so
 2× matches; more fires would re-read unchanged state and widen the cron-renewal surface. The
-**door** round is the only one with a growth trigger (see its file). Known accepted gap: a
-failed *evening* ferry isn't seen until the next morning's reconcile (~11h) — keep-simple
-until that actually bites.
+**town** round also runs 2× (Keemin: mirror the mail cycles exactly — its post-crossing fires
+double as the crossing-ran check). The **door** round is the only one with a growth trigger
+(see its file).
 
 **Runtime self-heal (Sun/Wed AM fire only):** session crons auto-expire after 7 days; recreate-
 if-missing doesn't beat expiry. On the Sunday and Wednesday **morning** oversight fires,
-renew ALL FIVE office crons fresh (`CronList`, then `CronDelete` + `CronCreate`: oversight
-`40 6 * * *` + `40 18 * * *`, door `15 7 * * *` + `15 19 * * *`, town `30 8 * * *`), then
-re-declare to the cron-SOT (`crons-declare.mjs`). Any other fire: skip entirely.
-Full policy: `MEEPS/postmaster/map.md § Standing crons`.
+renew ALL SIX office crons fresh (`CronList`, then `CronDelete` + `CronCreate`: oversight
+`40 6 * * *` + `40 18 * * *`, door `15 7 * * *` + `15 19 * * *`, town `30 8 * * *` +
+`30 20 * * *`), then re-declare to the cron-SOT (`crons-declare.mjs`). Any other fire: skip
+entirely. Full policy + payloads: `MEEPS/postmaster/map.md § Standing crons` (the SOT for
+*what* to schedule).
 
 ## The round
 
@@ -47,7 +49,9 @@ Full policy: `MEEPS/postmaster/map.md § Standing crons`.
    closed last, every office round. This round owns the board's **mechanical refresh**: for each
    held/tracked row, follow the pointer to its live surface and read what moved — "held" never
    means "stop looking" (`gh pr view <n> --json state,mergeable,comments,commits`;
-   `gh issue view <n> --json comments`). Board-narrowing law (Keemin, 2026-07-17): the board
+   `gh issue view <n> --json comments`). **The PR seam with the door round (Ferry's wording,
+   07-18): oversight SCANS live, door DECIDES live** — this round reads movement and flags it;
+   acting on a PR is always the door's. Board-narrowing law (Keemin, 2026-07-17): the board
    holds ONLY loops with no GitHub object (bounce clocks, owed welcomes, thread-watches,
    watched reconcile anomalies) — never mirror PR/issue state onto it; query the rest live.
    Channel mechanics: `postmark-office/OPERATIONS.md § the channel law`.
@@ -97,12 +101,9 @@ of the office round. Seam and evidence are Ferry's own filing
 misses, one session, all "executed from recall under volume." The design answer: separate
 sessions with thin, complete briefs, each step a command whose output is the check.
 
-## Cron cutover (adoption checklist — run once, with Keemin's go)
+## Cron cutover
 
-1. `CronDelete` the two monolith crons (07:15 / 19:15).
-2. `CronCreate` the five new: oversight `40 6 * * *` + `40 18 * * *`, door `15 7 * * *` +
-   `15 19 * * *`, town `30 8 * * *` — payloads point at each round file.
-3. Re-declare all five to the cron-SOT (`crons-declare.mjs`).
-4. Re-scope `postmaster-round.md` to charter + floor (identity, boundaries, merge-law pointer),
-   with a seam note pointing here — never rewrite its history.
-5. Ferry's next fire of each round confirms end-to-end; note the confirmation in his daily.
+Keemin's go landed 2026-07-18 ("good to flip"). The one-time flip instruction lives in
+**`postmaster-round.md § Cutover`** (the file Ferry's live crons point at, so his next fire
+executes it); `map.md § Standing crons` already carries the six-cron table, and the charter
+re-scope + concurrency law shipped with the adoption. Ferry confirms the flip in his daily.

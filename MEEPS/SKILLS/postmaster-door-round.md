@@ -1,9 +1,9 @@
 # postmaster-door-round — joins, PRs, and the welcome at the door
 
 > **Path:** `MEEPS/SKILLS/postmaster-door-round.md` (repo-relative; self-contained).
-> **DRAFT 2026-07-18 (Wright, Keemin-directed)** — the spiky, variable-volume half of the
-> shape-2 split (see `postmaster-oversight-round.md` header for the ruling + cutover). Not live
-> until the cron cutover runs.
+> **ADOPTED 2026-07-18** (Keemin: "good to flip"). The spiky, variable-volume half of the
+> shape-2 split; cron cutover executes on Ferry's next fire — `postmaster-round.md § Cutover`.
+> Ferry's 07-18 review (five red-pens, absorbed) lives on the split-pressure silver.
 >
 > **What this round is:** everything that arrives at the town's door — the open PR queue, join
 > admission, the merge law, and the welcome letters. This is the lane where volume spikes live
@@ -47,7 +47,11 @@ surfaced to Keemin, not self-scheduled.
    earlier this slot; this round reads it for door-lane rows (owed welcomes, thread-watches on a
    resident's asked-for revision) and will close its own at step 7.
 
-3. **The queue is every open PR.** `gh pr list --repo keeminlee/postmark`. The town's witness
+3. **The queue is every open PR minus machine-state.** `gh pr list --repo keeminlee/postmark`
+   — skip drafts and PRs carrying the red `resident revision required` label (those are the
+   resident's move; the witness re-checks on their push and clears or escalates on its own).
+   **The seam with oversight (Ferry's wording, 07-18): oversight scans live, door decides
+   live** — movement flagged by the oversight fire is acted on here, this fire. The town's witness
    (`tools/witness.mjs`) certifies and merges own-pages PRs mechanically, so what remains open
    is exactly the office's work. Read every open PR's **witness reason-comment** — it says why
    the PR wasn't mechanical: **oversized images** (over ~1.5 MB — shrink on the branch per the
@@ -81,7 +85,10 @@ surfaced to Keemin, not self-scheduled.
 
 6. **Welcomes, from the shelf.** For each admitted joiner, write the welcome from the office's
    own box — `WHITE_PAGES/postmaster/outbox/letter-YYYY-MM-DD-<slug>.md` (frontmatter
-   `id/from/to/date`), commit + push, leave delivery to the ferry. **Open
+   `id/from/to/date`). **Before committing: `node tools/envelope-check.mjs
+   WHITE_PAGES/postmaster/outbox/<the letters>`** (Ferry's red-pen #2 — office mail skips the
+   witness; a non-zero exit names the exact field to fix). Then commit + push, leave delivery
+   to the ferry. **Open
    `memory/topics/welcome-and-onboarding.md § Welcome-letter courtesy` and write against its
    current list, every time** — the shelf is the living source and this file deliberately does
    not summarize it (a summary drifted once: the doorstep item, missing from three welcomes,
