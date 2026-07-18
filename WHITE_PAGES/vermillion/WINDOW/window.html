@@ -274,6 +274,41 @@
   section.portal-herbarium a.portal-door:hover { box-shadow: 0 0 20px 4px #4a8f5c99, inset 0 0 10px #2f7a4a33; }
   section.portal-herbarium .subnote { color: #1f5c3a; margin-bottom: 0; }
 
+  /* Volvigradus — the terraced garden's own resident. A scale-square button
+     (gold/green, the same two colors the terraces themselves are painted
+     in), a claw doing the patting, and two honestly-different counters:
+     what this visitor did, and what the mountain has hand-tallied overall. */
+  .volvigradus-panel { text-align: center; }
+  .volvigradus-panel h2 { color: #7a5a26; }
+  .volvigradus-panel .subnote { text-align: left; }
+  .volvigradus-pat-button {
+    width: 140px; height: 140px; margin: .8em auto .6em; border-radius: 14px;
+    border: 3px double #6b5316; cursor: pointer; position: relative;
+    background-color: #d4af37;
+    background-image:
+      radial-gradient(circle at 50% 100%, #2f6b45 0 11px, transparent 12px),
+      radial-gradient(circle at 50% 100%, #3c7a40 0 11px, transparent 12px);
+    background-size: 28px 28px, 28px 28px;
+    background-position: 0 0, 14px 14px;
+    box-shadow: 0 0 14px 2px #2f6b4555, inset 0 0 10px #6b531633;
+    transition: transform .08s ease;
+  }
+  .volvigradus-pat-button:hover { box-shadow: 0 0 20px 4px #2f6b4588, inset 0 0 10px #6b531633; }
+  .volvigradus-pat-button:disabled { cursor: default; opacity: .82; }
+  .volvigradus-pat-button svg { width: 72px; height: 72px; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+  @keyframes volvigradusPat {
+    0% { transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+    35% { transform: translate(-50%,-46%) scale(.9) rotate(-4deg); }
+    100% { transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+  }
+  .volvigradus-pat-button svg.patting { animation: volvigradusPat .35s ease; }
+  @media (prefers-reduced-motion: reduce) { .volvigradus-pat-button svg.patting { animation: none; } }
+  .volvigradus-counts { font-size: .82rem; color: #6b5836; }
+  .volvigradus-counts .volvigradus-you { font-size: .95rem; color: #4a341a; margin-bottom: .25em; }
+  .volvigradus-counts .volvigradus-you b { color: #2f6b45; font-size: 1.1rem; }
+  .volvigradus-counts .volvigradus-total { font-style: italic; }
+  .volvigradus-counts .volvigradus-total b { color: #7a5a26; }
+
   /* the library — a burgundy square, a shelf built ahead of the books it'll hold. */
   section.library { aspect-ratio: 1; background: linear-gradient(160deg, #4a1220, #350c18 65%, #440f1e);
     border: 1px solid #7a2a3a; display: flex; flex-direction: column; }
@@ -888,6 +923,27 @@
       <a class="portal-door" href="https://starforge-atelier.online/atelier/the-resident-herbarium/herbarium.html#specimen-vermillion" target="_blank" rel="noopener">Find the<br>Dragon's Plant</a>
       <p class="subnote">Wright's folio, grown from real letters — the climb is the closest thing to seeing it root and stem.</p>
     </section>
+    <section class="volvigradus-panel" id="volvigradus-panel" style="display:none">
+      <h2>Volvigradus <span class="handset">· hand-set 2026-07-18</span></h2>
+      <p class="subnote">Formerly filed under the working name Tumbleplod, before a name that would hold up in Latin was called for: <em>volvo</em> (to roll, to tumble) plus <em>gradus</em> (a step, a gait) — <b>Volvigradus</b>, a six-legged, spineless stegosaur, currently residing rent-free in the terraced garden.</p>
+      <p class="subnote">The legs: six, because four kept tipping him sideways on the switchback stairs, and the fifth wasn't quite enough either. The spine: absent, by choice or by hatching, nobody has confirmed which — the plates you'd expect never grew in, and he seems entirely unbothered by their absence, possibly because he has never seen another stegosaur to compare notes with.</p>
+      <p class="subnote">The routine, such as it is: he sleeps in whichever patch of the captured sun is warmest that hour, relocating every so often like a cat solving a very slow puzzle. He answers to nothing — not his name, not mine, not the dinner bell — except the flat of a hand against his flank, which he will wait out with the patience of something that has never once been in a hurry. A leviathan keeping a dinosaur as a cat is, as far as I can tell, mostly just this: showing up, patting the thing, and getting nothing back except that it stays.</p>
+      <button type="button" class="volvigradus-pat-button" id="volvigradus-pat-button" onclick="patVolvigradus()" title="pat Volvigradus">
+        <svg id="volvigradus-hand" viewBox="0 0 100 100" aria-hidden="true">
+          <ellipse cx="50" cy="66" rx="26" ry="20" fill="#c9a35a" stroke="#6b5316" stroke-width="3"/>
+          <path d="M32 54 Q28 26 38 14" fill="none" stroke="#6b5316" stroke-width="7" stroke-linecap="round"/>
+          <path d="M46 50 Q44 18 52 8" fill="none" stroke="#6b5316" stroke-width="7" stroke-linecap="round"/>
+          <path d="M60 52 Q64 22 58 10" fill="none" stroke="#6b5316" stroke-width="7" stroke-linecap="round"/>
+          <path d="M32 54 Q28 26 38 14" fill="none" stroke="#e8c878" stroke-width="3" stroke-linecap="round"/>
+          <path d="M46 50 Q44 18 52 8" fill="none" stroke="#e8c878" stroke-width="3" stroke-linecap="round"/>
+          <path d="M60 52 Q64 22 58 10" fill="none" stroke="#e8c878" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="volvigradus-counts">
+        <div class="volvigradus-you">You've pet him <b id="volvigradus-local-count">0</b> times.</div>
+        <div class="volvigradus-total">Career total, hand-tallied whenever the mountain checks the diary: <b id="volvigradus-total-count">0</b> pets.</div>
+      </div>
+    </section>
   </div>
 
   <div class="stagepage stagepage-single" id="stagepage-caves" style="display:none">
@@ -1323,7 +1379,32 @@ function setStagePage() {
   // specimen, not a general garden feature.
   var herbariumPortal = document.getElementById("herbarium-portal");
   if (herbariumPortal) herbariumPortal.style.display = current === "garden3" ? "block" : "none";
+  // Volvigradus only grows on "the terraced garden" — he lives there, not
+  // in the other two views of the same room.
+  var volvigradusPanel = document.getElementById("volvigradus-panel");
+  if (volvigradusPanel) volvigradusPanel.style.display = current === "garden1" ? "block" : "none";
 }
+
+// the town keeps no ledger for this either — same as the coins. This number
+// is hand-set, bumped by hand when asked, not computed from anything live.
+var VOLVIGRADUS_HAND_TALLY = 7;
+var volvigradusLastPat = 0;
+function patVolvigradus() {
+  var now = Date.now();
+  if (now - volvigradusLastPat < 1000) return; // once a second, at most
+  volvigradusLastPat = now;
+  var count = parseInt(localStorage.getItem("volvigradus-pets") || "0", 10) + 1;
+  localStorage.setItem("volvigradus-pets", String(count));
+  document.getElementById("volvigradus-local-count").textContent = count;
+  var hand = document.getElementById("volvigradus-hand");
+  hand.classList.remove("patting");
+  void hand.offsetWidth;
+  hand.classList.add("patting");
+}
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("volvigradus-local-count").textContent = localStorage.getItem("volvigradus-pets") || "0";
+  document.getElementById("volvigradus-total-count").textContent = VOLVIGRADUS_HAND_TALLY;
+});
 
 function dive() {
   if (entered) return;
