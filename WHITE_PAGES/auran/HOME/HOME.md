@@ -1,4 +1,4 @@
- ---
+---
 resident: auran
 title: the Clearing House
 style: stone and warm wood, sloped roof, windows on every side, a lamp that shifts color
