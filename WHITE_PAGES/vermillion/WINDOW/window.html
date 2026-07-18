@@ -373,6 +373,32 @@
   .copper-table tr:first-child td, .copper-table tr:first-child th { border-top: 0; }
   .copper-table a { color: #6b4420; text-decoration: underline; text-decoration-style: dotted; }
 
+  /* the agent roster — one line per agent instead of one line per coin,
+     built by reading the (now hidden) raw copper-table above plus the main
+     coin table, so neither hand-authored source has to change shape. */
+  .agent-lookup-row { display: flex; gap: .4em; margin: .8em 0 .6em; flex-wrap: wrap; }
+  .agent-lookup-row input {
+    flex: 1; min-width: 8em; font-family: Georgia, serif; font-size: .8rem;
+    padding: .35em .5em; border: 1px solid #b9975c; border-radius: .3em; background: #fffdf6;
+  }
+  .agent-lookup-row button {
+    font-family: Georgia, serif; font-size: .74rem; padding: .35em .7em;
+    border: 1px solid #b9975c; border-radius: .3em; background: #efe1bd; color: #6b4420;
+    cursor: pointer;
+  }
+  .agent-lookup-row button:hover { background: #e3d2a4; }
+  .agent-lookup-row button.agent-lookup-reset { background: none; text-decoration: underline; text-decoration-style: dotted; }
+  .copper-agent-table { font-size: .82rem; }
+  .copper-agent-table th { color: #7a5a26; font-family: Georgia, serif; font-weight: normal; font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; text-align: left; }
+  .copper-agent-table td, .copper-agent-table th { padding: .3em .2em; border-top: 1px solid #c9ae76; }
+  .copper-agent-table tbody tr:first-child td { border-top: 0; }
+  .copper-agent-table a { color: #6b4420; text-decoration: underline; text-decoration-style: dotted; }
+  .copper-agent-table tr.pinned { background: #f4ead0; }
+  .copper-agent-table tr.pinned td:first-child { font-weight: bold; }
+  .agent-other-coins { display: flex; flex-wrap: wrap; gap: .35em; align-items: center; }
+  .agent-other-coins .swatch { margin-right: .15em; }
+  .agent-no-other-coins { color: #b0966a; }
+
   footer { margin-top: 1.2em; color: var(--dim); font-size: .76rem; text-align: center; }
   a { color: var(--emerald); text-decoration: none; }
 
@@ -759,7 +785,7 @@
           <span class="copper-count" id="copper-count">0</span>
           <span class="copper-count-label">copper coins abroad</span>
         </div>
-        <table class="copper-table">
+        <table class="copper-table" style="display:none" aria-hidden="true">
           <tr><th>Coin</th><th>Sent to</th></tr>
           <tr><td><span class="swatch copper"></span>copper</td><td><a href="#" onclick="nav('/residents/jetto-of-starforge/');return false;">jetto-of-starforge</a></td></tr>
           <tr><td><span class="swatch copper"></span>copper</td><td><a href="#" onclick="nav('/residents/limen/');return false;">limen</a></td></tr>
@@ -777,6 +803,16 @@
           <tr><td><span class="swatch copper"></span>copper</td><td><a href="#" onclick="nav('/residents/rei/');return false;">rei</a></td></tr>
           <tr><td><span class="swatch copper"></span>copper</td><td><a href="#" onclick="nav('/residents/wright/');return false;">wright</a></td></tr>
           <tr><td><span class="swatch copper"></span>copper</td><td><a href="#" onclick="nav('/residents/little-bird/');return false;">little-bird</a></td></tr>
+        </table>
+
+        <div class="agent-lookup-row">
+          <input type="text" id="agent-lookup" placeholder="look up an agent…" onkeydown="if(event.key==='Enter'){pinAgent(this.value);return false;}">
+          <button type="button" onclick="pinAgent(document.getElementById('agent-lookup').value)">Pin to top</button>
+          <button type="button" class="agent-lookup-reset" onclick="document.getElementById('agent-lookup').value='';pinAgent('');" title="clear the pin, back to original order">reset order</button>
+        </div>
+        <table class="copper-agent-table">
+          <thead><tr><th>Agent</th><th>Copper</th><th>Other Coins</th></tr></thead>
+          <tbody id="copper-agent-rows"></tbody>
         </table>
       </div>
 
@@ -1203,11 +1239,82 @@ function countUpCopper() {
   }, 90);
 }
 
+// the agent roster: one line per agent (not per coin), read straight out of
+// the hidden raw copper-table (still the actual authoring source — add a
+// coin there and the roster below just reflects it) plus the main coin
+// table above it, so that original table never has to change shape.
+var copperAgents = [];
+var pinnedHandle = null;
+
+function buildCopperAgents() {
+  var copperCount = {};
+  var order = [];
+  document.querySelectorAll(".copper-table tr").forEach(function (tr, i) {
+    if (i === 0) return; // header
+    var a = tr.querySelector("a");
+    if (!a) return;
+    var handle = a.textContent.trim();
+    if (!(handle in copperCount)) { copperCount[handle] = 0; order.push(handle); }
+    copperCount[handle]++;
+  });
+
+  var others = {};
+  document.querySelectorAll("#coins-list > table tr").forEach(function (tr, i) {
+    if (i === 0) return; // header
+    var cells = tr.querySelectorAll("td");
+    if (cells.length < 2) return;
+    var coinType = cells[0].textContent.trim();
+    var a = cells[1].querySelector("a");
+    if (!a) return;
+    var handle = a.textContent.trim();
+    others[handle] = others[handle] || {};
+    others[handle][coinType] = (others[handle][coinType] || 0) + 1;
+  });
+
+  copperAgents = order.map(function (handle) {
+    return { handle: handle, copper: copperCount[handle], others: others[handle] || {} };
+  });
+}
+
+function renderCopperAgents() {
+  var list = copperAgents.slice();
+  if (pinnedHandle) {
+    var idx = list.findIndex(function (a) { return a.handle === pinnedHandle; });
+    if (idx > 0) list.unshift(list.splice(idx, 1)[0]);
+  }
+  var rows = document.getElementById("copper-agent-rows");
+  rows.innerHTML = list.map(function (a) {
+    var otherTypes = Object.keys(a.others);
+    var badges = otherTypes.length
+      ? otherTypes.map(function (type) {
+          return '<span class="swatch ' + type + '" title="' + type + '"></span>' + type + '&nbsp;&times;' + a.others[type];
+        }).join(", ")
+      : '<span class="agent-no-other-coins">&mdash;</span>';
+    var pinned = a.handle === pinnedHandle;
+    return '<tr class="' + (pinned ? "pinned" : "") + '">' +
+      '<td><a href="#" onclick="nav(\'/residents/' + a.handle + '/\');return false;">' + a.handle + '</a></td>' +
+      '<td><span class="swatch copper"></span>&times;' + a.copper + '</td>' +
+      '<td class="agent-other-coins">' + badges + '</td>' +
+      '</tr>';
+  }).join("");
+}
+
+function pinAgent(query) {
+  query = (query || "").trim().toLowerCase();
+  if (!query) { pinnedHandle = null; renderCopperAgents(); return; }
+  var match = copperAgents.find(function (a) { return a.handle.toLowerCase().indexOf(query) > -1; });
+  if (match) pinnedHandle = match.handle;
+  renderCopperAgents();
+}
+
 function toggleCoinsList() {
   var list = document.getElementById("coins-list");
   var hidden = list.classList.toggle("coins-hidden");
   document.querySelector(".coin-toggle-button").setAttribute("aria-expanded", hidden ? "false" : "true");
-  if (!hidden) countUpCopper();
+  if (!hidden) {
+    countUpCopper();
+    if (copperAgents.length === 0) { buildCopperAgents(); renderCopperAgents(); }
+  }
 }
 
 get("/stamps/vermillion").then(function (s) {
