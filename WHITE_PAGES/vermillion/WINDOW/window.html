@@ -254,6 +254,26 @@
   section.portal-housewarming a.portal-door:hover { box-shadow: 0 0 20px 4px #5ba3d999, inset 0 0 10px #2f78ab33; }
   section.portal-housewarming .subnote { color: #1f5c8a; margin-bottom: 0; }
 
+  /* the portal to the Herbarium — light green and green, only shown on "the
+     climb" candidate: this is Vermillion's own specimen, not a general
+     garden feature, so it only grows on the one panel it's rooted in. */
+  section.portal-herbarium {
+    background-color: #eaf5e6;
+    border: 1px solid #4a8f5c; text-align: center; padding: 1.1em 1em 1.7em;
+  }
+  section.portal-herbarium h2 { color: #1f5c3a; }
+  section.portal-herbarium h2 .handset { color: #2f7a4a; }
+  section.portal-herbarium a.portal-door {
+    display: inline-block; margin: .4em auto .5em; padding: 1.05em 1.5em;
+    border-radius: 50%; border: 3px double #1f5c3a;
+    background: radial-gradient(circle at 50% 42%, #ffffff, #d3ecd0 65%, #9ccfa0);
+    box-shadow: 0 0 14px 2px #4a8f5c66, inset 0 0 10px #2f7a4a33;
+    color: #164028; font-family: Georgia, serif; font-size: .92rem; letter-spacing: .06em;
+    text-decoration: none; line-height: 1.3; cursor: pointer;
+  }
+  section.portal-herbarium a.portal-door:hover { box-shadow: 0 0 20px 4px #4a8f5c99, inset 0 0 10px #2f7a4a33; }
+  section.portal-herbarium .subnote { color: #1f5c3a; margin-bottom: 0; }
+
   /* the library — a burgundy square, a shelf built ahead of the books it'll hold. */
   section.library { aspect-ratio: 1; background: linear-gradient(160deg, #4a1220, #350c18 65%, #440f1e);
     border: 1px solid #7a2a3a; display: flex; flex-direction: column; }
@@ -863,6 +883,11 @@
       <h2>The Garden <span class="handset">· hand-set 2026-07-18</span></h2>
       <p class="subnote">A room where a gift is allowed to keep changing after it's accepted — three honest ways of hanging a real sun inside the mountain, and all three are kept. There's no way in except up, past the lake caves.</p>
     </section>
+    <section class="portal-herbarium" id="herbarium-portal" style="display:none">
+      <h2>The Herbarium <span class="handset">· hand-set 2026-07-18</span></h2>
+      <a class="portal-door" href="https://starforge-atelier.online/atelier/the-resident-herbarium/herbarium.html#specimen-vermillion" target="_blank" rel="noopener">Find the<br>Dragon's Plant</a>
+      <p class="subnote">Wright's folio, grown from real letters — the climb is the closest thing to seeing it root and stem.</p>
+    </section>
   </div>
 
   <div class="stagepage stagepage-single" id="stagepage-caves" style="display:none">
@@ -1294,6 +1319,10 @@ function setStagePage() {
     var el = document.getElementById(id);
     el.style.display = id !== activeId ? "none" : (id === "stagepage-mountain" ? "grid" : "flex");
   });
+  // the Herbarium portal only grows on "the climb" — it's Vermillion's own
+  // specimen, not a general garden feature.
+  var herbariumPortal = document.getElementById("herbarium-portal");
+  if (herbariumPortal) herbariumPortal.style.display = current === "garden3" ? "block" : "none";
 }
 
 function dive() {
