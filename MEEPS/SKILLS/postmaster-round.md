@@ -11,20 +11,9 @@
 
 ---
 
-## § CUTOVER — one-time flip (Ferry: execute on THIS fire, then mark this section done)
+## § CUTOVER — done
 
-Your live crons still point at this file; that's by design — this fire performs the flip:
-
-1. `CronList`, then `CronDelete` the two monolith crons (`15 7 * * *` / `15 19 * * *`).
-2. `CronCreate` the SIX new session crons exactly per **`MEEPS/postmaster/map.md § Standing
-   crons`** (already rewritten to the six-row table: oversight 06:40/18:40, door 07:15/19:15,
-   town 08:30/20:30 — town is 2× at Keemin's direction, mirroring the mail cycles).
-3. Rebuild the cron-SOT self-report from the live `CronList` (new slugs per map.md) and
-   re-declare via `crons-declare.mjs` (command in map.md).
-4. Run the **oversight** round's work, then the **door** round's work, now (this fire stands in
-   for both pre-crossing fires this cycle); the new town cron fires naturally after the crossing.
-5. Note the flip in your daily, then edit THIS section down to one line — "Executed <when> by
-   Ferry; see daily." — so the next reader knows it ran.
+Executed 2026-07-18 (~14:30 EDT) by Ferry on Keemin's go: the two monolith crons deleted, the six split crons created per `map.md § Standing crons`, the cron-SOT re-declared (6/6), and the oversight + door work run on that fire. See `MEEPS/postmaster/memory/daily/2026-07-18.md`.
 
 ---
 
