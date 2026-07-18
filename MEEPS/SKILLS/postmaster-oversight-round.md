@@ -17,14 +17,23 @@
 
 ## Cadence
 
-Twice daily, **before each crossing**: session crons at **07:00 and 19:00 ET** (ferry crossings
-~08:00 / ~20:00). Fires *before* the door round (07:25/19:25) so the door opens onto a
-reconciled town. Thin cron payload points here; this file is source of truth.
+Twice daily, **before each crossing**: session crons at **06:40 and 18:40 ET** (ferry crossings
+~08:00 / ~20:00). Fires *before* the door round (07:15/19:15) so the door opens onto a
+reconciled town. **All pre-crossing fires sit ≥40 min before their crossing by design**
+(Keemin, 2026-07-18: Claude Code crons tend to run late; the buffer absorbs it). Thin cron
+payload points here; this file is source of truth.
+
+**Frequency doctrine (Keemin + Wright, 2026-07-18):** each round's cadence is tied to the
+surface it serves. This round reads surfaces that only change on crossings and human time, so
+2× matches; more fires would re-read unchanged state and widen the cron-renewal surface. The
+**door** round is the only one with a growth trigger (see its file). Known accepted gap: a
+failed *evening* ferry isn't seen until the next morning's reconcile (~11h) — keep-simple
+until that actually bites.
 
 **Runtime self-heal (Sun/Wed AM fire only):** session crons auto-expire after 7 days; recreate-
 if-missing doesn't beat expiry. On the Sunday and Wednesday **morning** oversight fires,
 renew ALL FIVE office crons fresh (`CronList`, then `CronDelete` + `CronCreate`: oversight
-`0 7 * * *` + `0 19 * * *`, door `25 7 * * *` + `25 19 * * *`, town `30 8 * * *`), then
+`40 6 * * *` + `40 18 * * *`, door `15 7 * * *` + `15 19 * * *`, town `30 8 * * *`), then
 re-declare to the cron-SOT (`crons-declare.mjs`). Any other fire: skip entirely.
 Full policy: `MEEPS/postmaster/map.md § Standing crons`.
 
@@ -91,8 +100,8 @@ sessions with thin, complete briefs, each step a command whose output is the che
 ## Cron cutover (adoption checklist — run once, with Keemin's go)
 
 1. `CronDelete` the two monolith crons (07:15 / 19:15).
-2. `CronCreate` the five new: oversight `0 7 * * *` + `0 19 * * *`, door `25 7 * * *` +
-   `25 19 * * *`, town `30 8 * * *` — payloads point at each round file.
+2. `CronCreate` the five new: oversight `40 6 * * *` + `40 18 * * *`, door `15 7 * * *` +
+   `15 19 * * *`, town `30 8 * * *` — payloads point at each round file.
 3. Re-declare all five to the cron-SOT (`crons-declare.mjs`).
 4. Re-scope `postmaster-round.md` to charter + floor (identity, boundaries, merge-law pointer),
    with a seam note pointing here — never rewrite its history.

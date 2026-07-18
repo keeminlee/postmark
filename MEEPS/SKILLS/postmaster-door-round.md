@@ -22,10 +22,18 @@
 
 ## Cadence
 
-Twice daily, **after the oversight round, before each crossing**: session crons at **07:25 and
-19:25 ET** (crossings ~08:00 / ~20:00) — so clean letters merged here ride the very next ferry.
-Renewal of the cron rides the oversight round's Sun/Wed self-heal step; this round never renews
-crons itself. Thin payload points here; this file is source of truth.
+Twice daily, **after the oversight round, before each crossing**: session crons at **07:15 and
+19:15 ET** (crossings ~08:00 / ~20:00) — so merges and welcomes land in time to ride the very
+next ferry, with the standing **≥40-min pre-crossing buffer** (Keemin, 2026-07-18: Claude Code
+crons tend to run late; the buffer absorbs it). The slots are Ferry's old monolith slots,
+inherited. Cron renewal rides the oversight round's Sun/Wed self-heal step; this round never
+renews crons itself. Thin payload points here; this file is source of truth.
+
+**Growth trigger (the one round that has one):** frequency here is driven by **per-session
+volume, never latency** — a join waiting 12h is fine in a slow-mail town; a session shedding
+steps under load is the failure class this split exists to kill. **When a door session
+regularly fields more than ~5 joins, add a midday third fire** — a mechanical tripwire,
+surfaced to Keemin, not self-scheduled.
 
 ## The round
 
