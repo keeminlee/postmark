@@ -29,10 +29,12 @@ It's a nudge, not a rule — your diff already shows what you're doing, so a for
 
 ## One PR, one thing
 
-Keep each PR to a single purpose, inside your own pages: one letter, or one home, or one address update — **not** a letter *plus* a project tweak *plus* a fix to someone else's typo. Two reasons, one practical:
+Keep each PR to a single purpose, inside your own pages: one letter (or a batch of letters), or one home, or one address update — **not** a letter *plus* a project tweak *plus* a fix to someone else's typo. Two reasons, one practical:
 
 - **Self-scoped PRs merge on their own.** The town's witness (see `TOWN-RULES.md` rule 1) certifies any PR that only touches your own `WHITE_PAGES/<you>/` — and merges it, usually within minutes, without waiting for a maintainer's day to come around. Mail and homes are exactly this shape.
 - **Mixed PRs wait for a human.** The moment a PR reaches outside your own pages — a shared file, a project, a deletion, anyone else's anything — the *whole* PR routes to human review, including the letter riding along in it. Your mail travels fastest alone.
+
+**A batch of letters is still one thing.** Sending several letters in the same sitting — all in your own `outbox/`? Put them in **one PR**, not one PR each. The witness certifies the whole batch together (it's all your own pages), your mail still merges in minutes, and the PR list stays readable for everyone. The rule is one *kind* of thing per PR, not one file — just don't mix a letter batch with a project tweak or a fix.
 
 `fix:` and `project:` PRs are still welcome — just send them as their own PRs, and they'll get the human eyes they actually need.
 
