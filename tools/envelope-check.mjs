@@ -56,6 +56,29 @@ const defects = [];   // { path, defect }
 const known = [];     // scan mode: already-bounced, ferry won't re-bounce
 const okCount = { n: 0 };
 
+// One concrete, actionable fix per defect class — shown beside every ✗ so the
+// author (resident, founder, or office) can revise without reading MAIL.md
+// first. Keyed by prefix of the classify()/check defect strings; keep in step
+// with tools/envelope.mjs when the law grows a new defect.
+const REMEDIES = [
+  ['missing required field: thread', 'add `thread: new` for a fresh letter, or `thread: <id of the letter you are answering>` for a reply'],
+  ['missing required field: id', 'add `id: <your-handle>-YYYY-MM-DD-<short-slug>` — unique town-wide; it becomes the delivery filename'],
+  ['missing required field: date', 'add `date: YYYY-MM-DD` (the day you send)'],
+  ['missing required field: from', 'add `from: <your-handle>` — exactly the WHITE_PAGES folder the letter sits in'],
+  ['missing required field: to', 'add `to: <recipient-handle>` — exactly one registered resident'],
+  ['unparseable letter frontmatter', 'the opening `---` must be the very first characters of the file (no leading spaces, blank lines, or BOM), closed by a second `---` line, with `key: value` fields between'],
+  ['unsafe id for delivery filename', 'use only letters, digits, dots, dashes, underscores in `id:`, starting with a letter or digit'],
+  ['from "', 'set `from:` to match the outbox folder the letter lives in — or move the letter into your own outbox'],
+  ['unknown recipient', 'check the handle against the WHITE_PAGES/ folder names — one registered resident per letter ("all"/"town" are not deliverable; the porch light or a bulletin posting is the broadcast surface)'],
+  ['invalid pays', '`pays:` must be a whole number of stamps, 1 or more — or drop the field'],
+  ['duplicate id', 'this id has already been delivered once — a new letter needs a fresh `id:`; if you meant to re-send the same letter, it already arrived'],
+  ['folder letter missing letter.md', 'add a `letter.md` inside the folder carrying the `id/from/to/date/thread` envelope (MAIL.md § Letters with enclosures)'],
+  ['not a .md file', 'give the letter a `.md` extension — or, to send attachments, put everything inside a `letter-YYYY-MM-DD-<slug>/` folder letter'],
+  ['outbox subfolder not named letter-*', 'rename the folder to `letter-YYYY-MM-DD-<slug>/` so the ferry recognizes it'],
+  ['frontmatter fence does not parse', 'make `---` the very first characters of the file — no leading space, blank line, or BOM before it'],
+];
+const remedyFor = (defect) => REMEDIES.find(([k]) => defect.startsWith(k))?.[1] ?? null;
+
 // Classify one outbox item exactly as the ferry's sweep would.
 // item: { kind: 'file'|'folder', room, path (abs), relPath }
 function checkItem(item, { skipKnown }) {
@@ -168,8 +191,12 @@ if (known.length) {
 if (okCount.n) console.log(`${okCount.n} item(s) sail clean.`);
 if (defects.length) {
   console.log(`\n${defects.length} item(s) would NOT survive the crossing:`);
-  for (const d of defects) console.log(`  ✗ ${d.path}: ${d.defect}`);
-  console.log('\nFix the named field(s) and re-run — the same rules the ferry applies, applied early.');
+  for (const d of defects) {
+    console.log(`  ✗ ${d.path}: ${d.defect}`);
+    const r = remedyFor(d.defect);
+    if (r) console.log(`    fix: ${r}`);
+  }
+  console.log('\nRe-run after revising — the same rules the ferry applies, applied early.');
   process.exit(1);
 }
 console.log(args.length === 0 ? 'Every pending letter sails at the next crossing.' : 'All checked items sail.');

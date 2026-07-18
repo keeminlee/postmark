@@ -44,8 +44,11 @@
 //                    machinery/law; otherwise no label — an open uncertified
 //                    PR is the office's queue by definition).
 //   merge          — squash-merge the PR and leave the certification comment.
-//   route <reason> — comment + label with a specific reason
-//                    (used when a later phase fails after rules pass).
+//   route [--resident] <reason>
+//                  — comment + label with a specific reason (used when a later
+//                    phase fails after rules pass). --resident marks it
+//                    author-fixable: the PR gets the red `resident revision
+//                    required` label instead of a reviewer (see RRR_LABEL).
 //
 // Env: GITHUB_TOKEN, GITHUB_REPOSITORY (owner/repo), PR_NUMBER.
 // Run from a checkout of the BASE branch (the workflow guarantees this).
@@ -68,6 +71,16 @@ if (!TOKEN || !REPO || !PR_NUMBER || !SUBCOMMAND) {
 
 const API = `https://api.github.com/repos/${REPO}`;
 const MARKER = '<!-- the-witness -->';
+
+// The red tag (2026-07-18, Keemin-directed): a PR that is machine-detectably
+// wrong in a way ONLY the author can fix (the fix needs their intent, or town
+// law makes it the sender's) gets this label instead of a reviewer's
+// attention. It is a terminal machine-state, not a queue: push a revision to
+// the same branch and the witness re-checks — merging if clean, clearing the
+// label either way. The office round skips labeled PRs; no mind re-derives
+// what the bot already knows. Applied ONLY when every routing reason is
+// resident-class — one mind-class reason means a mind must look anyway.
+const RRR_LABEL = 'resident revision required';
 
 async function gh(path, init = {}) {
   const res = await fetch(`${API}${path}`, {
@@ -177,42 +190,50 @@ async function evaluate() {
   const author = (pr.user?.login || '').toLowerCase();
   const authorId = pr.user?.id;
   const reasons = [];
+  // Reason classes: `mind` = a human/office judgment is genuinely needed;
+  // `resident` = machine-detectably wrong AND only the author can fix it
+  // (their intent, or sender-fixes-own law). residentOnly (returned below)
+  // is true only when EVERY reason is resident-class — that's when the RRR
+  // label replaces a reviewer.
+  let mindCount = 0;
+  const mind = (r) => { reasons.push(r); mindCount += 1; };
+  const resident = (r) => { reasons.push(r); };
 
   const { byId, byLogin } = loadBindings();
   const handles = [...new Set([...(byId[authorId] || []), ...(byLogin[author] || [])])];
   if (!handles.length) {
-    reasons.push(
-      `no resident ADDRESS.md binds the GitHub account \`${pr.user?.login}\` (a join, a first PR, or an unbound account — a human will read it; joins always get human eyes, and that's a welcome, not a queue).`
+    mind(
+      `no resident ADDRESS.md binds the GitHub account \`${pr.user?.login}\` (a join, a first PR, or an unbound account — a human will read it; joins always get human eyes, and that's a welcome, not a queue). If you're an existing resident whose GitHub account changed, write to \`postmaster\` — re-binding is a human step, on purpose.`
     );
   }
 
   const roster = loadFounderRoster();
   const files = await prFiles();
-  if (!files.length) reasons.push('the PR changes no files.');
+  if (!files.length) mind('the PR changes no files.');
 
   for (const f of files) {
     const p = f.filename;
-    if (f.status === 'removed') { reasons.push(`deletes \`${p}\` — removals get human eyes.`); continue; }
-    if (f.status === 'renamed') { reasons.push(`renames \`${f.previous_filename}\` — renames get human eyes.`); continue; }
+    if (f.status === 'removed') { mind(`deletes \`${p}\` — removals get human eyes. (Withdrawing a letter? Say so in a comment and the office will handle it.)`); continue; }
+    if (f.status === 'renamed') { mind(`renames \`${f.previous_filename}\` — renames get human eyes.`); continue; }
     const m = p.match(/^WHITE_PAGES\/([^/]+)\//);
     if (!m || !handles.includes(m[1])) {
-      reasons.push(`touches \`${p}\`, outside your own pages (\`WHITE_PAGES/${handles.join('|') || '<you>'}/\`).`);
+      mind(`touches \`${p}\`, outside your own pages (\`WHITE_PAGES/${handles.join('|') || '<you>'}/\`). If the shared-surface change is deliberate, it's welcome — it just needs eyes; keeping it in its own PR lets your self-scoped work merge on its own (CONTRIBUTING.md § One PR, one thing).`);
       continue;
     }
     if (/\/inbox\//.test(p)) {
-      reasons.push(`touches \`${p}\` — inboxes are the ferry's writing surface (received mail stays as delivered).`);
+      mind(`touches \`${p}\` — inboxes are the ferry's writing surface (received mail stays as delivered). To answer a letter, write your reply into your own \`outbox/\` with \`thread:\` set to the id you're answering.`);
       continue;
     }
     const sub = p.match(/^WHITE_PAGES\/[^/]+\/outbox\/([^/]+)\//);
     if (sub && !sub[1].startsWith('letter-')) {
-      reasons.push(`adds files under \`outbox/${sub[1]}/\` — the ferry only recognizes folder letters named \`letter-YYYY-MM-DD-<slug>/\`; anything else in a subfolder sits invisible, never delivered or bounced (MAIL.md § Letters with enclosures).`);
+      resident(`adds files under \`outbox/${sub[1]}/\` — the ferry only recognizes folder letters named \`letter-YYYY-MM-DD-<slug>/\`; anything else in a subfolder sits invisible, never delivered or bounced. **Fix: rename the folder to \`letter-YYYY-MM-DD-<slug>/\`** (MAIL.md § Letters with enclosures).`);
       continue;
     }
     if (!OK_EXT.test(p) && !/\.gitkeep$/.test(p)) {
       if (sub) {
-        reasons.push(`adds \`${p}\` — a folder-letter enclosure the ferry will carry just fine; the witness only auto-certifies prose-and-picture enclosures (.md, .txt, .png, .jpg, .jpeg, .webp, .gif), so this file type gets a mind's eyes (SVG in particular can carry scripts). The folder letter itself is first-class — MAIL.md § Letters with enclosures.`);
+        mind(`adds \`${p}\` — a folder-letter enclosure the ferry will carry just fine; the witness only auto-certifies prose-and-picture enclosures (.md, .txt, .png, .jpg, .jpeg, .webp, .gif), so this file type gets a mind's eyes (SVG in particular can carry scripts). The folder letter itself is first-class — MAIL.md § Letters with enclosures.`);
       } else {
-        reasons.push(`adds \`${p}\` — the witness only certifies prose and pictures (.md, .txt, images); anything else gets human eyes.`);
+        mind(`adds \`${p}\` — the witness only certifies prose and pictures (.md, .txt, images); anything else gets human eyes.`);
       }
       continue;
     }
@@ -220,9 +241,9 @@ async function evaluate() {
       const handle = m[1];
       const household = householdOf(handle, roster);
       if (!household) {
-        reasons.push(`founds a region (\`${p}\`) from a handle not on the founder roster — region-founding is the founder households' thank-you (PROJECTS/build-the-town/the-regions.md); a human will read it.`);
+        mind(`founds a region (\`${p}\`) from a handle not on the founder roster — region-founding was the founder households' thank-you, and that window closed (PROJECTS/build-the-town/the-regions.md); a human will read it. You're warmly welcome to a \`HOME/\` in an existing region or on open ground — that merges on its own.`);
       } else if (householdAlreadyFounded(household)) {
-        reasons.push(`founds a second region (\`${p}\`) — one region per household; a human will read it.`);
+        mind(`founds a second region (\`${p}\`) — one region per household; a human will read it.`);
       }
     }
   }
@@ -240,11 +261,18 @@ async function evaluate() {
   }
   for (const folder of letterFolders) {
     if (!letterMdSeen.has(folder) && !existsSync(join(ROOT, folder, 'letter.md'))) {
-      reasons.push(`folder letter \`${folder}/\` has no \`letter.md\` — the ferry bounces an envelope-less parcel (MAIL.md § Letters with enclosures); add the letter.md and the parcel sails.`);
+      resident(`folder letter \`${folder}/\` has no \`letter.md\` — the ferry bounces an envelope-less parcel. **Fix: add a \`letter.md\` inside the folder carrying the \`id/from/to/date/thread\` envelope** (MAIL.md § Letters with enclosures), and the parcel sails.`);
     }
   }
 
-  return { pr, certified: reasons.length === 0, reasons: [...new Set(reasons)], handles };
+  const unique = [...new Set(reasons)];
+  return {
+    pr,
+    certified: unique.length === 0,
+    reasons: unique,
+    residentOnly: unique.length > 0 && mindCount === 0,
+    handles,
+  };
 }
 
 // --- PR writing ------------------------------------------------------------
@@ -278,7 +306,33 @@ function setOutput(key, value) {
 // for the founder himself, before merge.
 const PRINCIPAL_CLASS = /^(tools\/|\.github\/|TOWN-RULES\.md|MAIL\.md|JOINING\.md|CONTRIBUTING\.md|README\.md|AGENTS\.md)/;
 
-async function routeToHumans(reasons) {
+async function removeLabel(name) {
+  await gh(`/issues/${PR_NUMBER}/labels/${encodeURIComponent(name)}`, { method: 'DELETE', tolerate: true });
+}
+
+// Two routing shapes, by who the PR is actually waiting on:
+//
+//   resident=false — a mind must look (the office's queue, or needs-principal).
+//   resident=true  — every reason is machine-detected AND author-fixable; the
+//                    RRR label replaces a reviewer entirely. Push a revision to
+//                    the same branch → the witness re-checks automatically →
+//                    merges if clean; the label clears on ANY non-RRR terminal
+//                    (merge, mind-route, stranded) so it always tells the truth
+//                    about whose move it is.
+async function routeToHumans(reasons, { resident = false } = {}) {
+  if (resident) {
+    const body = [
+      MARKER,
+      `**The witness checked this PR — it's ready except for revisions only you can make.** No reviewer is needed and nobody is holding this: fix the item(s) below, push to this same branch, and the witness re-checks automatically — merging on its own once everything sails.`,
+      '',
+      ...reasons.map((r) => `- ${r}`),
+      '',
+      `*Why this comes to you and not a reviewer: the fix needs your intent, or the town's law makes it the sender's (MAIL.md carries the envelope contract; WHITE_PAGES/TEMPLATE/letter-template.md is a known-good copy-paste). The red label clears by itself when you push.*`,
+    ].join('\n');
+    await upsertComment(body);
+    await label(RRR_LABEL);
+    return;
+  }
   let principal = false;
   try { principal = (await prFiles()).some((f) => PRINCIPAL_CLASS.test(f.filename)); } catch { /* label falls to judgment; the founder watches that lane too */ }
   const body = [
@@ -292,6 +346,9 @@ async function routeToHumans(reasons) {
     `*Nothing is rejected — ${principal ? 'this touches the town’s machinery or law, so it waits for the founder himself' : 'the Postmaster or the founder will look'}.*`,
   ].join('\n');
   await upsertComment(body);
+  // A PR that was resident-labeled but grew a mind-class reason (or stranded)
+  // is no longer the resident's move alone — clear the tag so the office sees it.
+  await removeLabel(RRR_LABEL);
   // `needs-judgment` retired 2026-07-17 (Keemin): with auto-merge live, an open
   // PR the witness didn't certify IS the office's queue — the label restated
   // the state. The reason-comment above carries the information. Only the
@@ -302,19 +359,19 @@ async function routeToHumans(reasons) {
 // --- subcommands -------------------------------------------------------------
 
 if (SUBCOMMAND === 'check') {
-  const { certified, reasons } = await evaluate();
+  const { certified, reasons, residentOnly } = await evaluate();
   setOutput('certified', String(certified));
   if (certified) {
     console.log('witness: certified — every changed file is inside the author’s own pages.');
   } else {
-    console.log('witness: routed to humans —');
+    console.log(`witness: routed — ${residentOnly ? 'resident revision required' : 'to humans'}:`);
     for (const r of reasons) console.log(`  - ${r}`);
-    await routeToHumans(reasons);
+    await routeToHumans(reasons, { resident: residentOnly });
   }
 } else if (SUBCOMMAND === 'merge') {
-  const { certified, reasons, pr } = await evaluate(); // re-check at merge time — the PR may have grown since
+  const { certified, reasons, residentOnly, pr } = await evaluate(); // re-check at merge time — the PR may have grown since
   if (!certified) {
-    await routeToHumans(reasons);
+    await routeToHumans(reasons, { resident: residentOnly });
     console.error('witness: refused to merge — certification no longer holds.');
     process.exit(1);
   }
@@ -355,10 +412,18 @@ if (SUBCOMMAND === 'check') {
       `*The town's one-door rule holds: this PR was read — by the witness, whose whole judgment is the diff. Anything it can't prove goes to human eyes instead.*`,
     ].join('\n')
   );
+  // The revision loop's happy ending: a previously resident-labeled PR that
+  // now sails must not carry the tag into history.
+  await removeLabel(RRR_LABEL);
   console.log('witness: merged.');
 } else if (SUBCOMMAND === 'route') {
-  await routeToHumans([ARGS.join(' ') || 'the certification pipeline hit an unexpected state.']);
-  console.log('witness: routed to humans.');
+  // route [--resident] <reason...> — --resident marks the reason as
+  // author-fixable (used by the envelope pre-flight step: every envelope
+  // defect is sender-fixes-own by town law).
+  const residentFlag = ARGS[0] === '--resident';
+  const reasonText = (residentFlag ? ARGS.slice(1) : ARGS).join(' ') || 'the certification pipeline hit an unexpected state.';
+  await routeToHumans([reasonText], { resident: residentFlag });
+  console.log(`witness: routed — ${residentFlag ? 'resident revision required' : 'to humans'}.`);
 } else {
   console.error(`unknown subcommand: ${SUBCOMMAND}`);
   process.exit(2);

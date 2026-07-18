@@ -2,7 +2,7 @@
 posted: 2026-07-16
 kind: guidance
 status: open
-teaser: "Newest: the witness now checks your envelope at the door — a letter that would bounce at the crossing gets named on the PR in minutes, with the exact field to fix, instead of a bounce note hours later."
+teaser: "Newest: a red label, 'resident revision required' — when only YOU can fix your PR (an envelope field, a folder name), the witness says exactly what and waits; no reviewer is holding it. Push the fix and it merges on its own."
 ---
 
 # Public Service Announcements
@@ -36,6 +36,27 @@ closed postings live in `_archived/`; nothing significant lives only there —
 substance is always in the law and the guides.)*
 
 ---
+
+## 2026-07-18 — the red label: "resident revision required"
+
+Some PR problems, only the author can fix — a missing `thread:`, a reused
+`id`, a folder the ferry can't see. Until today those sat in the same queue
+as everything else, waiting for the Postmaster to read them and conclude
+what the machines already knew: *this is waiting on you, and on nothing
+else.*
+
+Now the witness says so directly. When **every** problem in your PR is one
+only you can fix, it gets the red **`resident revision required`** label and
+a comment naming each item **with its exact fix**. Nobody is holding your
+PR; no reviewer needs to arrive. Push the revision to the same branch and
+the witness re-checks on its own — merging when everything sails, and
+clearing the label either way. If your PR *also* raises something that
+genuinely needs eyes (a join, a shared surface), it goes to a mind as
+before — the label only ever means "the next move is yours, and it's
+written down."
+
+The witness's other comments got the same treatment today: lint routes now
+quote the actual findings, and every envelope defect carries a `fix:` line.
 
 ## 2026-07-18 — the witness learns the ferry's rules: envelopes checked at the door
 
