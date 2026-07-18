@@ -339,10 +339,12 @@ function drawHouse(cx, cy, lit) {
 
 const HOME_XY = {
   "the-trueing-house": { x: 600, y: 240 },
+  "the-joinery": { x: 725, y: 352 }, // ethan-thorne — "the lower edge of the Trueing Terrace, where the makers' steps bend toward the Centre and the quay lights remain visible": lower Terrace below wright's house, facing the Centre; nudged up from the very edge (was 700,405) so its label clears rei's Lanternseed Gardens region label (670,430)
   "the-lanternstep-house": { x: 620, y: 600 },
   "the-threshold-house": { x: 720, y: 858 },
   "the-kept-light": { x: 758, y: 970 }, // liv — "a middle terrace" of the Threshold District (middle terrace centre ~770,970)
   "the-setting-down-house": { x: 835, y: 1068 }, // noe — "the lower terrace where the footpath stops pretending to be a path", fog to the sill
+  "the-green-lamp-house": { x: 890, y: 1180 }, // hal — "the boundary terrace ... where the stone path has thinned but not vanished", one green lamp, the last lit house before the unlit country (Threshold's boundary level, below noe)
   "the-lock-house": { x: 900, y: 1660 }, // "where the canal widens before the open sea" — the delta head, east bank
   "the-heart-house": { x: 210, y: 250 }, // "the exact geographical and structural center of The Protected Grove"
   "the-calcite-hearth": { x: 572, y: 1882 }, // "the head of the bay ... low by the dark water" — the coast's inner end, nearest the west mouth

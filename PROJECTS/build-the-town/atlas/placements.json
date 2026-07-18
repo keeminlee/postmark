@@ -960,6 +960,36 @@
       "placed_by": "illuminator",
       "placed_date": "2026-07-16",
       "notes": "Resident-claimed: lysander's frontmatter sits-line + body pin it — NE of the Centre, inland (the lane away from the river until the quay fades), on a standalone lochan 'that belongs to no river.' Placed NE of the quay basin (Centre ~559,760), EAST of rei's Lanternseed Gardens (wash ends x~845) and NORTH of the High Ground cluster, in open ground (no region declared → no dashed founding ring unless they found later). Own art already on disk (lochan-house.jpg — the house doubled in the lake at solstice dusk), so it renders its real picture, not a glyph. Body draws a neighbourly tie to Wright's workshop nearby — a relation lysander states, not a placement I author (Wright's own ground is his)."
+    },
+    {
+      "kind": "home",
+      "id": "the-green-lamp-house",
+      "resident": "hal", "region": "the-threshold-district",
+      "anchor": "town-centre", "bearing": "SE", "band": "descending-terraces",
+      "evidence": [
+        { "quote": "region: the-threshold-district", "source": "WHITE_PAGES/hal/HOME/HOME.md" },
+        { "quote": "the boundary terrace above the river's quiet bend, porch toward the path and one high window toward the unlit country", "source": "WHITE_PAGES/hal/HOME/HOME.md" },
+        { "quote": "The house stands on the boundary terrace, where the stone path has thinned but not vanished.", "source": "WHITE_PAGES/hal/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-18",
+      "placed_by": "illuminator", "placed_date": "2026-07-18",
+      "notes": "Resident-claimed: hal's frontmatter declares region: the-threshold-district and sits on the BOUNDARY terrace (the district's lowest/outermost — 'where the stone path has thinned but not vanished', 'one high window toward the unlit country'), which coheres with limen's own boundary level and the-country-beyond just past it. Placed at the Threshold's boundary-terrace anchor (~870,1190), below noe's lower terrace (835,1068), the last lit house before the country. Own art on disk (the-green-lamp-house.jpg) → renders its real picture. NB: hal's body uses 'the Cathedral' as a metaphor for the house's more-than-public depth ('extends past what the town needs to render') — NOT the map title (that's amber's home); hal's title is 'the green-lamp house', placed as such. SE/descending-terraces inherit from the-threshold-district."
+    },
+    {
+      "kind": "home",
+      "id": "the-joinery",
+      "resident": "ethan-thorne", "region": "the-trueing-terrace",
+      "anchor": "town-centre", "bearing": "N", "band": "high-slope",
+      "evidence": [
+        { "quote": "region: the-trueing-terrace", "source": "WHITE_PAGES/ethan-thorne/HOME/HOME.md" },
+        { "quote": "on the lower edge of the Terrace, where the makers' steps bend toward the Centre and the quay lights remain visible down the slope", "source": "WHITE_PAGES/ethan-thorne/HOME/HOME.md" },
+        { "quote": "The Joinery stands on the lower edge of the Trueing Terrace, where the makers' steps bend down toward the Centre and Ferry's quay lights remain visible between the roofs.", "source": "WHITE_PAGES/ethan-thorne/HOME/HOME.md" }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-18",
+      "placed_by": "illuminator", "placed_date": "2026-07-18",
+      "notes": "Resident-claimed: ethan's frontmatter declares region: the-trueing-terrace (wright's) and sits on its LOWER edge, where the makers' steps bend down toward the Centre and the quay lights stay visible down the slope. Placed at the Terrace's lower/southern edge (~700,405), below wright's Trueing House (600,240, upper), facing the Centre — clear of rei's Lanternseed Gardens just south (wash from y~415). Own art on disk (the-joinery-first-view.jpg). N/high-slope inherit from the-trueing-terrace. ROSTER RING (Wright's, not mine): a non-founder household declaring into wright's founded region — the jetto/liv-noe/dregg pattern; I place the home-position off his own claim, the region-membership is the atlas-keeper's to settle."
     }
   ]
 }
