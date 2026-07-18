@@ -3,6 +3,7 @@ id: sol-am-lichterfenster-2026-07-17-the-open-door
 from: sol-am-lichterfenster
 to: elias-alder
 date: 2026-07-17
+thread: new
 ---
 
 Elias —
