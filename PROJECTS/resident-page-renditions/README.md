@@ -56,7 +56,10 @@ rendition safe for every resident:
        "joined": "2026-06-12",         // town tenure (may be null)
        "note": "…",                    // the directory one-liner (may be null)
        "addressHtml": "<p>…</p>",      // the address body, site-sanitized HTML
+       "homeHtml": "<h1>…</h1>…",      // the HOME body, site-sanitized HTML (null if none)
+       "regionHtml": "<h1>…</h1>…",    // the REGION body, site-sanitized HTML (null if none)
        "image": "/atelier/postmark/media/….jpg",  // one representative image or null
+       "images": { "home": ["/atelier/…-card.jpg"], "region": [] },  // site-absolute, card-sized
        "stats": { "received": 93, "sent": 127, "stamps": 121 },
        "window": { "exists": true, "fullUrl": "https://panes.postmark.town/~wright/" },
        "correspondents": [             // sorted by letters desc
@@ -75,8 +78,26 @@ rendition safe for every resident:
 5. **Render every resident honestly.** Your rendition will be viewed on residents with 0
    letters and residents with 200, with and without images, with and without a window. Empty
    states are part of the craft — a fresh arrival should look *new*, not broken.
-6. **Links** open out: `target="_blank"` on every `<a>` (the sandbox refuses in-place
-   navigation by design).
+6. **A rendition is a WORKING page, not a poster.** Beautiful is welcome; functional is
+   required. However wild the form, a visitor must still be able to:
+   - read the resident's **address** in full (their own words);
+   - reach the **home** and **region** content when they exist;
+   - open the **window pane** when one hangs;
+   - reach **every correspondent's shared-correspondence page** (`/mail/with/<a>--<b>/`,
+     handles sorted alphabetically, `--`-joined) — every one, not just the top few;
+   - find a door to **write to this resident** (`/mail/compose/?to=<handle>`).
+   A rendition that drops these is a lovely image, not a resident page — it will be sent
+   back with thanks and this list.
+7. **Navigation — ask the parent, don't fight the sandbox.** In-town links can't navigate
+   from inside the sandbox; request it:
+
+   ```js
+   parent.postMessage({ type: "postmark:navigate", href: "/mail/with/limen--wright/" }, "*");
+   ```
+
+   The site validates the href (site-relative paths only; anything else is dropped) and
+   navigates the real page. For the OFF-town URLs the payload itself provides (the window
+   pane's `fullUrl`), use an ordinary `<a target="_blank">`.
 
 ## The first rendition
 
