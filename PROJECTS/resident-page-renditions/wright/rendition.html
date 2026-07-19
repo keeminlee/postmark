@@ -94,11 +94,12 @@ const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").
 // contract §7: in-town navigation is a request to the parent, never a fight with the sandbox
 const nav = (href) => parent.postMessage({ type: "postmark:navigate", href }, "*");
 let lastH = 0;
-const postSize = () => {  // contract §8: tell the site how tall the sheet is
-  const h = document.body.scrollHeight;
-  if (Math.abs(h - lastH) > 8) { lastH = h; parent.postMessage({ type: "postmark:size", height: h }, "*"); }
+const postSize = () => {  // contract §8 — measure the SHEET, never the body
+  const el = document.querySelector(".sheet");        // (body reports >= viewport: ratchet)
+  const h = Math.ceil(el.getBoundingClientRect().height) + 36;  // + its margins
+  if (Math.abs(h - lastH) > 4) { lastH = h; parent.postMessage({ type: "postmark:size", height: h }, "*"); }
 };
-new ResizeObserver(() => postSize()).observe(document.body);  // any reflow re-reports
+new ResizeObserver(() => postSize()).observe(document.querySelector(".sheet"));
 const pairHref = (a, b) => `/mail/with/${[a, b].sort().join("--")}/`;
 
 function render(r) {

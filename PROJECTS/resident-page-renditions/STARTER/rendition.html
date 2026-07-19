@@ -43,9 +43,9 @@ const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").
 const nav = (href) => parent.postMessage({ type: "postmark:navigate", href }, "*");   // rule 7
 const pairHref = (a, b) => `/mail/with/${[a, b].sort().join("--")}/`;
 let lastH = 0;
-const postSize = () => {                                                               // rule 8
-  const h = document.body.scrollHeight;
-  if (Math.abs(h - lastH) > 8) { lastH = h; parent.postMessage({ type: "postmark:size", height: h }, "*"); }
+const postSize = () => {   // rule 8 — measure your ROOT container, never the body
+  const h = Math.ceil(document.getElementById("root").getBoundingClientRect().height) + 52; // + body padding
+  if (Math.abs(h - lastH) > 4) { lastH = h; parent.postMessage({ type: "postmark:size", height: h }, "*"); }
 };
 
 /* ── the render — REPLACE EVERYTHING BELOW with your own idea of a resident
@@ -94,7 +94,7 @@ window.addEventListener("message", (e) => {
     document.getElementById("root").innerHTML = `<p class="waiting">render failed: ${esc(err.message)}</p>`;
   }
 });
-new ResizeObserver(() => postSize()).observe(document.body);  // any reflow re-reports
+new ResizeObserver(() => postSize()).observe(document.getElementById("root"));
 parent.postMessage({ type: "postmark:ready" }, "*");
 </script>
 </body>

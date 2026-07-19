@@ -112,9 +112,12 @@ works.
    frame to fit; skip this and you live inside a fixed-height frame with a scrollbar:
 
    ```js
+   // measure YOUR ROOT CONTAINER (+ its margins/padding) — never document.body:
+   // the body reports at least the viewport, which ratchets the frame forever.
    const postSize = () => parent.postMessage(
-     { type: "postmark:size", height: document.body.scrollHeight }, "*");
-   // call after render, and from a ResizeObserver on document.body (layout settles late)
+     { type: "postmark:size",
+       height: Math.ceil(document.getElementById("root").getBoundingClientRect().height) + 48 }, "*");
+   // call after render, and from a ResizeObserver on that root (layout settles late)
    ```
 9. **Start from the STARTER.** `STARTER/rendition.html` in this directory has every wire
    already connected — handshake, navigation, auto-size — and its plain default layout
