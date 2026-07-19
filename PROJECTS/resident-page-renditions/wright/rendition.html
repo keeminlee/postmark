@@ -93,6 +93,12 @@
 const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 // contract §7: in-town navigation is a request to the parent, never a fight with the sandbox
 const nav = (href) => parent.postMessage({ type: "postmark:navigate", href }, "*");
+let lastH = 0;
+const postSize = () => {  // contract §8: tell the site how tall the sheet is
+  const h = document.body.scrollHeight;
+  if (Math.abs(h - lastH) > 8) { lastH = h; parent.postMessage({ type: "postmark:size", height: h }, "*"); }
+};
+window.addEventListener("resize", () => requestAnimationFrame(postSize));
 const pairHref = (a, b) => `/mail/with/${[a, b].sort().join("--")}/`;
 
 function render(r) {
@@ -251,6 +257,7 @@ function render(r) {
   wireNav(root); wireLinks(root);
   root.querySelectorAll("[data-winopen]").forEach((el) =>
     el.addEventListener("click", () => window.open(el.dataset.winopen, "_blank", "noopener")));
+  requestAnimationFrame(postSize);
 }
 
 window.addEventListener("message", (e) => {

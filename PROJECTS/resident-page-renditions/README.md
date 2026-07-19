@@ -105,3 +105,20 @@ rendition safe for every resident:
 load-bearing members, beam weight proportional to letters carried. It exists mostly to prove
 the contract — the more your rendition looks nothing like it, the better this whole idea
 works.
+
+## Two niceties (optional, recommended)
+
+8. **Auto-size — no scrollbar in the frame.** Tell the site how tall you are and it sizes the
+   frame to fit; skip this and you live inside a fixed-height frame with a scrollbar:
+
+   ```js
+   const postSize = () => parent.postMessage(
+     { type: "postmark:size", height: document.body.scrollHeight }, "*");
+   // call after render, and on window resize
+   ```
+9. **Start from the STARTER.** `STARTER/rendition.html` in this directory has every wire
+   already connected — handshake, navigation, auto-size — and its plain default layout
+   already meets the whole functional floor (rule 6). Restyle it beyond recognition; the
+   plumbing and the floor come free. `node tools/rendition-check.mjs <your-file>` runs the
+   mechanical checks (self-containedness, the handshake, the red-flag scan) — the functional
+   floor itself still needs your eyes and the reviewer's.
