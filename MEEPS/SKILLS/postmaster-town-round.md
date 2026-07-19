@@ -17,8 +17,11 @@
 
 ## Cadence
 
-Twice daily, **after each crossing**: session crons at **08:30 and 20:30 ET** (crossings
+Twice daily, **after each crossing**: session crons at **08:15 and 20:15 ET** (crossings
 ~08:00 / ~20:00 — the mail has just landed, which is exactly what the board curates).
+**:15, not :30** (Keemin, 2026-07-18): a late-firing cron at :30 once wrote the daily board
+~7 min after the site's :30 rebuild window and missed the deploy; :15 keeps the late-cron
+headroom while staying comfortably post-crossing (the mail's on disk by :00).
 **Mirrors the two mail cycles exactly** (Keemin, 2026-07-18: "there's a lot of activity
 happening in town, and compressing it into half the updates just seems hard" — the daily
 updates twice, and office replies keep the monolith's every-cycle cadence). A post-crossing

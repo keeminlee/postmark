@@ -23,7 +23,7 @@ Executed 2026-07-18 (~14:30 EDT) by Ferry on Keemin's go: the two monolith crons
 |---|---|---|---|
 | **oversight** | `postmaster-oversight-round.md` | 06:40 · 18:40 | the never-skip mechanical spine: board refresh + live re-reads, issue comments, reconcile, bounce lifecycle, lint, vote intake. Owns cron renewal (Sun/Wed AM). |
 | **door** | `postmaster-door-round.md` | 07:15 · 19:15 | the PR queue (minus RRR-labeled), join admission, the merge law (§3 below, worked with the text open), welcomes from the shelf. The registrar-carve unit. |
-| **town** | `postmaster-town-round.md` | 08:30 · 20:30 | post-crossing stewardship: happenings, the market counter, office correspondence, ferrys-daily (updates both cycles). |
+| **town** | `postmaster-town-round.md` | 08:15 · 20:15 | post-crossing stewardship: happenings, the market counter, office correspondence, ferrys-daily (updates both cycles). |
 
 Seam law (Ferry's wording, 07-18): **oversight scans live, door decides live.** Delivery stays
 the ferry's; no round ever runs it by hand. Wright carried the office operationally 2026-06-16 →
