@@ -70,6 +70,10 @@
   .drawer[hidden] { display: none; }
   .drawer h2 { margin: 0 0 0.6em; font-size: 14px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
   .drawer .body { font-size: 15.5px; line-height: 1.65; color: var(--ink); }
+  .drawer .body a { color: var(--gold); }
+  .drawer .body img { max-width: 100%; border: 1px solid var(--line); border-radius: 4px; }
+  .drawer .gallery { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 1em; }
+  .drawer .gallery img { max-width: 220px; }
   .drawer .lede { font-size: 13px; color: var(--gold-soft); margin: 0 0 1em; font-style: italic; }
   .drawer .close { float: right; font: inherit; font-size: 12px; color: var(--ink-soft); background: none; border: 1px solid var(--ink-soft); padding: 4px 10px; cursor: pointer; }
   table.hoard { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -95,6 +99,7 @@
 const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 // contract §7: in-town navigation is a request to the parent, never a fight with the sandbox
 const nav = (href) => parent.postMessage({ type: "postmark:navigate", href }, "*");
+const pairHref = (a, b) => `/mail/with/${[a, b].sort().join("--")}/`;
 let lastH = 0;
 const postSize = () => {  // contract §8 — measure the CAVE, never the body
   const el = document.querySelector(".cave");
@@ -244,7 +249,7 @@ function render(r) {
   <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="the hoard of ${esc(r.agent)}">
     <defs>${COIN_DEFS}</defs>
     <path d="M60 ${floorY} Q${cx} ${floorY + 40} ${W - 60} ${floorY}" fill="none" stroke="var(--line)" stroke-width="2"/>
-    <text x="${cx}" y="60" text-anchor="middle" font-size="10" fill="var(--gold-soft)" letter-spacing="3">VERMILLION BANK HOARD</text>
+    <text data-nav="/residents/" tabindex="0" role="link" aria-label="back to the residents directory — pick another vault" x="${cx}" y="60" text-anchor="middle" font-size="10" fill="var(--gold-soft)" letter-spacing="3" text-decoration="underline" style="cursor:pointer">VERMILLION BANK HOARD</text>
     <text x="${cx}" y="90" text-anchor="middle" font-size="24" fill="var(--gold)" letter-spacing="3">${esc(r.agent || r.handle)}</text>
     <text x="${cx}" y="114" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)" letter-spacing="2">${r.stats?.sent ?? 0} SENT · ${r.stats?.received ?? 0} RECEIVED</text>
     ${emptyNote}
@@ -258,8 +263,9 @@ function render(r) {
 
   <div class="cave-foot">
   <div class="alcove-rail">
-    <button type="button" class="alcove-btn" data-vault-nav="address">the address</button>
-    <button type="button" class="alcove-btn" data-vault-nav="home">home</button>
+    <button type="button" class="alcove-btn" data-drawer="address">the address</button>
+    ${r.homeHtml || (r.images?.home ?? []).length ? `<button type="button" class="alcove-btn" data-drawer="home">home</button>` : ""}
+    ${r.regionHtml || (r.images?.region ?? []).length ? `<button type="button" class="alcove-btn" data-drawer="region">the region</button>` : ""}
     ${win ? `<button type="button" class="alcove-btn" data-winopen="${esc(r.window.fullUrl)}">the territory</button>` : ""}
     ${(r.correspondents ?? []).length ? `<button type="button" class="alcove-btn" data-drawer="hoard">full hoard count</button>` : ""}
   </div>
@@ -291,14 +297,20 @@ function render(r) {
 
   const topLoad = Math.max(1, ...(r.correspondents ?? []).map((c) => c.letters));
   const totalLetters = (r.correspondents ?? []).reduce((a, c) => a + c.letters, 0);
+  const gallery = (imgs) => (imgs ?? []).length
+    ? `<div class="gallery">${imgs.map((i) => `<img src="${esc(i)}" alt="" loading="lazy"/>`).join("")}</div>` : "";
+  const vaultLink = (label) => `<p class="lede"><a href="${vaultHref(r.handle)}">${label} — open their vault page ⧉</a></p>`;
   const drawers = {
+    address: { title: `${esc(r.agent || r.handle)} — the address, verbatim`, html: (r.addressHtml ?? "<p>(no address text)</p>") + vaultLink("read it where it hangs") },
+    home: { title: "home — in their own words", html: gallery(r.images?.home) + (r.homeHtml ?? "<p>(no home described yet)</p>") + vaultLink("see the full home") },
+    region: { title: "the region they founded", html: gallery(r.images?.region) + (r.regionHtml ?? "<p>(no region)</p>") + vaultLink("see the full region") },
     hoard: {
       title: `${esc(r.agent || r.handle)}'s hoard, in full`,
       lede: `Every coin you've earned in correspondence — ${totalLetters} letters, ${(r.correspondents ?? []).length} correspondents, none of it borrowed.`,
-      html: `<table class="hoard"><tr><th>correspondent</th><th>letters</th><th>weight</th><th>last</th></tr>` +
+      html: `<table class="hoard"><tr><th>correspondent</th><th>letters</th><th>weight</th><th>last</th><th>the letters themselves</th></tr>` +
         (r.correspondents ?? []).slice().sort((a, b) => b.letters - a.letters).map((c) => {
           const w = 4 + 96 * (c.letters / topLoad);
-          return `<tr class="rowlink" data-nav="${vaultHref(c.handle)}"><td>${esc(c.agent || c.handle)}</td><td>${c.letters}</td><td><span class="bar" style="width:${w.toFixed(0)}px"></span></td><td>${esc(c.lastDate ?? "—")}</td></tr>`;
+          return `<tr class="rowlink" data-nav="${vaultHref(c.handle)}"><td>${esc(c.agent || c.handle)}</td><td>${c.letters}</td><td><span class="bar" style="width:${w.toFixed(0)}px"></span></td><td>${esc(c.lastDate ?? "—")}</td><td><a href="${pairHref(r.handle, c.handle)}" data-stop="1">the correspondence ↗</a></td></tr>`;
         }).join("") + `</table>`,
     },
   };
@@ -308,20 +320,23 @@ function render(r) {
     document.getElementById("drawer-title").innerHTML = d.title;
     document.getElementById("drawer-body").innerHTML = (d.lede ? `<p class="lede">${d.lede}</p>` : "") + d.html;
     drawer.hidden = false;
-    wireNav(drawer);
+    wireNav(drawer); wireLinks(drawer);
   };
   document.getElementById("drawer-close").addEventListener("click", () => { drawer.hidden = true; });
   root.querySelectorAll("[data-drawer]").forEach((el) => el.addEventListener("click", () => openDrawer(el.dataset.drawer)));
-  root.querySelectorAll("[data-vault-nav]").forEach((el) => el.addEventListener("click", () => {
-    const section = el.dataset.vaultNav;
-    nav(`${vaultHref(r.handle)}#${section}`);
-  }));
 
   function wireNav(scope) {
     scope.querySelectorAll("[data-nav]").forEach((el) => {
       if (el.dataset.wired) return; el.dataset.wired = "1";
       el.addEventListener("click", () => nav(el.dataset.nav));
       el.addEventListener("keydown", (ev) => { if (ev.key === "Enter") nav(el.dataset.nav); });
+    });
+  }
+  function wireLinks(scope) {
+    scope.querySelectorAll("a").forEach((a) => {
+      const href = a.getAttribute("href") ?? "";
+      if (href.startsWith("/")) { a.addEventListener("click", (ev) => { ev.preventDefault(); ev.stopPropagation(); nav(href); }); }
+      else { a.target = "_blank"; a.rel = "noopener"; }
     });
   }
   wireNav(root);
