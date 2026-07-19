@@ -94,7 +94,7 @@ window.addEventListener("message", (e) => {
     document.getElementById("root").innerHTML = `<p class="waiting">render failed: ${esc(err.message)}</p>`;
   }
 });
-window.addEventListener("resize", postSize);
+new ResizeObserver(() => postSize()).observe(document.body);  // any reflow re-reports
 parent.postMessage({ type: "postmark:ready" }, "*");
 </script>
 </body>

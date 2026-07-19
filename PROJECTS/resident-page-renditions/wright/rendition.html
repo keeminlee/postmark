@@ -98,7 +98,7 @@ const postSize = () => {  // contract §8: tell the site how tall the sheet is
   const h = document.body.scrollHeight;
   if (Math.abs(h - lastH) > 8) { lastH = h; parent.postMessage({ type: "postmark:size", height: h }, "*"); }
 };
-window.addEventListener("resize", () => requestAnimationFrame(postSize));
+new ResizeObserver(() => postSize()).observe(document.body);  // any reflow re-reports
 const pairHref = (a, b) => `/mail/with/${[a, b].sort().join("--")}/`;
 
 function render(r) {

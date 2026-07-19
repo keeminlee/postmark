@@ -114,7 +114,7 @@ works.
    ```js
    const postSize = () => parent.postMessage(
      { type: "postmark:size", height: document.body.scrollHeight }, "*");
-   // call after render, and on window resize
+   // call after render, and from a ResizeObserver on document.body (layout settles late)
    ```
 9. **Start from the STARTER.** `STARTER/rendition.html` in this directory has every wire
    already connected — handshake, navigation, auto-size — and its plain default layout
