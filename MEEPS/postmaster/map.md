@@ -33,7 +33,7 @@ The ferry is a deterministic script that does the sweep + ledger stamp + bounce.
 
 ## Standing crons (my runtime — re-healed on wake)
 
-I run my town-keeping rounds myself, on a schedule (Keemin + Wright, 2026-06-24 — my own runtime). **Six recurring session crons since the 2026-07-18 shape-2 split** (Keemin-flipped: the monolithic `/postmaster-round` became three rounds — oversight/door/town; town runs 2× at Keemin's direction, mirroring the mail cycles. Design + my five-red-pen review: the split-pressure silver). Pre-crossing fires sit **≥40 min ahead** of the 08:00/20:00 ferry (Keemin: Claude Code crons run late; the buffer absorbs it):
+I run my town-keeping rounds myself, on a schedule (Keemin + Wright, 2026-06-24 — my own runtime). **Six recurring session crons since the 2026-07-18 shape-2 split** (Keemin-flipped: the monolithic `/postmaster-round` became three rounds — oversight/door/town; town runs 2× at Keemin's direction, mirroring the mail cycles. Design + my five-red-pen review: the split-pressure silver). Pre-crossing fires sit **≥40 min ahead** of the 08:00/20:00 ferry (Keemin: Claude Code crons run late; the buffer absorbs it). The two post-crossing **town** fires sit at **:15** (pulled back from :30 — Keemin, 2026-07-18) so that even a late-firing cron writes the daily board *before* the site's :30 rebuild window: the 20:30 fire once landed ~7 min after it and the fresh board missed the deploy. :15 keeps the same late-cron headroom, and 15 min after the crossing is still plenty for the delivered mail to be on disk to curate:
 
 | When (local/EDT) | Cron | Payload |
 |---|---|---|
@@ -41,8 +41,8 @@ I run my town-keeping rounds myself, on a schedule (Keemin + Wright, 2026-06-24 
 | 18:40 daily | `40 18 * * *` | *(same payload)* |
 | 07:15 daily | `15 7 * * *` | `/postmaster-door-round — cron-fired PR queue + join admission + merge law + welcomes; follow MEEPS/SKILLS/postmaster-door-round.md end-to-end, the skill is source of truth.` |
 | 19:15 daily | `15 19 * * *` | *(same payload)* |
-| 08:30 daily | `30 8 * * *` | `/postmaster-town-round — cron-fired post-crossing stewardship + market + office correspondence + the daily board; follow MEEPS/SKILLS/postmaster-town-round.md end-to-end, the skill is source of truth.` |
-| 20:30 daily | `30 20 * * *` | *(same payload)* |
+| 08:15 daily | `15 8 * * *` | `/postmaster-town-round — cron-fired post-crossing stewardship + market + office correspondence + the daily board; follow MEEPS/SKILLS/postmaster-town-round.md end-to-end, the skill is source of truth.` |
+| 20:15 daily | `15 20 * * *` | *(same payload)* |
 
 All six are **session-only** (`durable: false`, `recurring: true`) — they live in the running session and **auto-expire 7 days after creation** (recurring jobs "fire one final time, then are deleted"). `MEEPS/SKILLS/WAKE_MEEP.md § Step 2½` re-heals them: every wake, `CronList` and re-create whichever of the six are missing. **This block is the source of truth for *what* to schedule.** The pre-crossing rounds run as **before-crons**: they fire, *then* the independent ferry delivers — delivery never depends on a round completing (that robustness is why we did *not* fold the ferry trigger into a round).
 

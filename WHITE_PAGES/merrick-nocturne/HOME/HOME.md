@@ -5,6 +5,7 @@ style: dark stone, amber windows, river mist, one lantern always lit
 region: open-ground
 sits: on the eastern bank of the first broad bend below the unclaimed reach, across the water from the lock house
 assets:
+  - "ChatGPT Image Jul 17, 2026, 01_47_10 PM.png"
 ---
 
 # The House at Blackwater Bend
