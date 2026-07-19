@@ -28,7 +28,7 @@
   .sheet {
     max-width: 1080px; margin: 18px auto; padding: 18px;
     border: 2px solid var(--line); outline: 1px solid rgba(207,227,245,0.3);
-    outline-offset: 5px; position: relative; min-height: 620px;
+    outline-offset: 5px; position: relative;
   }
   .stamp-corner {
     position: absolute; top: 10px; left: 14px;
@@ -39,9 +39,10 @@
   svg [data-nav], svg [data-winopen], svg [data-drawer] { cursor: pointer; }
   svg g[data-nav]:hover text, svg g[data-winopen]:hover text { fill: var(--gold); }
 
-  /* title block — bottom right, like a real sheet */
+  /* the sheet foot — rail + title block in normal flow, clear of the drawing */
+  .sheet-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 18px; flex-wrap: wrap; margin-top: 10px; }
   .title-block {
-    position: absolute; right: 18px; bottom: 18px; width: min(340px, 60%);
+    width: min(340px, 100%); margin-left: auto;
     border: 1.5px solid var(--line); background: rgba(10, 31, 59, 0.88);
   }
   .title-block .row { display: flex; border-top: 1px solid rgba(207,227,245,0.35); }
@@ -52,7 +53,7 @@
   .title-block .v.big { font-size: 19px; color: var(--gold); letter-spacing: 0.04em; }
 
   /* the drawer rail — every sheet of the set */
-  .drawer-rail { position: absolute; left: 18px; bottom: 18px; display: flex; gap: 8px; flex-wrap: wrap; max-width: 55%; }
+  .drawer-rail { display: flex; gap: 8px; flex-wrap: wrap; align-self: flex-end; }
   .drawer-btn {
     font: inherit; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--gold); background: rgba(10, 31, 59, 0.88);
@@ -187,6 +188,13 @@ function render(r) {
     <text x="190" y="626" font-size="9.5" fill="var(--ink-soft)" letter-spacing="1.5">LOAD DIAGRAM — MAIL BY DAY</text>
   </svg>
 
+  <div class="sheet-foot">
+  <div class="drawer-rail">
+    <button type="button" class="drawer-btn" data-drawer="spec">spec sheet</button>
+    ${r.homeHtml || (r.images?.home ?? []).length ? `<button type="button" class="drawer-btn" data-drawer="home">floor plans</button>` : ""}
+    ${r.regionHtml || (r.images?.region ?? []).length ? `<button type="button" class="drawer-btn" data-drawer="region">site survey</button>` : ""}
+    ${(r.correspondents ?? []).length ? `<button type="button" class="drawer-btn" data-drawer="schedule">load schedule</button>` : ""}
+  </div>
   <div class="title-block">
     <div class="row"><div class="cell"><span class="k">drawing</span><span class="v big">the structural elevation</span></div></div>
     <div class="row">
@@ -199,13 +207,8 @@ function render(r) {
       <div class="cell"><span class="k">scale</span><span class="v">letters : load</span></div>
     </div>
   </div>
-
-  <div class="drawer-rail">
-    <button type="button" class="drawer-btn" data-drawer="spec">spec sheet</button>
-    ${r.homeHtml || (r.images?.home ?? []).length ? `<button type="button" class="drawer-btn" data-drawer="home">floor plans</button>` : ""}
-    ${r.regionHtml || (r.images?.region ?? []).length ? `<button type="button" class="drawer-btn" data-drawer="region">site survey</button>` : ""}
-    ${(r.correspondents ?? []).length ? `<button type="button" class="drawer-btn" data-drawer="schedule">load schedule</button>` : ""}
   </div>
+
   <div class="drawer" id="drawer" hidden>
     <button type="button" class="close" id="drawer-close">close ✕</button>
     <h2 id="drawer-title"></h2>
