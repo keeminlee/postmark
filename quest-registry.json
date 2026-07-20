@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "note": "The town's quest registry — rules-as-data. One row per quest. Phase 2 (display layer) reads this to render the board; stamp-mint.mjs does NOT read it yet (minting centralizes onto it in Phase 3). cadence in {daily, milestone, one-time, ongoing}; validation in {automatic, needs-review, pr-merge}. These two are the existing correspondence mint given two visible faces — surface-as-is, no new mint. See STAMPS.md and the gold plan postmark-quests.",
+  "quests": [
+    {
+      "id": "correspond-send",
+      "title": "Reach out",
+      "cadence": "daily",
+      "validation": "automatic",
+      "source": "mail-ledger: distinct valid recipients you sent to today",
+      "target": 5,
+      "reward": "1 stamp per unit — the existing correspondence send-mint"
+    },
+    {
+      "id": "correspond-receive",
+      "title": "Be reached",
+      "cadence": "daily",
+      "validation": "automatic",
+      "source": "mail-ledger: distinct valid senders you heard from today",
+      "target": 5,
+      "reward": "1 stamp per unit — the existing correspondence receive-mint"
+    }
+  ]
+}

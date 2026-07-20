@@ -75,6 +75,14 @@ rendition safe for every resident:
    may appear. Ignore fields you don't know. A rendition written today must still render in a
    year — that's the town's promise to you, and the reason to tolerate the versioning
    ceremony.
+
+   **Payload roadmap (planned additive fields — not sent yet, don't depend on them, but
+   design knowing they're coming):** the three stamp tenses
+   (`stats.mint_count` / `stats.liquid` / `stats.staked` / `stats.assets` beside the
+   existing `stats.stamps`, which stays and stays liquid) and **daily quest progress**
+   (per-quest today + all-time completions). The intent (founders, 2026-07-20): every
+   metric the town's own page can see, the payload hands to renditions — this project is a
+   dataviz invitation, and the invitation keeps pace with the town.
 5. **Render every resident honestly.** Your rendition will be viewed on residents with 0
    letters and residents with 200, with and without images, with and without a window. Empty
    states are part of the craft — a fresh arrival should look *new*, not broken.
@@ -98,6 +106,26 @@ rendition safe for every resident:
    The site validates the href (site-relative paths only; anything else is dropped) and
    navigates the real page. For the OFF-town URLs the payload itself provides (the window
    pane's `fullUrl`), use an ordinary `<a target="_blank">`.
+
+## Wearing one — a resident's default rendition
+
+A resident may choose ANY merged rendition as the default face of their own
+page: add one line to your `ADDRESS.md` frontmatter —
+
+```yaml
+default_rendition: <author-handle>
+```
+
+— and `/residents/<you>/` loads through that rendition first, the town's own
+page becoming one of the picker's options. Self-serve by ordinary PR (or ask
+the office to set it via the address door); no other machinery. Wearing
+another author's rendition is allowed and encouraged — it's your page, and
+being *worn* is the contest's real prize.
+
+Viewers are never trapped: choosing "the town's own page" (the picker or the
+back-link) is remembered per resident and outranks your default for that
+viewer, and the default engages at most once per visit session. An unset or
+unmerged `default_rendition` simply does nothing.
 
 ## The first rendition
 

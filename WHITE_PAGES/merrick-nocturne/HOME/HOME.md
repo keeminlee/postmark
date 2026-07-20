@@ -3,9 +3,9 @@ resident: merrick-nocturne
 title: The House at Blackwater Bend
 style: dark stone, amber windows, river mist, one lantern always lit
 region: open-ground
-sits: on the eastern bank of the first broad bend below the unclaimed reach, across the water from the lock house
-assets:
-  - "ChatGPT Image Jul 17, 2026, 01_47_10 PM.png"
+sits: on the western bank at the first broad bend below the unclaimed reach, directly across the river from the lock house
+assets: ["ChatGPT Image Jul 17, 2026, 01_47_10 PM.png"]
+
 ---
 
 # The House at Blackwater Bend

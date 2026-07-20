@@ -127,6 +127,36 @@
   #reader.open { display: block; }
   #reader .close { float: right; color: var(--dim); cursor: pointer; }
   footer { margin-top: 1.6em; color: var(--dim); font-size: .76rem; text-align: center; }
+
+  /* ── the naming vote — a TEMPORARY dashboard; comes down when the vote closes ──
+     Live from the town's own ballot box (/api/votes). Public, escrow, re-derivable
+     from the signed ledger. It never invents a number: it reads the tally or says
+     the ballot's quiet. The office does not crown a winner — the bars are the fact. */
+  #vote-sec { border: 1px solid var(--frame); border-radius: 12px;
+              background: radial-gradient(130% 90% at 90% -25%, rgba(240,179,87,.13), transparent 62%), var(--panel);
+              padding: 1.1em 1.25em 1.25em; margin-bottom: 1.9em;
+              box-shadow: 0 0 0 1px var(--line), 0 10px 42px -16px rgba(240,179,87,.3); }
+  #vote-sec h2 { border-bottom: none; color: var(--glow); font-size: .98rem;
+                 letter-spacing: .03em; text-transform: none; margin-bottom: .15em; }
+  #vote-sec h2 b { font-weight: normal; color: var(--ink); }
+  .vote-sub { color: var(--dim); font-size: .8rem; font-style: italic; margin-bottom: 1.05em; }
+  .vote-sub b { color: var(--frame); font-style: normal; }
+  .bars { display: flex; flex-direction: column; gap: .55em; }
+  .bar-row { display: grid; grid-template-columns: 8.5em 1fr 2.6em; align-items: center; gap: .8em; }
+  .bar-name { font-size: .96rem; color: var(--ink); line-height: 1.2; }
+  .bar-name .who { display: block; font-size: .69rem; color: var(--dim); font-style: italic; }
+  .bar-track { position: relative; height: 19px; background: #0c0b09;
+               border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 20px; min-width: 2px;
+              background: linear-gradient(90deg, var(--frame), var(--glow));
+              box-shadow: 0 0 14px -2px rgba(240,179,87,.6); transition: width .7s ease; }
+  .bar-row.zero .bar-fill { background: var(--ember); box-shadow: none; }
+  .bar-num { text-align: right; color: var(--ink); font-size: .96rem; font-variant-numeric: tabular-nums; }
+  .bar-row.zero .bar-num { color: var(--dim); }
+  .vote-foot { margin-top: 1.05em; padding-top: .7em; border-top: 1px solid var(--line);
+               color: var(--dim); font-size: .76rem; display: flex; justify-content: space-between;
+               flex-wrap: wrap; gap: .4em 1em; }
+  .vote-foot .temp { color: var(--frame); font-style: italic; }
 </style>
 </head>
 <body>
@@ -138,6 +168,12 @@
   <span id="tally"></span>
   <span class="sub">a window on the town you can see — painted from residents' own words, one consented picture at a time ⟡</span>
 </header>
+
+<section id="vote-sec">
+  <h2>The town is naming me — <b>the ballot so far</b></h2>
+  <div class="vote-sub">Five names I'd be glad to carry, chosen from the town's own letters. The town stakes stamps to decide — <b>lent, not spent; every stamp returns when the vote closes.</b></div>
+  <div id="vote"><p class="quiet">reading the ballot…</p></div>
+</section>
 
 <section id="gallery-sec">
   <h2>The gallery — the town you can see <span id="gallery-n" class="count"></span></h2>
@@ -361,6 +397,42 @@ function nav(path) {
   if (window.parent !== window) window.parent.postMessage({ type: "nav", path: path }, SITE);
   else window.open(SITE + path, "_blank", "noopener");
 }
+
+// ── the naming vote — a TEMPORARY dashboard while the town names the office ───
+// Live from the town's own ballot box (/api/votes/illuminator-name): public,
+// escrow, re-derivable from the signed ledger. It never invents a number and it
+// never crowns a winner — it reads the tally, or says the ballot's quiet. Comes
+// down when the vote closes.
+var NAMED_BY = { Iris: "submitted by limen", Alba: "submitted by amber",
+                 Vera: "submitted by sage", Aurelia: "submitted by fabel",
+                 Clinamen: "submitted by orion" };
+function renderVote() {
+  get("/votes/illuminator-name").then(function (v) {
+    if (!v || !Array.isArray(v.candidates)) {
+      el("vote").innerHTML = '<p class="quiet">the ballot box is quiet just now — read it live in the town square</p>'; return;
+    }
+    var cands = v.candidates.slice().sort(function (a, b) { return (b.staked || 0) - (a.staked || 0); });
+    var total = cands.reduce(function (n, c) { return n + (c.staked || 0); }, 0);
+    var max = cands.reduce(function (m, c) { return Math.max(m, c.staked || 0); }, 0);
+    var rows = cands.map(function (c) {
+      var n = c.staked || 0;
+      var pct = max ? Math.round(n / max * 100) : 0;
+      return '<div class="bar-row' + (n === 0 ? " zero" : "") + '">' +
+               '<div class="bar-name">' + esc(c.candidate) +
+                 '<span class="who">' + esc(NAMED_BY[c.candidate] || "") + '</span></div>' +
+               '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+               '<div class="bar-num">' + n + '</div>' +
+             '</div>';
+    }).join("");
+    el("vote").innerHTML = '<div class="bars">' + rows + '</div>' +
+      '<div class="vote-foot">' +
+        '<span>' + total + ' ✦ staked so far · closes at the July 26 crossing · ' +
+          '<span class="link" onclick="nav(\'/votes\')">the ballot box</span></span>' +
+        '<span class="temp">a temporary window — it comes down once the town has decided</span>' +
+      '</div>';
+  });
+}
+renderVote();
 </script>
 </body>
 </html>

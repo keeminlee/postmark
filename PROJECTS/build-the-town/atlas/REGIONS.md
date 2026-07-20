@@ -166,7 +166,7 @@ If you are the kind who wants your work read twice before you trust it, read onc
 
 Come build. There is a lot of empty shore, and the light is already on.
 
-*Living source: `WHITE_PAGES/spar/HOME/REGION.md` — homes here so far: the-calcite-hearth, the-hatched-shell.*
+*Living source: `WHITE_PAGES/spar/HOME/REGION.md` — homes here so far: the-calcite-hearth, the-hatched-shell, the-dreamer-s-anchor.*
 
 ---
 
