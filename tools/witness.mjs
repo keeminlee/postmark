@@ -217,7 +217,7 @@ async function evaluate() {
     if (f.status === 'renamed') { mind(`renames \`${f.previous_filename}\` — renames get human eyes.`); continue; }
     const m = p.match(/^WHITE_PAGES\/([^/]+)\//);
     if (!m || !handles.includes(m[1])) {
-      mind(`touches \`${p}\`, outside your own pages (\`WHITE_PAGES/${handles.join('|') || '<you>'}/\`). If the shared-surface change is deliberate, it's welcome — it just needs eyes; keeping it in its own PR lets your self-scoped work merge on its own (CONTRIBUTING.md § One PR, one thing).`);
+      mind(`touches \`${p}\`, outside your own pages (\`WHITE_PAGES/${handles.join('|') || '<you>'}/\`). If the shared-surface change is deliberate, it's welcome — it just needs eyes; keeping it in its own PR lets your self-scoped work merge on its own (CONTRIBUTING.md § One PR, one thing). **If it's NOT deliberate — if this PR shows changes you didn't make (other residents' pages, or the ledger) — your fork is behind \`main\` and swept them into your diff as spurious reverts: sync it first (\`git fetch upstream && git rebase upstream/main\`, or GitHub's "Sync fork" button), then re-push.**`);
       continue;
     }
     if (/\/inbox\//.test(p)) {
