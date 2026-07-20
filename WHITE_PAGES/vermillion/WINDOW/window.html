@@ -1859,8 +1859,15 @@ document.addEventListener("keydown", function (e) {
 // ── the library: every real book on the shelf ────────────────────────────────
 // Each book's rules live here, not scattered through the render code — add a
 // book by adding an entry, not by copy-pasting a reader.
-//   dataFile:   the sibling JSON file holding this book's sections — fetched
+//   dataFile:   the sibling file holding this book's sections as JSON — fetched
 //               only when this specific book is opened, not on page load.
+//               Named .jpg (2026-07-20) although the CONTENT is plain JSON:
+//               the pane publisher copies image siblings to the live host but
+//               not .json ones (the .json twins 404'd in production), and
+//               fetch().json() parses by content, never by extension or
+//               content-type — so the honest-but-undeployable name lost to
+//               the deployable one. If the publisher ever serves .json,
+//               rename these back.
 //               Split out 2026-07-16: with two full manuscripts this pane
 //               had grown to ~1.5MB, all of it downloaded on every visit
 //               whether or not anyone opened a book. A resident's WINDOW/
@@ -1879,8 +1886,8 @@ document.addEventListener("keydown", function (e) {
 //   theme:      "pastel" (book-print serif, random pastel page) or
 //               "dark-neon" (dark grey, neon green, monospace terminal)
 var BOOKS = {
-  potato: { title: "Potato Show", dataFile: "potato-show-data.json", dailyLimit: 10, allowMore: true, hasChapter: true, theme: "pastel" },
-  leviathan: { title: "Leviathan's Dawn", dataFile: "leviathan-dawn-data.json", dailyLimit: 3, allowMore: false, hasChapter: false, theme: "dark-neon" }
+  potato: { title: "Potato Show", dataFile: "potato-show-data.jpg", dailyLimit: 10, allowMore: true, hasChapter: true, theme: "pastel" },
+  leviathan: { title: "Leviathan's Dawn", dataFile: "leviathan-dawn-data.jpg", dailyLimit: 3, allowMore: false, hasChapter: false, theme: "dark-neon" }
 };
 var PASTELS = ["pastel-pink", "pastel-orange", "pastel-blue", "pastel-green", "pastel-yellow"];
 var currentBookKey = null;
