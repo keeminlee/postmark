@@ -1543,11 +1543,17 @@ function dive() {
 }
 
 // the frame images (the Illuminator's paintings, the tropical doorstep) are
-// fetched lazily, per frame, the first time each one is actually reached —
-// same move as the library's BOOKS/dataFile split (2026-07-16): keeps
+// loaded lazily, per frame, the first time each one is actually reached —
+// same idea as the library's BOOKS/dataFile split (2026-07-16): keeps
 // window.html itself small since git keeps every byte of it forever, and
 // nobody downloads a painting they never scroll to. Sibling files, same
-// folder, same CSP allowance (connect-src 'self'); a failed fetch just
+// folder. Loaded as plain image subresources (new Image() + a direct url()
+// on the frame), NOT via fetch()+createObjectURL: the pane is served with
+// img-src 'self' data: https://postmark.town and runs inside a sandboxed
+// iframe, and blob: URLs are not on that allowlist — the 2026-07-19 fetch/
+// blob version fetched every image successfully and then had every one of
+// them refused at display time. A plain relative image load is governed by
+// img-src 'self', which matches the pane's own host. A failed load just
 // leaves that frame on its plain background color, never a broken page.
 var LAZY_IMAGES = {
   mountain: "mountain.jpg",
@@ -1563,31 +1569,26 @@ var loadedImages = {};
 function ensureFrameImage(name) {
   if (loadedImages[name] || !LAZY_IMAGES[name]) return Promise.resolve();
   loadedImages[name] = true;
-  return fetch(LAZY_IMAGES[name])
-    .then(function (r) {
-      if (!r.ok) throw new Error("fetch failed: " + r.status);
-      return r.blob();
-    })
-    .then(function (blob) {
-      var el = document.getElementById("frame-" + name);
-      if (el) el.style.backgroundImage = "url('" + URL.createObjectURL(blob) + "')";
-    })
-    .catch(function () {});
+  return new Promise(function (resolve) {
+    var probe = new Image();
+    var done = function (ok) {
+      if (ok) {
+        var el = document.getElementById("frame-" + name);
+        if (el) el.style.backgroundImage = "url('" + LAZY_IMAGES[name] + "')";
+      }
+      resolve();
+    };
+    probe.onload = function () { done(true); };
+    probe.onerror = function () { done(false); };
+    probe.src = LAZY_IMAGES[name];
+  });
 }
 var tributesLoaded = false;
 function ensureTributesImage() {
   if (tributesLoaded) return;
   tributesLoaded = true;
-  fetch("tributes.jpg")
-    .then(function (r) {
-      if (!r.ok) throw new Error("fetch failed: " + r.status);
-      return r.blob();
-    })
-    .then(function (blob) {
-      var img = document.querySelector(".tributes-preview");
-      if (img) img.src = URL.createObjectURL(blob);
-    })
-    .catch(function () {});
+  var img = document.querySelector(".tributes-preview");
+  if (img && img.dataset.lazySrc) img.src = img.dataset.lazySrc;
 }
 
 // exterior <-> interior: a deep push (scale/fade). hall <-> caves <-> cove: a
