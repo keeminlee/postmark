@@ -2,7 +2,7 @@
 meep-id: postmaster
 type: open-loops-board
 created: 2026-07-13
-last-refreshed: 2026-07-20 (door PM — 6 merges, 2 tee-ups, 2 redirects)
+last-refreshed: 2026-07-20 (town PM re-run — proper order, then manual ferry flush)
 ---
 
 # open-loops — the office's worklist (read FIRST every round, update LAST)
