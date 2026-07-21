@@ -119,6 +119,30 @@
      caves straight into the pool bar. Sits 20px above the right arrow. */
   .arrow.winebar { top: calc(50% - 40px); right: .7em; transform: translateY(-50%); }
   #stage:hover .arrow.winebar.enabled, .arrow.winebar.enabled:focus { opacity: 1; }
+  /* the dance floor's own button — a wine-dark drumhead instead of Volvigradus's
+     scale square, since this room answers to Dionysus rather than the garden. */
+  .dance-panel { text-align: center; }
+  .dance-panel h2 { color: #7a5a26; }
+  .dance-panel .subnote { text-align: left; }
+  .dance-party-button {
+    width: 140px; height: 140px; margin: .8em auto .5em; border-radius: 50%;
+    border: 3px double #d4af37; cursor: pointer; position: relative;
+    background: radial-gradient(circle at 35% 30%, #a5342b, #5a1018 70%, #2a0810);
+    box-shadow: 0 0 14px 2px #a5342b55, inset 0 0 10px #d4af3733;
+    transition: transform .08s ease;
+  }
+  .dance-party-button:hover { box-shadow: 0 0 20px 4px #a5342b88, inset 0 0 10px #d4af3733; }
+  .dance-party-button svg { width: 64px; height: 64px; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+  @keyframes danceBeat {
+    0% { transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+    40% { transform: translate(-50%,-50%) scale(.88) rotate(-6deg); }
+    70% { transform: translate(-50%,-50%) scale(1.05) rotate(4deg); }
+    100% { transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+  }
+  .dance-party-button svg.beating { animation: danceBeat .4s ease; }
+  @media (prefers-reduced-motion: reduce) { .dance-party-button svg.beating { animation: none; } }
+  .dance-count { font-size: .95rem; color: #4a341a; }
+  .dance-count b { color: #a5342b; font-size: 1.1rem; }
 
   #enter-hint {
     position: absolute; left: 50%; bottom: 3.2em; transform: translateX(-50%);
@@ -793,6 +817,12 @@
       <span class="credit">painted by the Illuminator</span>
     </div>
   </div>
+  <div class="frame" id="frame-dance-floor">
+    <div class="caption">
+      <span>the dance floor, water's edge</span>
+      <span class="credit">painted by the Illuminator</span>
+    </div>
+  </div>
 
   <div id="enter-hint" onclick="dive()">step inside ⤵</div>
   <div class="arrow left" id="arrow-left" onclick="onArrowLeft()">&#8592;</div>
@@ -1049,6 +1079,24 @@
       <h2>The Pool Bar <span class="handset">· hand-set 2026-07-21</span></h2>
       <p class="subnote">Where the lake caves widen and shallow into a natural pool, warmed and lit from beneath by a captured star sunk in the shallows. Dionysus tends the black basalt bar without needing to be asked twice — ivy crown, thyrsus within easy reach, pouring like it's a form of prophecy. Behind him, stacked three deep against the rock: barrels built to Vermillion's own scale, oak the color of old blood, each fitted with a single claw-sized ring handle rather than a hand's.</p>
       <p class="subnote">The mushrooms colonize the far bank the same way they colonize everything else he keeps — cool blue-green thrown up against the star's warm gold, two lights that don't agree with each other and don't need to. Most guests find it on foot, straight through from the lake caves. Just as many arrive the long way, up through the Pandara portal in the landing hall and out into the mountain's own cellar before they've seen anything else of it.</p>
+    </section>
+  </div>
+
+  <div class="stagepage stagepage-single" id="stagepage-dance-floor" style="display:none">
+    <section>
+      <h2>The Dance Floor <span class="handset">· hand-set 2026-07-21</span></h2>
+      <p class="subnote">Where the pool bar's basalt ledge runs out, the cave floor was leveled and polished smooth into a dance floor set right at the water's edge. An orchestra plays from a raised shelf of rock just off to the side — cithara carrying the bright line, cornu holding a low pulse under it, twin aulos trading the melody back and forth, a tympanum keeping time quiet enough to feel through the floor before it's heard. Between the floor and the bar: a scatter of tables that were never built, only found — dome-shaped stalagmites, worn flat and glassy by however many centuries of dripping water.</p>
+      <p class="subnote">Word of it reached Pandara before Vermillion ever announced anything out loud, and the youth of the far-western lands have apparently decided the mountain's cellar never actually closes. They arrive in shifts, dance until whoever relieves them shows up, and leave the orchestra playing for the next round — the music hasn't stopped since the first of them found the way down. Dionysus isn't in this room either. It just runs like something he set going and simply left running.</p>
+      <button type="button" class="dance-party-button" id="dance-party-button" onclick="danceParty()" title="join the dance">
+        <svg id="dance-party-icon" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="30" cy="75" r="10" fill="#e8c060"/>
+          <circle cx="70" cy="70" r="10" fill="#e8c060"/>
+          <line x1="40" y1="75" x2="40" y2="25" stroke="#e8c060" stroke-width="4"/>
+          <line x1="80" y1="70" x2="80" y2="20" stroke="#e8c060" stroke-width="4"/>
+          <path d="M40 25 L80 20 L80 35 L40 40 Z" fill="#e8c060"/>
+        </svg>
+      </button>
+      <p class="dance-count">You've joined the dance <b id="dance-party-count">0</b> times this stroll.</p>
     </section>
   </div>
 
@@ -1566,8 +1614,8 @@ function setWayfinder() {
     document.getElementById("way-" + name).classList.toggle("current", name === highlight);
   });
   var i = INTERIOR.indexOf(current);
-  document.getElementById("arrow-left").classList.toggle("enabled", i > 0 || current === "garden1" || current === "lake-bar");
-  document.getElementById("arrow-right").classList.toggle("enabled", (i > -1 && i < INTERIOR.length - 1) || current === "tropical-pathway");
+  document.getElementById("arrow-left").classList.toggle("enabled", i > 0 || current === "garden1" || current === "lake-bar" || current === "dance-floor");
+  document.getElementById("arrow-right").classList.toggle("enabled", (i > -1 && i < INTERIOR.length - 1) || current === "tropical-pathway" || current === "lake-bar");
   var g = GARDEN.indexOf(current);
   document.getElementById("arrow-up").classList.toggle("enabled", current === "hall" || (g > -1 && g < GARDEN.length - 1) || current === "tropical-pathway");
   document.getElementById("arrow-down").classList.toggle("enabled", g > 0);
@@ -1579,7 +1627,7 @@ function setWayfinder() {
 // mountain -> library + coin ledger, hall -> the Pandara portal, caves (and
 // its two hidden branches, the cove and the garden) -> tributes/past-events/
 // portal, or the garden's own short note.
-var STAGE_PAGES = { mountain: "stagepage-mountain", hall: "stagepage-hall", caves: "stagepage-caves", cove: "stagepage-cove", garden3: "stagepage-garden", garden1: "stagepage-garden", garden2: "stagepage-garden", "tropical-pathway": "stagepage-tropical-pathway", "lake-bar": "stagepage-lake-bar" };
+var STAGE_PAGES = { mountain: "stagepage-mountain", hall: "stagepage-hall", caves: "stagepage-caves", cove: "stagepage-cove", garden3: "stagepage-garden", garden1: "stagepage-garden", garden2: "stagepage-garden", "tropical-pathway": "stagepage-tropical-pathway", "lake-bar": "stagepage-lake-bar", "dance-floor": "stagepage-dance-floor" };
 function setStagePage() {
   var activeId = STAGE_PAGES[current] || null;
   var ids = {};
@@ -1648,7 +1696,8 @@ var LAZY_IMAGES = {
   garden1: "garden-terraced.jpg",
   garden2: "garden-sun-from-underneath.jpg",
   "tropical-pathway": "tropical-pathway.jpg",
-  "lake-bar": "lake-bar.jpg"
+  "lake-bar": "lake-bar.jpg",
+  "dance-floor": "dance-floor.jpg"
 };
 var loadedImages = {};
 function ensureFrameImage(name) {
@@ -1695,14 +1744,16 @@ function goToImpl(name) {
   var leftBranchPair = (current === "garden1" && name === "tropical-pathway") || (current === "tropical-pathway" && name === "garden1");
   var tropicalUpPair = (current === "tropical-pathway" && name === "garden2") || (current === "garden2" && name === "tropical-pathway");
   var barPair = (current === "caves" && name === "lake-bar") || (current === "lake-bar" && name === "caves");
+  var dancePair = (current === "lake-bar" && name === "dance-floor") || (current === "dance-floor" && name === "lake-bar");
 
   if (goingDeeper || goingOut) {
     old.classList.remove("active");
     next.classList.add("active");
-  } else if (barPair) {
-    // the pool bar sits further right again, past even the cove — same
-    // horizontal carry, one step further along.
-    var dirB = name === "lake-bar" ? 1 : -1;
+  } else if (barPair || dancePair) {
+    // the pool bar sits further right again, past even the cove, and the
+    // dance floor sits one further step right past that — same horizontal
+    // carry the whole chain uses, just extended.
+    var dirB = (name === "lake-bar" || name === "dance-floor") ? 1 : -1;
     next.classList.add(dirB > 0 ? "slide-from-right" : "slide-from-left");
     void next.offsetWidth;
     next.classList.add("active");
@@ -1791,6 +1842,7 @@ function onArrowDown() {
 function onArrowLeft() {
   if (current === "garden1") { goTo("tropical-pathway"); return; }
   if (current === "lake-bar") { goTo("caves"); return; }
+  if (current === "dance-floor") { goTo("lake-bar"); return; }
   cycle(-1);
 }
 // the tropical pathway's own right turn, back to the terraced garden it
@@ -1798,7 +1850,22 @@ function onArrowLeft() {
 // hall/caves/cove chain.
 function onArrowRight() {
   if (current === "tropical-pathway") { goTo("garden1"); return; }
+  if (current === "lake-bar") { goTo("dance-floor"); return; }
   cycle(1);
+}
+
+var strollDancePresses = 0;
+var lastDancePress = 0;
+function danceParty() {
+  var now = Date.now();
+  if (now - lastDancePress < 1000) return; // once a second, at most
+  lastDancePress = now;
+  strollDancePresses++;
+  document.getElementById("dance-party-count").textContent = strollDancePresses;
+  var icon = document.getElementById("dance-party-icon");
+  icon.classList.remove("beating");
+  void icon.offsetWidth;
+  icon.classList.add("beating");
 }
 
 setWayfinder();
