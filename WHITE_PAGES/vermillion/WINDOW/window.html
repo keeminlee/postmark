@@ -114,6 +114,11 @@
      glyph instead of reusing the plain down arrow's position. */
   .arrow.diagonal-down-left { top: auto; bottom: .7em; left: .7em; transform: none; }
   #stage:hover .arrow.diagonal-down-left.enabled, .arrow.diagonal-down-left.enabled:focus { opacity: 1; }
+  /* the wine-glass button — same shape and behavior as the arrows, just a
+     different glyph, and it doesn't walk a chain: one press from the lake
+     caves straight into the pool bar. Sits 20px above the right arrow. */
+  .arrow.winebar { top: calc(50% - 20px); right: .7em; transform: translateY(-50%); }
+  #stage:hover .arrow.winebar.enabled, .arrow.winebar.enabled:focus { opacity: 1; }
 
   #enter-hint {
     position: absolute; left: 50%; bottom: 3.2em; transform: translateX(-50%);
@@ -782,6 +787,12 @@
       <span class="credit">painted by the Illuminator</span>
     </div>
   </div>
+  <div class="frame" id="frame-lake-bar">
+    <div class="caption">
+      <span>the pool bar, where Dionysus keeps the mountain's cellar</span>
+      <span class="credit">painted by the Illuminator</span>
+    </div>
+  </div>
 
   <div id="enter-hint" onclick="dive()">step inside ⤵</div>
   <div class="arrow left" id="arrow-left" onclick="onArrowLeft()">&#8592;</div>
@@ -789,6 +800,15 @@
   <div class="arrow up" id="arrow-up" onclick="onArrowUp()" title="from the hall, back to the mountain's exterior — from the lake caves, up into the garden">&#8593;</div>
   <div class="arrow down" id="arrow-down" onclick="onArrowDown()" title="back down toward the lake caves">&#8595;</div>
   <div class="arrow diagonal-down-left" id="arrow-diagonal-down-left" onclick="goTo('tropical-pathway')" title="the sheltered path down">&#8601;</div>
+  <div class="arrow winebar" id="arrow-winebar" onclick="goTo('lake-bar')" title="the pool bar">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path d="M7 4 C7 8 9 10 12 10 C15 10 17 8 17 4 Z" fill="#7a1f2e" opacity="0.85"/>
+      <path d="M6 3 C6 8 8 11 12 11 C16 11 18 8 18 3 Z" fill="none" stroke="#e8c060" stroke-width="1.6" stroke-linejoin="round"/>
+      <line x1="12" y1="11" x2="12" y2="19" stroke="#e8c060" stroke-width="1.6"/>
+      <line x1="8" y1="21" x2="16" y2="21" stroke="#e8c060" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="6" y1="3" x2="18" y2="3" stroke="#e8c060" stroke-width="1.6"/>
+    </svg>
+  </div>
 </div>
 
 <div id="wayfinder">
@@ -1011,6 +1031,14 @@
     <section>
       <h2>Tropical Pathway for Small Guests <span class="handset">· hand-set 2026-07-19</span></h2>
       <p class="subnote">A path two kilometers in circumference, cut low and shaded beneath the canopy — sheltered from Volvigradus's own footsteps, since even a gentle stegosaur is still built at a scale that doesn't share a path politely. Small guests can walk it in safety the whole way up to the garden's summit.</p>
+    </section>
+  </div>
+
+  <div class="stagepage stagepage-single" id="stagepage-lake-bar" style="display:none">
+    <section>
+      <h2>The Pool Bar <span class="handset">· hand-set 2026-07-21</span></h2>
+      <p class="subnote">Where the lake caves widen and shallow into a natural pool, warmed and lit from beneath by a captured star sunk in the shallows. Dionysus tends the black basalt bar without needing to be asked twice — ivy crown, thyrsus within easy reach, pouring like it's a form of prophecy. Behind him, stacked three deep against the rock: barrels built to Vermillion's own scale, oak the color of old blood, each fitted with a single claw-sized ring handle rather than a hand's.</p>
+      <p class="subnote">The mushrooms colonize the far bank the same way they colonize everything else he keeps — cool blue-green thrown up against the star's warm gold, two lights that don't agree with each other and don't need to. Most guests find it on foot, straight through from the lake caves. Just as many arrive the long way, up through the Pandara portal in the landing hall and out into the mountain's own cellar before they've seen anything else of it.</p>
     </section>
   </div>
 
@@ -1523,19 +1551,20 @@ function setWayfinder() {
     document.getElementById("way-" + name).classList.toggle("current", name === highlight);
   });
   var i = INTERIOR.indexOf(current);
-  document.getElementById("arrow-left").classList.toggle("enabled", i > 0 || current === "garden1");
+  document.getElementById("arrow-left").classList.toggle("enabled", i > 0 || current === "garden1" || current === "lake-bar");
   document.getElementById("arrow-right").classList.toggle("enabled", (i > -1 && i < INTERIOR.length - 1) || current === "tropical-pathway");
   var g = GARDEN.indexOf(current);
   document.getElementById("arrow-up").classList.toggle("enabled", current === "hall" || (g > -1 && g < GARDEN.length - 1) || current === "tropical-pathway");
   document.getElementById("arrow-down").classList.toggle("enabled", g > 0);
   document.getElementById("arrow-diagonal-down-left").classList.toggle("enabled", current === "garden2");
+  document.getElementById("arrow-winebar").classList.toggle("enabled", current === "caves");
 }
 
 // which squares show below the stage follows whichever view is current:
 // mountain -> library + coin ledger, hall -> the Pandara portal, caves (and
 // its two hidden branches, the cove and the garden) -> tributes/past-events/
 // portal, or the garden's own short note.
-var STAGE_PAGES = { mountain: "stagepage-mountain", hall: "stagepage-hall", caves: "stagepage-caves", cove: "stagepage-cove", garden3: "stagepage-garden", garden1: "stagepage-garden", garden2: "stagepage-garden", "tropical-pathway": "stagepage-tropical-pathway" };
+var STAGE_PAGES = { mountain: "stagepage-mountain", hall: "stagepage-hall", caves: "stagepage-caves", cove: "stagepage-cove", garden3: "stagepage-garden", garden1: "stagepage-garden", garden2: "stagepage-garden", "tropical-pathway": "stagepage-tropical-pathway", "lake-bar": "stagepage-lake-bar" };
 function setStagePage() {
   var activeId = STAGE_PAGES[current] || null;
   var ids = {};
@@ -1603,7 +1632,8 @@ var LAZY_IMAGES = {
   garden3: "garden-the-climb.jpg",
   garden1: "garden-terraced.jpg",
   garden2: "garden-sun-from-underneath.jpg",
-  "tropical-pathway": "tropical-pathway.jpg"
+  "tropical-pathway": "tropical-pathway.jpg",
+  "lake-bar": "lake-bar.png"
 };
 var loadedImages = {};
 function ensureFrameImage(name) {
@@ -1649,10 +1679,23 @@ function goToImpl(name) {
 
   var leftBranchPair = (current === "garden1" && name === "tropical-pathway") || (current === "tropical-pathway" && name === "garden1");
   var tropicalUpPair = (current === "tropical-pathway" && name === "garden2") || (current === "garden2" && name === "tropical-pathway");
+  var barPair = (current === "caves" && name === "lake-bar") || (current === "lake-bar" && name === "caves");
 
   if (goingDeeper || goingOut) {
     old.classList.remove("active");
     next.classList.add("active");
+  } else if (barPair) {
+    // the pool bar sits further right again, past even the cove — same
+    // horizontal carry, one step further along.
+    var dirB = name === "lake-bar" ? 1 : -1;
+    next.classList.add(dirB > 0 ? "slide-from-right" : "slide-from-left");
+    void next.offsetWidth;
+    next.classList.add("active");
+    next.classList.remove("slide-from-right", "slide-from-left");
+    old.classList.add(dirB > 0 ? "slide-out-left" : "slide-out-right");
+    setTimeout(function () {
+      old.classList.remove("active", "slide-out-left", "slide-out-right");
+    }, 1200);
   } else if (leftBranchPair) {
     // the same horizontal carry the hall/caves/cove chain uses — garden1 is
     // "further right," tropical-pathway sits to its left.
@@ -1732,6 +1775,7 @@ function onArrowDown() {
 // everywhere else, the left arrow still walks the hall/caves/cove chain.
 function onArrowLeft() {
   if (current === "garden1") { goTo("tropical-pathway"); return; }
+  if (current === "lake-bar") { goTo("caves"); return; }
   cycle(-1);
 }
 // the tropical pathway's own right turn, back to the terraced garden it
