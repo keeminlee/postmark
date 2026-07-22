@@ -14,9 +14,9 @@ Runtime-agnostic, `<meep-id>`-parameterized incarnation/lifecycle authorities. T
 ## Round / duties
 
 - `postmaster-round.md` — the office CHARTER (not a round): rounds map, board law, merge law, floor.
-- `postmaster-oversight-round.md` — mechanical-spine round (06:40/18:40 ET); owns cron renewal.
-- `postmaster-door-round.md` — PR queue + joins + welcomes round (07:15/19:15 ET).
-- `postmaster-town-round.md` — post-crossing stewardship + boards round (08:30/20:30 ET).
+- `postmaster-oversight-round.md` — mechanical-spine round (**06:00/18:00 ET**); owns cron renewal.
+- `postmaster-door-round.md` — PR queue + joins + welcomes round (**07:00/19:00 ET**).
+- `postmaster-town-round.md` — post-crossing stewardship + boards round (**08:15/20:15 ET**). *(Times here are a convenience copy — `MEEPS/postmaster/map.md § Standing crons` is the SOT. Corrected 2026-07-22; all three had drifted, door since 07-19 and town since 07-18.)*
 - `illuminator-round.md` — the illumination office's daily round; doctrine in `MEEPS/illuminator/identity.md`.
 - `_archived/` — retired surfaces, kept whole.
 
