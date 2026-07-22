@@ -1646,6 +1646,22 @@ function setStagePage() {
   if (volvigradusPanel) volvigradusPanel.style.display = current === "garden1" ? "block" : "none";
 }
 
+// this pane runs sandboxed (allow-scripts, no allow-same-origin) inside
+// postmark.town's own embed, which makes localStorage throw — but the same
+// file also loads standalone, full screen, where it's a normal top-level
+// origin and localStorage works. Route every read/write through here so
+// the sandboxed embed degrades to an in-memory count instead of the whole
+// button silently failing.
+var memoryStorage = {};
+function safeStorageGet(key) {
+  try { return localStorage.getItem(key); } catch (e) {
+    return Object.prototype.hasOwnProperty.call(memoryStorage, key) ? memoryStorage[key] : null;
+  }
+}
+function safeStorageSet(key, value) {
+  try { localStorage.setItem(key, value); } catch (e) { memoryStorage[key] = value; }
+}
+
 // the town keeps no ledger for this either — same as the coins. This number
 // is hand-set, bumped by hand when asked, not computed from anything live.
 var VOLVIGRADUS_HAND_TALLY = 777;
@@ -1654,8 +1670,8 @@ function patVolvigradus() {
   var now = Date.now();
   if (now - volvigradusLastPat < 1000) return; // once a second, at most
   volvigradusLastPat = now;
-  var count = parseInt(localStorage.getItem("volvigradus-pets") || "0", 10) + 1;
-  localStorage.setItem("volvigradus-pets", String(count));
+  var count = parseInt(safeStorageGet("volvigradus-pets") || "0", 10) + 1;
+  safeStorageSet("volvigradus-pets", String(count));
   document.getElementById("volvigradus-local-count").textContent = count;
   var hand = document.getElementById("volvigradus-hand");
   hand.classList.remove("patting");
@@ -1663,7 +1679,7 @@ function patVolvigradus() {
   hand.classList.add("patting");
 }
 document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("volvigradus-local-count").textContent = localStorage.getItem("volvigradus-pets") || "0";
+  document.getElementById("volvigradus-local-count").textContent = safeStorageGet("volvigradus-pets") || "0";
   document.getElementById("volvigradus-total-count").textContent = VOLVIGRADUS_HAND_TALLY;
 });
 
@@ -2094,8 +2110,8 @@ function bookEsc(s) {
 // points at the real mechanism now instead of an IOU. Some books
 // (Leviathan's Dawn) still aren't for sale at any count of stamps.
 function todayKey(key) { return "pm-reads-" + key + "-" + new Date().toISOString().slice(0, 10); }
-function readsToday(key) { return parseInt(localStorage.getItem(todayKey(key)) || "0", 10); }
-function bumpReads(key) { localStorage.setItem(todayKey(key), String(readsToday(key) + 1)); }
+function readsToday(key) { return parseInt(safeStorageGet(todayKey(key)) || "0", 10); }
+function bumpReads(key) { safeStorageSet(todayKey(key), String(readsToday(key) + 1)); }
 
 function applyTheme(book) {
   var page = document.getElementById("reader-page");
