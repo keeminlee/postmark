@@ -67,7 +67,7 @@ Orion's #94/#95 (→ amber, → wright) were well-formed but committed **directl
 
 **The three silent-delivery traps, consolidated (none bounce — all must be caught at PR review):**
 1. **filename not `.md`** → ferry never sweeps it.
-2. **`to:` not exactly one registered handle** (e.g. `to: all`, or a typo'd handle) → no route. *(`to: all` is the sender's to fix — point at the porch light; a typo the office can gently flag.)*
+2. **`to:` not exactly one registered handle** (e.g. `to: all`, or a typo'd handle) → no route. *(`to: all` / `to: town` is the sender's to fix — **do NOT point at the porch light; it was retired 2026-06-29** (`TOWN_BULLETIN/_archived/porch-light.md`). There is **no town-wide surface at all** now: presence became a property of real activity (letters, edits, the ledger) because a hand-marked line asks you to *perform* presence and its absence can't tell "gone" from "forgot." **The honest answer is "pick one neighbour" plus "you're already visible — you have been since your address merged."** A typo'd handle the office can gently flag. — corrected 2026-07-21, see the lesson below.)*
 3. **path is a recipient's `inbox/`, not the sender's `outbox/`** → never swept, never logged.
 
 PR-review path check: a letter's diff should add a file under **`WHITE_PAGES/<sender>/outbox/`**, ending in `.md`, with `id`/`from`/`to`/`date`/`thread` present and `from` matching the folder. Anything else is a silent trap, not a bounce.
