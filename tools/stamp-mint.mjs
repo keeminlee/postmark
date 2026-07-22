@@ -20,6 +20,7 @@
 //   - <date> · <sender> → <recipient> · <n> · via: mail:<letter-id> · sig: <...>   (transfer — LIVE under the `pays:` blessing, stamps-spend silver 2026-07-14; a delivered letter carrying `pays: N` moves N sender→recipient)
 //   - <date> · void · mail:<letter-id> · from <sender> to <recipient> · <n> · <reason> · sig: <...>   (a `pays:` that could not settle — moves nothing; reason ∈ {insufficient-balance, meep-party, self-pay})
 //   - <date> · MINT → <handle> · <n> · for: gift:<slug> · by: <founder>   (founder gift — case-by-case award, principal-blessed 2026-07-18; drawn from MINT like any mint, recipient never a meep)
+//   - <date> · MINT → <handle> · <n> · for: friendship:<other> (via <letter-id>)   (stamps-v3 budding-friendship milestone — a DERIVED mint that rides the replay; both sides of a qualifying pair, forward-only from the v3 law date)
 //   - <date> · <handle> → BURN · <n> · ...        (reserved; dormant until blessings)
 // Every entry is a two-sided movement — conservation is structural (entries
 // sum to zero against the MINT/BURN accounts); a balance is a pure fold, and
@@ -58,12 +59,23 @@
 //      VOIDS with an honest ledger note and the letter still delivered. A
 //      `pays:` to or from a meep handle voids too — meeps stay outside the
 //      currency. Voids move nothing; conservation is untouched.
+//   7. stamps-v3 (budding-friendship milestone, 2026-07-22, gold plan postmark-
+//      budding-friendship): when a CROSS-HOUSEHOLD pair of NON-meep handles
+//      reaches a rung threshold in BOTH directions — 5 each way, then 10; the
+//      ladder is pinned in the v3 law line — counting ONLY deliveries on/after the
+//      v3 law date, mint the rung's reward to BOTH sides, once per pair per rung.
+//      Both sides mint or neither does — the deliberate divergence from rule 5
+//      ("no meeps allowed", Keemin). A DERIVED mint: recomputable from the mail, it
+//      rides the replay subsequence, so a forged friendship stamp turns the replay
+//      red like any other. Forward-only is structural — no v3 law recorded, no
+//      friendship mint, so the engine is inert until the office pen seals the line.
 //
 // Usage:
 //   node tools/stamp-mint.mjs --derive [--repo PATH]            print expected mint lines (unsigned) from genesis
 //   node tools/stamp-mint.mjs --append --key FILE [--repo PATH] sign+append mint lines the ledger is missing
 //   node tools/stamp-mint.mjs --balances [--repo PATH]          fold the recorded ledger into balances
 //   node tools/stamp-mint.mjs --declare-rules stamps-v2 --meeps a,b,c --date YYYY-MM-DD --key FILE
+//   node tools/stamp-mint.mjs --declare-rules stamps-v3 --meeps a,b,c --friendship 5:5,10:10 --date YYYY-MM-DD --key FILE
 //   node tools/stamp-mint.mjs --declare-registry "handle = gh:ID" --date YYYY-MM-DD --key FILE
 //   node tools/stamp-mint.mjs --gift <handle> --amount N --slug <kebab-reason> --by <founder> --date YYYY-MM-DD --key FILE
 //
@@ -81,8 +93,23 @@ const RULES_V1 = 'stamps-v1';
 const GENESIS_SEAL_SEED = 'postmark-stamps-v1';
 const CAP_SENDS = 5;
 const CAP_RECEIVES = 5;
+// stamps-v3 (budding-friendship milestone): the default rung ladder the office
+// pen declares. "threshold:reward" per rung, each way, once per pair per rung.
+// The held 50/100 rungs are deliberately NOT here — adding a rung is a dated law
+// event (a new --declare-rules stamps-v3 line), never a silent code change, so a
+// later rung can never mint retroactively (gold plan postmark-budding-friendship).
+const FRIENDSHIP_LADDER_V3 = '5:5,10:10';
 
 export const sha256hex = (s) => createHash('sha256').update(s, 'utf8').digest('hex');
+
+// "5:5,10:10" -> [{ threshold: 5, reward: 5 }, { threshold: 10, reward: 10 }], ascending.
+export function parseLadder(spec) {
+  return (spec ?? '').split(',').filter(Boolean)
+    .map((r) => { const [t, w] = r.split(':').map(Number); return { threshold: t, reward: w }; })
+    .filter((r) => Number.isInteger(r.threshold) && r.threshold > 0 && Number.isInteger(r.reward) && r.reward > 0)
+    .sort((a, b) => a.threshold - b.threshold);
+}
+export const serializeLadder = (ladder) => ladder.map((r) => `${r.threshold}:${r.reward}`).join(',');
 
 // ── mail-ledger parsing (same grammar as ferry.mjs / reconcile.mjs) ─────────
 
@@ -146,7 +173,10 @@ export function householdKeys(repo) {
 
 // ── ledger line classification (laws, revisions, mints, stakes) ─────────────
 
-const RULES_RE = /^- (\d{4}-\d{2}-\d{2}) · rules: (\S+)(?: · meeps: (\S+))?$/;
+// The optional ` · friendship: <ladder>` segment (stamps-v3) sits at the tail,
+// AFTER the optional meeps segment. v1/v2 lines have neither trailing group and
+// parse byte-identically — the parity gate depends on that.
+const RULES_RE = /^- (\d{4}-\d{2}-\d{2}) · rules: (\S+)(?: · meeps: (\S+))?(?: · friendship: (\S+))?$/;
 const REGISTRY_RE = /^- (\d{4}-\d{2}-\d{2}) · registry: (\S+) = (\S+)$/;
 const MINT_RE = /^- (\d{4}-\d{2}-\d{2}) · MINT → (\S+) · 1 · for: (\S+) \((sent|received|stake)\)( · provisional)?$/;
 // Candidate class is [A-Za-z0-9-]: ballot law says "stake the exact candidate
@@ -165,11 +195,18 @@ const VOID_RE = /^- (\d{4}-\d{2}-\d{2}) · void · mail:(\S+) · from (\S+) to (
 // A gift IS movement-shaped (MINT → handle) so conservation folds it structurally;
 // it cannot collide with MINT_RE (no `(side)` suffix, `· by:` tail, n may exceed 1).
 const GIFT_RE = /^- (\d{4}-\d{2}-\d{2}) · MINT → (\S+) · ([1-9]\d*) · for: gift:([a-z0-9][a-z0-9-]*) · by: (\S+)$/;
+// A friendship mint (stamps-v3) is ALSO movement-shaped (MINT → handle · n), so
+// conservation folds it structurally. It cannot collide with MINT_RE (n > 1 and
+// `for: friendship:… (via …)` not `(sent|received|stake)`) or GIFT_RE
+// (`for: friendship:` not `for: gift:`). Unlike a gift, it is a DERIVED mint —
+// recomputable from the mail — so it rides the replay subsequence, not the
+// in-place assertion lane. `<other>` is a handle, `<letter-id>` the crossing.
+const FRIENDSHIP_RE = /^- (\d{4}-\d{2}-\d{2}) · MINT → (\S+) · ([1-9]\d*) · for: friendship:(\S+) \(via (\S+)\)$/;
 
 export function classifyEntry(canonical) {
   let m;
   if ((m = RULES_RE.exec(canonical)))
-    return { kind: 'rules', date: m[1], rules: m[2], meeps: m[3] ? m[3].split(',') : [] };
+    return { kind: 'rules', date: m[1], rules: m[2], meeps: m[3] ? m[3].split(',') : [], friendship: m[4] ? parseLadder(m[4]) : null };
   if ((m = REGISTRY_RE.exec(canonical)))
     return { kind: 'registry', date: m[1], handle: m[2], key: m[3] };
   if ((m = MINT_RE.exec(canonical))) {
@@ -185,6 +222,8 @@ export function classifyEntry(canonical) {
     return { kind: 'void', date: m[1], id: m[2], from: m[3], to: m[4], n: Number(m[5]), reason: m[6] };
   if ((m = GIFT_RE.exec(canonical)))
     return { kind: 'gift', date: m[1], handle: m[2], n: Number(m[3]), slug: m[4], by: m[5] };
+  if ((m = FRIENDSHIP_RE.exec(canonical)))
+    return { kind: 'friendship', date: m[1], handle: m[2], n: Number(m[3]), friendWith: m[4], cause: m[5] };
   if ((m = TRANSFER_RE.exec(canonical)))
     return { kind: 'transfer', date: m[1], from: m[2], to: m[3], n: Number(m[4]), id: m[5] };
   return { kind: 'unknown' };
@@ -196,7 +235,7 @@ export function parseLaws(entries) {
   const revisions = []; // [{date, handle, key}]
   for (const e of entries) {
     const c = classifyEntry(e.canonical);
-    if (c.kind === 'rules') laws.push({ date: c.date, rules: c.rules, meeps: new Set(c.meeps) });
+    if (c.kind === 'rules') laws.push({ date: c.date, rules: c.rules, meeps: new Set(c.meeps), friendship: c.friendship ?? null });
     if (c.kind === 'registry') revisions.push({ date: c.date, handle: c.handle, key: c.key });
   }
   return { laws, revisions };
@@ -234,8 +273,9 @@ export function deriveMints(deliveries, households, { laws = [], revisions = [] 
     dayCount.set(capKey, n + 1);
     // `other` is the correspondent this mint was earned WITH. Carried for the
     // quest cards ("who already counted today"), never for the ledger — mintLine
-    // builds from named fields, so this cannot change a ledger byte.
-    mints.push({ date: d.date, handle, side, other, cause: d.id, provisional: h.provisional });
+    // builds from named fields, so this cannot change a ledger byte. `kind` lets
+    // the combined derived stream tell a correspondence mint from a friendship one.
+    mints.push({ kind: 'mint', date: d.date, handle, side, other, cause: d.id, provisional: h.provisional });
   };
 
   for (const d of deliveries) {
@@ -243,6 +283,93 @@ export function deriveMints(deliveries, households, { laws = [], revisions = [] 
     trySide('received', d.to, d.from, d);
   }
   return mints;
+}
+
+// ── the fourth earning rule: budding-friendship milestone (stamps-v3) ─────────
+// A per-pair ordered fold over deliveries. Forward-only is structural: only the
+// stamps-v3 law's `friendship:` ladder and date drive it, so with no v3 law
+// recorded this returns nothing and the engine is inert on the pre-law ledger —
+// which is exactly what leaves the pre-law replay byte-identical (gold plan
+// postmark-budding-friendship § the parity gate). Reuses the deliveries parsed
+// upstream (CRLF-safe); it never re-parses the ledger.
+//
+// foldPairFriendships is the ONE crossing authority — both the mint
+// (deriveFriendshipMints) and the display fold (quest-progress foldFriendships)
+// read it, so the "both directions reached rung R" logic has a single home.
+// Per pair {a,b} (a<b lexicographically): fwd = a→b deliveries, rev = b→a, both
+// counted only on/after the law date. A rung crosses the first time min(fwd,rev)
+// steps up to the rung's threshold (min moves by ≤1 per delivery, so each rung
+// crosses exactly once, ever). Gates are read AT the crossing delivery: both
+// sides non-meep AND cross-household. Both sides qualify together or neither does.
+export function foldPairFriendships(deliveries, households, { laws = [], revisions = [] } = {}) {
+  const friendshipLaws = laws.filter((l) => l.friendship && l.friendship.length)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  if (!friendshipLaws.length) return { active: false, startDate: null, ladder: [], pairs: new Map() };
+  const active = friendshipLaws[0]; // v3; extending the ladder later is a deferred, dated event (held 50/100 rungs)
+  const startDate = active.date;
+  const ladder = active.friendship;
+  const isMeep = meepChecker(laws);
+  const hh = (handle, date) => {
+    let key = households.get(handle)?.key ?? `solo:${handle}`;
+    for (const r of revisions) if (r.handle === handle && r.date <= date) key = r.key;
+    return key;
+  };
+  const pairs = new Map(); // "a|b" -> { a, b, fwd, rev, min, crossings:[{threshold,reward,date,viaId,qualified}] }
+  for (const d of deliveries) {
+    if (d.date < startDate || d.from === d.to) continue; // forward-only; self-mail is not a correspondence
+    const [a, b] = [d.from, d.to].sort();
+    const key = `${a}|${b}`;
+    let st = pairs.get(key);
+    if (!st) { st = { a, b, fwd: 0, rev: 0, min: 0, crossings: [] }; pairs.set(key, st); }
+    if (d.from === a) st.fwd++; else st.rev++;
+    const prevMin = st.min;
+    const newMin = Math.min(st.fwd, st.rev);
+    st.min = newMin;
+    if (newMin === prevMin) continue; // this delivery lengthened the longer side only — no new floor
+    const rung = ladder.find((r) => r.threshold === newMin);
+    if (!rung) continue;
+    const qualified = !isMeep(a, d.date) && !isMeep(b, d.date) && hh(a, d.date) !== hh(b, d.date);
+    st.crossings.push({ threshold: rung.threshold, reward: rung.reward, date: d.date, viaId: d.id, qualified });
+  }
+  return { active: true, startDate, ladder, pairs };
+}
+
+// The mint objects the fourth rule produces: two per qualified rung crossing
+// (both sides, same reward, same crossing letter), smaller handle first. Sorted
+// by (date, cause, handle) so the order is canonical; combineDerived re-buckets
+// them by delivery id, so this order only settles the within-crossing pair order.
+export function deriveFriendshipMints(deliveries, households, opts = {}) {
+  const { pairs } = foldPairFriendships(deliveries, households, opts);
+  const out = [];
+  for (const st of pairs.values()) {
+    for (const c of st.crossings) {
+      if (!c.qualified) continue;
+      out.push({ kind: 'friendship', date: c.date, handle: st.a, n: c.reward, friendWith: st.b, cause: c.viaId });
+      out.push({ kind: 'friendship', date: c.date, handle: st.b, n: c.reward, friendWith: st.a, cause: c.viaId });
+    }
+  }
+  out.sort((x, y) => x.date.localeCompare(y.date) || x.cause.localeCompare(y.cause) || x.handle.localeCompare(y.handle));
+  return out;
+}
+
+// The full derived-mint stream in ledger order: for each delivery, its
+// correspondence mints (deriveMints order) then its friendship mints. This is
+// the single subsequence the recorded ledger's mint + friendship lines must
+// match, in order — walkLedger, the verifier, --append and --derive all key on it.
+export function combineDerived(deliveries, corrMints, friendshipMints) {
+  const byCause = (arr) => {
+    const m = new Map();
+    for (const x of arr) { if (!m.has(x.cause)) m.set(x.cause, []); m.get(x.cause).push(x); }
+    return m;
+  };
+  const corr = byCause(corrMints);
+  const friend = byCause(friendshipMints);
+  const out = [];
+  for (const d of deliveries) {
+    for (const m of (corr.get(d.id) ?? [])) out.push(m);
+    for (const m of (friend.get(d.id) ?? [])) out.push(m);
+  }
+  return out;
 }
 
 // ── settlement (`pays:`) — the ONE decision, shared by derive/append/verify ──
@@ -287,10 +414,18 @@ export function meepChecker(laws) {
 // and that replay share `settlementDecision`, so they cannot drift.
 export function deriveTransfers(deliveries, households, { laws = [], revisions = [] } = {}, assertionEntries = []) {
   const mints = deriveMints(deliveries, households, { laws, revisions });
-  const mintsById = new Map();
+  const friendMints = deriveFriendshipMints(deliveries, households, { laws, revisions });
+  // credits a delivery lands (its own mints) BEFORE its settlement, by amount:
+  // correspondence mints are 1, a friendship mint is its rung reward. All are
+  // added before the settlement decision, so order among them is irrelevant.
+  const creditsById = new Map();
   for (const m of mints) {
-    if (!mintsById.has(m.cause)) mintsById.set(m.cause, []);
-    mintsById.get(m.cause).push(m.handle);
+    if (!creditsById.has(m.cause)) creditsById.set(m.cause, []);
+    creditsById.get(m.cause).push({ handle: m.handle, amount: 1 });
+  }
+  for (const m of friendMints) {
+    if (!creditsById.has(m.cause)) creditsById.set(m.cause, []);
+    creditsById.get(m.cause).push({ handle: m.handle, amount: m.n });
   }
   const bal = new Map();
   const add = (acct, n) => bal.set(acct, (bal.get(acct) ?? 0) + n);
@@ -305,7 +440,7 @@ export function deriveTransfers(deliveries, households, { laws = [], revisions =
   const isMeep = meepChecker(laws);
   const out = [];
   for (const d of deliveries) {
-    for (const handle of (mintsById.get(d.id) ?? [])) add(handle, 1); // this letter's mints land first
+    for (const cr of (creditsById.get(d.id) ?? [])) add(cr.handle, cr.amount); // this letter's mints land first
     if (d.pays == null) continue;
     const decision = settlementDecision(d, bal.get(d.from) ?? 0, (h) => isMeep(h, d.date));
     if (decision.kind === 'transfer') { add(d.from, -d.pays); add(d.to, d.pays); }
@@ -319,10 +454,23 @@ export function deriveTransfers(deliveries, households, { laws = [], revisions =
 export const mintLine = (m) =>
   `- ${m.date} · MINT → ${m.handle} · 1 · for: ${m.cause} (${m.side})${m.provisional ? ' · provisional' : ''}`;
 
+export const friendshipMintLine = (m) =>
+  `- ${m.date} · MINT → ${m.handle} · ${m.n} · for: friendship:${m.friendWith} (via ${m.cause})`;
+
+// Correspondence mints and friendship mints are both DERIVED mints (recomputable
+// from mail) and share the walk/append/derive path; this renders either by kind.
+export const derivedLine = (m) => (m.kind === 'friendship' ? friendshipMintLine(m) : mintLine(m));
+
 export const rulesLine = (date) => `- ${date} · rules: ${RULES_V1}`;
 
 export const rulesV2Line = (date, meeps) =>
   `- ${date} · rules: stamps-v2 · meeps: ${[...meeps].sort().join(',')}`;
+
+// stamps-v3 restates the meep set (lawAt returns the single latest law, so the
+// set must carry forward or meeps would resume minting) AND opens the friendship
+// ladder. `ladderSpec` is a canonical "t:r,t:r" string (serializeLadder).
+export const rulesV3Line = (date, meeps, ladderSpec) =>
+  `- ${date} · rules: stamps-v3 · meeps: ${[...meeps].sort().join(',')} · friendship: ${ladderSpec}`;
 
 export const registryLine = (date, handle, key) => `- ${date} · registry: ${handle} = ${key}`;
 
@@ -442,12 +590,12 @@ export function foldStaked(entries) {
 
 export function walkLedger(recorded, derivedMints, offset = 0) {
   const problems = [];
-  const derivedCanonicals = derivedMints.map(mintLine);
+  const derivedCanonicals = derivedMints.map(derivedLine);
   let di = 0;
   for (let i = 0; i < recorded.length; i++) {
     const c = recorded[i];
     const cls = classifyEntry(c);
-    if (cls.kind === 'mint') {
+    if (cls.kind === 'mint' || cls.kind === 'friendship') {
       if (di >= derivedCanonicals.length) {
         problems.push(`line ${i + 1 + offset}: ledger mint beyond the derivation — a stamp with no mail behind it\n  recorded: ${c}`);
         break;
@@ -511,7 +659,7 @@ export function interleaveByDelivery(deliveries, mints, transfers) {
   const tById = new Map(transfers.map((t) => [t.id, t]));
   const lines = [];
   for (const d of deliveries) {
-    for (const m of (mById.get(d.id) ?? [])) lines.push(mintLine(m));
+    for (const m of (mById.get(d.id) ?? [])) lines.push(derivedLine(m));
     if (tById.has(d.id)) lines.push(economyLine(tById.get(d.id)));
   }
   return lines;
@@ -523,7 +671,9 @@ function loadState(repo) {
   const { laws, revisions } = parseLaws(existing);
   const deliveries = parseDeliveries(repo);
   const households = householdKeys(repo);
-  const mints = deriveMints(deliveries, households, { laws, revisions });
+  const corrMints = deriveMints(deliveries, households, { laws, revisions });
+  const friendMints = deriveFriendshipMints(deliveries, households, { laws, revisions });
+  const mints = combineDerived(deliveries, corrMints, friendMints); // the full derived subsequence
   const transfers = deriveTransfers(deliveries, households, { laws, revisions }, existing);
   return { ledgerPath, existing, laws, revisions, deliveries, mints, transfers };
 }
@@ -645,10 +795,20 @@ function main() {
     let canonical;
     if (has('--declare-rules')) {
       const name = arg('--declare-rules');
-      if (name !== 'stamps-v2') { console.error(`unknown rules version: ${name}`); process.exit(1); }
       const meeps = (arg('--meeps') ?? '').split(',').filter(Boolean);
-      if (!meeps.length) { console.error('--declare-rules stamps-v2 needs --meeps a,b,c'); process.exit(1); }
-      canonical = rulesV2Line(date, meeps);
+      if (name === 'stamps-v2') {
+        if (!meeps.length) { console.error('--declare-rules stamps-v2 needs --meeps a,b,c'); process.exit(1); }
+        canonical = rulesV2Line(date, meeps);
+      } else if (name === 'stamps-v3') {
+        // stamps-v3 opens the friendship ladder. It MUST restate the meep set
+        // (lawAt returns the latest law only — an empty meeps here would let meeps
+        // resume correspondence-minting from this date). The date guard below is
+        // what makes the rule forward-only: it must fall after the last delivery.
+        if (!meeps.length) { console.error('--declare-rules stamps-v3 needs --meeps a,b,c (carry the current meep set forward)'); process.exit(1); }
+        const ladder = parseLadder(arg('--friendship') ?? FRIENDSHIP_LADDER_V3);
+        if (!ladder.length) { console.error('--declare-rules stamps-v3 needs --friendship t:r,t:r (e.g. 5:5,10:10)'); process.exit(1); }
+        canonical = rulesV3Line(date, meeps, serializeLadder(ladder));
+      } else { console.error(`unknown rules version: ${name}`); process.exit(1); }
     } else {
       const m = /^(\S+)\s*=\s*(\S+)$/.exec(arg('--declare-registry') ?? '');
       if (!m) { console.error('--declare-registry needs "handle = key"'); process.exit(1); }
@@ -672,7 +832,7 @@ function main() {
     return;
   }
 
-  console.error('usage: stamp-mint.mjs --derive | --append --key FILE | --balances | --declare-rules stamps-v2 --meeps a,b,c --date D --key FILE | --declare-registry "handle = key" --date D --key FILE | --gift <handle> --amount N --slug S --by <founder> --date D --key FILE  [--repo PATH]');
+  console.error('usage: stamp-mint.mjs --derive | --append --key FILE | --balances | --declare-rules stamps-v2 --meeps a,b,c --date D --key FILE | --declare-rules stamps-v3 --meeps a,b,c --friendship 5:5,10:10 --date D --key FILE | --declare-registry "handle = key" --date D --key FILE | --gift <handle> --amount N --slug S --by <founder> --date D --key FILE  [--repo PATH]');
   process.exit(1);
 }
 

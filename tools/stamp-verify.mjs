@@ -30,7 +30,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  parseDeliveries, householdKeys, deriveMints, settlementDecision, meepChecker, rulesLine,
+  parseDeliveries, householdKeys, deriveMints, deriveFriendshipMints, combineDerived,
+  settlementDecision, meepChecker, rulesLine,
   parseStampLedger, sealChain, foldBalances, parseLaws, classifyEntry, walkLedger,
 } from './stamp-mint.mjs';
 
@@ -73,7 +74,12 @@ export function verifyStampLedger(repo, { pubkeyPem } = {}) {
   if (recorded[0] !== rulesLine(genesisDate))
     problems.push(`line 1: ledger must open with "${rulesLine(genesisDate)}" — found "${recorded[0]}"`);
   const households = householdKeys(repo);
-  const mints = deriveMints(deliveries, households, { laws, revisions });
+  // the full derived subsequence: correspondence mints + the stamps-v3 friendship
+  // milestone mints, in ledger order. Friendship mints ride the replay exactly
+  // like correspondence mints, so a forged one turns REPLAY red.
+  const corrMints = deriveMints(deliveries, households, { laws, revisions });
+  const friendMints = deriveFriendshipMints(deliveries, households, { laws, revisions });
+  const mints = combineDerived(deliveries, corrMints, friendMints);
   const walk = walkLedger(recorded.slice(1), mints, 1);
   for (const p of walk.problems) problems.push(p);
   if (walk.problems.length === 0 && walk.owed.length > 0)

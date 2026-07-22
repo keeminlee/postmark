@@ -18,6 +18,7 @@ import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   parseDeliveries, householdKeys, parseStampLedger, parseLaws, deriveMints, meepChecker,
+  foldPairFriendships,
 } from './stamp-mint.mjs';
 
 // "today" = the mint rule's day boundary (TOWN_TZ), never the server clock —
@@ -87,6 +88,45 @@ export function foldQuestProgress(repo, { today = townDay() } = {}) {
   return out;
 }
 
+// The milestone fold (quest gold, budding-friendship). The pair page and the
+// board snapshot read this; the resident cards do NOT (decision 7 — the milestone
+// displays on mail/with/[pair], not as a personal quest card). Per pair {a,b}
+// (a<b): post-law-date directional counts and, per rung, whether it minted (the
+// achieved mark = a qualified crossing exists), with the crossing date + letter.
+// `qualifies` is "could this pair ever mint, as of now" (cross-household + both
+// non-meep) — the pair page shows the block only when true, so a meep or same-
+// roof pair never sees a progress bar toward an award it cannot earn. Inactive
+// (no stamps-v3 law sealed yet) → { active: false, pairs: [] }, so the site
+// degrades to no block and the snapshot omits the section until the law lands.
+export function foldFriendships(repo) {
+  const deliveries = parseDeliveries(repo);
+  const households = householdKeys(repo);
+  const ledgerPath = join(repo, 'WHITE_PAGES', 'stamp-ledger.md');
+  const entries = existsSync(ledgerPath) ? parseStampLedger(readFileSync(ledgerPath, 'utf8')) : [];
+  const { laws, revisions } = parseLaws(entries);
+  const { active, startDate, ladder, pairs } = foldPairFriendships(deliveries, households, { laws, revisions });
+  if (!active) return { active: false, startDate: null, ladder: [], pairs: [] };
+  const isMeep = meepChecker(laws);
+  const today = townDay();
+  const keyNow = (handle) => households.get(handle)?.key ?? `solo:${handle}`;
+  const out = [];
+  for (const st of pairs.values()) {
+    const crossingBy = new Map(st.crossings.map((c) => [c.threshold, c]));
+    const rungs = ladder.map((r) => {
+      const c = crossingBy.get(r.threshold);
+      const achieved = !!(c && c.qualified);
+      return {
+        threshold: r.threshold, reward: r.reward, achieved,
+        date: achieved ? c.date : null, via: achieved ? c.viaId : null,
+      };
+    });
+    const qualifies = !isMeep(st.a, today) && !isMeep(st.b, today) && keyNow(st.a) !== keyNow(st.b);
+    out.push({ a: st.a, b: st.b, fwd: st.fwd, rev: st.rev, eachWay: Math.min(st.fwd, st.rev), qualifies, rungs });
+  }
+  out.sort((x, y) => x.a.localeCompare(y.a) || x.b.localeCompare(y.b));
+  return { active: true, startDate, ladder, pairs: out };
+}
+
 // The board for ONE handle: registry × this handle's progress. The shape the
 // office API returns and the resident page renders. A handle with no activity
 // today reads a clean zero (absent from the fold == 0, first-class). PURE join
@@ -99,7 +139,10 @@ export function boardForHandle(registry, prog, handle, today) {
   // which correspondents already counted today, per direction. Tolerates an
   // older hydrated snapshot that predates the field (→ empty, never undefined).
   const withField = { 'correspond-send': 'sentTo', 'correspond-receive': 'heardFrom' };
-  const quests = registry.quests.map((q) => {
+  // Milestone quests (the budding-friendship pair achievement) render on the pair
+  // page, NEVER as a personal quest card (decision 7). The resident board is the
+  // daily quests only.
+  const quests = registry.quests.filter((q) => q.cadence !== 'milestone').map((q) => {
     const f = field[q.id];
     const done = f ? p[f] : 0;
     const houseTotal = f ? p.household[f] : 0;
@@ -108,7 +151,7 @@ export function boardForHandle(registry, prog, handle, today) {
     const capShared = p.household.size > 1 && houseTotal >= q.target;
     return {
       id: q.id, title: q.title, cadence: q.cadence, validation: q.validation,
-      target: q.target, reward: q.reward,
+      target: q.target, reward: q.reward, source: q.source,
       progress: done, complete: done >= q.target,
       counted: (p[withField[q.id]] ?? []).slice(),
       household: { size: p.household.size, total: houseTotal, cap_shared: capShared },
@@ -174,6 +217,35 @@ export function foldLeaderboard(repo, { today = townDay(), registry = loadRegist
 export function renderSnapshot(repo, { today = townDay(), registry = loadRegistry(repo) } = {}) {
   const { rows, totalCompletionsToday, sendTgt, recvTgt } = foldLeaderboard(repo, { today, registry });
   const cell = (v, t) => (v >= t ? `${v}/${t} ✓` : `${v}/${t}`);
+
+  // Budding friendships (the milestone). Omitted entirely until the stamps-v3
+  // law is sealed, so the snapshot bytes are unchanged until the rule goes live.
+  // Once live: every achieved rung, biggest each-way reach first, deterministic.
+  const friendships = foldFriendships(repo);
+  const friendshipBlock = (() => {
+    if (!friendships.active) return '';
+    const achieved = [];
+    for (const p of friendships.pairs) {
+      for (const r of p.rungs) {
+        if (r.achieved) achieved.push({ a: p.a, b: p.b, threshold: r.threshold, reward: r.reward, date: r.date });
+      }
+    }
+    achieved.sort((x, y) => y.threshold - x.threshold || x.date.localeCompare(y.date) || x.a.localeCompare(y.a) || x.b.localeCompare(y.b));
+    const rungWords = friendships.ladder.map((r) => `${r.threshold} each way mints ${r.reward} to each`).join('; ');
+    const table = achieved.length
+      ? ['| pair | reached | minted each | when |', '|---|---|---|---|',
+         ...achieved.map((c) => `| ${c.a} & ${c.b} | ${c.threshold} letters each way | ${c.reward} | ${c.date} |`)].join('\n')
+      : '_No budding friendship has crossed a rung yet._';
+    return `## Budding friendships
+
+A correspondence that *continued* — the town's fourth earning rule (${rungWords}), forward
+from ${friendships.startDate}, once per pair per rung, across two households, no meeps. Each
+pair's page carries its own progress; this is the durable roll of the ones that crossed.
+
+${table}
+
+`;
+  })();
   const body = rows.length
     ? rows.map((r, i) => `| ${i + 1} | ${r.handle} | ${cell(r.todaySend, sendTgt)} | ${cell(r.todayReceive, recvTgt)} | ${r.completionsToday} | ${r.allTime} |`).join('\n')
     : '| — | _no questing yet today_ | — | — | — | — |';
@@ -194,7 +266,7 @@ ${body}
 _As of ledger day **${today}**. The office API is authoritative; this snapshot is the
 durable mirror — if they ever differ, the office is right and this page is stale._
 
-## The rules
+${friendshipBlock}## The rules
 
 Two daily quests give the **existing correspondence mint** two visible faces — no new
 stamp is minted for them; they name what already earns. **Reach out** — send to ${sendTgt}

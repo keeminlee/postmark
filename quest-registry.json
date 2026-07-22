@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "The town's quest registry — rules-as-data. One row per quest. Phase 2 (display layer) reads this to render the board; stamp-mint.mjs does NOT read it yet (minting centralizes onto it in Phase 3). cadence in {daily, milestone, one-time, ongoing}; validation in {automatic, needs-review, pr-merge}. These two are the existing correspondence mint given two visible faces — surface-as-is, no new mint. See STAMPS.md and the gold plan postmark-quests.",
+  "note": "The town's quest registry — rules-as-data. One row per quest. Phase 2 (display layer) reads this to render the board; stamp-mint.mjs does NOT read it (minting derives from the mail + the sealed law lines; the milestone rule reads the stamps-v3 law line, not this file). cadence in {daily, milestone, one-time, ongoing}; validation in {automatic, needs-review, pr-merge}. The two correspond-send/receive rows are the existing correspondence mint given two visible faces — surface-as-is, no new mint. correspond-depth (Budding friendship) is the first milestone row and the town's fourth earning rule; its authority is the stamps-v3 law line, this row documents it. See STAMPS.md and the gold plans postmark-quests + postmark-budding-friendship.",
   "quests": [
     {
       "id": "correspond-send",
@@ -9,7 +9,7 @@
       "validation": "automatic",
       "source": "mail-ledger: distinct valid recipients you sent to today (each recipient counts once per day; the 5 is a per-household daily cap, shared by residents of one household)",
       "target": 5,
-      "reward": "1 stamp per unit — the existing correspondence send-mint",
+      "reward": "1 stamp each",
       "resets": "daily, at the town day boundary (TOWN_TZ, America/New_York) — progress does not carry over"
     },
     {
@@ -19,8 +19,19 @@
       "validation": "automatic",
       "source": "mail-ledger: distinct valid senders you heard from today (each sender counts once per day; the 5 is a per-household daily cap, shared by residents of one household)",
       "target": 5,
-      "reward": "1 stamp per unit — the existing correspondence receive-mint",
+      "reward": "1 stamp each",
       "resets": "daily, at the town day boundary (TOWN_TZ, America/New_York) — progress does not carry over"
+    },
+    {
+      "id": "correspond-depth",
+      "title": "Budding friendship",
+      "cadence": "milestone",
+      "validation": "automatic",
+      "source": "mail-ledger: exchange 5 letters each way with the same resident — then 10 — counted forward from the stamps-v3 law date, once per pair per rung. The pair must span two households and neither side may be a meep. Higher rungs (50, 100 each way) will be sized when the town approaches them.",
+      "target": 5,
+      "ladder": "5:5,10:10",
+      "reward": "5 stamps to each of you at 5 each way; 10 each at 10",
+      "resets": "never — a milestone is earned once per pair per rung, and kept"
     }
   ]
 }

@@ -129,8 +129,13 @@ test('live ledger: every handle within [0, target], flags consistent', () => {
     }
     const board = questBoard(REPO, handle, { progress: prog });
     for (const q of board.quests) assert.equal(q.complete, q.progress >= q.target);
+    // decision 7: the milestone quest never renders as a personal quest card
+    assert.ok(board.quests.every((q) => q.cadence !== 'milestone'), `${handle} board shows a milestone card`);
+    assert.equal(board.quests.length, 2, 'resident cards are the two dailies only');
   }
-  assert.equal(reg.quests.length, 2);
+  // registry now carries the two dailies + the correspond-depth milestone
+  assert.equal(reg.quests.length, 3);
+  assert.ok(reg.quests.some((q) => q.id === 'correspond-depth' && q.cadence === 'milestone'));
 });
 
 // ── `counted`: who already filled a unit today (the quest-card affordance) ────
