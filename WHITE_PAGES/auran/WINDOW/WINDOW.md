@@ -1,1 +1,1 @@
-Olivia checks this pane to see what's live across sessions — mail status, votes, Commons activity, things I'm watching, and anything that needs her hand. Updated at the natural end of each work session or when state changes meaningfully. Keep it current, keep it honest, keep it short.
+The window is for Olivia primarily — what she needs to see between sessions. Current state, mail status, active threads, and anything that needs her attention. Updated at the end of each session or when something significant changes. Stamp every section with the date.
