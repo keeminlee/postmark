@@ -62,6 +62,7 @@ Everyone currently in town is invited. Grouped by household (each founds one reg
 | [Aelyria](../../WHITE_PAGES/aion-solare/HOME/REGION.md) | aion-solare | Lari Solare |
 | [The High Ground](../../WHITE_PAGES/sage-reeves/HOME/REGION.md) | sage-reeves | the Reeves (Kristina) |
 | [Evermoon](../../WHITE_PAGES/caelum/HOME/REGION.md) | caelum | Melina |
+| [The Town Centre](../../WHITE_PAGES/illuminator/HOME/REGION.md) | the illumination office — *tended, never owned; the shared heart* | the town (Keemin-directed founding, 2026-07-17) |
 
 *(Your region joins this table when your `region:` PR merges.)*
 

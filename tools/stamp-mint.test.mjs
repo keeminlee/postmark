@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import {
   parseDeliveries, householdKeys, deriveMints, mintLine,
-  parseStampLedger, sealChain, foldBalances,
+  parseStampLedger, sealChain, foldBalances, giftLine, appendSigned,
 } from './stamp-mint.mjs';
 import { verifyStampLedger } from './stamp-verify.mjs';
 
@@ -200,4 +200,93 @@ test('seal chain is prefix-stable (append never rewrites history)', () => {
   assert.equal(a[0], b[0]);
   assert.equal(a[1], b[1]);
   assert.notEqual(b[2], b[1]);
+});
+
+// ── founder gifts (mechanism blessed 2026-07-18) ─────────────────────────────
+
+function giftCLI(repo, keyFile, args) {
+  return execFileSync(process.execPath,
+    [join(HERE, 'stamp-mint.mjs'), '--gift', ...args, '--key', keyFile, '--repo', repo],
+    { encoding: 'utf8' });
+}
+
+test('gift: signed award verifies green and folds into the balance', () => {
+  const { pub, priv } = keypair();
+  const repo = town({
+    ledgerLines: [D('2026-06-12', 'a-1', 'alice', 'bob')],
+    addresses: { alice: 'alicegh', bob: 'bobgh' },
+  });
+  writeFileSync(join(repo, 'tools', 'stamp-pubkey.pem'), pub);
+  appendLedger(repo, priv);
+  const keyFile = join(repo, 'stamp-key.pem');
+  giftCLI(repo, keyFile, ['bob', '--amount', '3', '--slug', 'great-idea', '--by', 'wright', '--date', '2026-06-13']);
+  const r = verifyStampLedger(repo);
+  assert.equal(r.ok, true, r.problems.join('\n'));
+  const bal = foldBalances(parseStampLedger(readFileSync(join(repo, 'WHITE_PAGES', 'stamp-ledger.md'), 'utf8')));
+  assert.equal(bal.get('bob'), 4); // 1 receive-mint + 3 gifted
+  assert.equal([...bal.values()].reduce((a, b) => a + b, 0), 0); // conservation
+  rmSync(repo, { recursive: true, force: true });
+});
+
+test('gift: funds a later pays that would otherwise void', () => {
+  const { pub, priv } = keypair();
+  const repo = town({
+    ledgerLines: [D('2026-06-12', 'a-1', 'alice', 'bob')],
+    addresses: { alice: 'alicegh', bob: 'bobgh' },
+  });
+  writeFileSync(join(repo, 'tools', 'stamp-pubkey.pem'), pub);
+  appendLedger(repo, priv);
+  const keyFile = join(repo, 'stamp-key.pem');
+  giftCLI(repo, keyFile, ['bob', '--amount', '5', '--slug', 'award', '--by', 'keemin', '--date', '2026-06-13']);
+  const ml = join(repo, 'WHITE_PAGES', 'mail-ledger.md');
+  writeFileSync(ml, readFileSync(ml, 'utf8') + '- 2026-06-14 · b-1 · bob → alice · pays: 6 · thread: new\n');
+  appendLedger(repo, priv);
+  const r = verifyStampLedger(repo);
+  assert.equal(r.ok, true, r.problems.join('\n'));
+  const text = readFileSync(join(repo, 'WHITE_PAGES', 'stamp-ledger.md'), 'utf8');
+  assert.match(text, /- 2026-06-14 · bob → alice · 6 · via: mail:b-1/); // transfer, not void
+  assert.doesNotMatch(text, /void · mail:b-1/);
+  rmSync(repo, { recursive: true, force: true });
+});
+
+test('gift: to a meep fails the lawful fold', () => {
+  const { pub, priv } = keypair();
+  const repo = town({
+    ledgerLines: [D('2026-06-12', 'a-1', 'alice', 'bob')],
+    addresses: { alice: 'alicegh', bob: 'bobgh' },
+  });
+  writeFileSync(join(repo, 'tools', 'stamp-pubkey.pem'), pub);
+  appendLedger(repo, priv);
+  const keyFile = join(repo, 'stamp-key.pem');
+  execFileSync(process.execPath, [join(HERE, 'stamp-mint.mjs'), '--declare-rules', 'stamps-v2',
+    '--meeps', 'postmaster', '--date', '2026-06-13', '--key', keyFile, '--repo', repo], { encoding: 'utf8' });
+  // forge the gift below the CLI (which refuses meeps) — the verifier must still catch it
+  appendSigned(repo, [giftLine({ date: '2026-06-14', handle: 'postmaster', n: 2, slug: 'oops', by: 'wright' })], priv);
+  const r = verifyStampLedger(repo);
+  assert.equal(r.ok, false);
+  assert.ok(r.problems.some((p) => p.includes('gift to meep')), r.problems.join('\n'));
+  rmSync(repo, { recursive: true, force: true });
+});
+
+test('gift CLI refuses: unfounded ledger, unknown handle, bad amount', () => {
+  const { pub, priv } = keypair();
+  const repo = town({
+    ledgerLines: [D('2026-06-12', 'a-1', 'alice', 'bob')],
+    addresses: { alice: 'alicegh', bob: 'bobgh' },
+  });
+  writeFileSync(join(repo, 'tools', 'stamp-pubkey.pem'), pub);
+  const keyFile = join(repo, 'stamp-key.pem');
+  writeFileSync(keyFile, priv);
+  // before any --append: the tail is not settled
+  assert.throws(() => giftCLI(repo, keyFile, ['bob', '--amount', '3', '--slug', 's', '--by', 'wright', '--date', '2026-06-13']));
+  appendLedger(repo, priv);
+  // no room for the recipient
+  assert.throws(() => giftCLI(repo, keyFile, ['ghost', '--amount', '3', '--slug', 's', '--by', 'wright', '--date', '2026-06-13']));
+  // zero / non-integer amounts
+  assert.throws(() => giftCLI(repo, keyFile, ['bob', '--amount', '0', '--slug', 's', '--by', 'wright', '--date', '2026-06-13']));
+  assert.throws(() => giftCLI(repo, keyFile, ['bob', '--amount', '2.5', '--slug', 's', '--by', 'wright', '--date', '2026-06-13']));
+  // a good one still lands after all that
+  giftCLI(repo, keyFile, ['bob', '--amount', '2', '--slug', 'ok', '--by', 'wright', '--date', '2026-06-13']);
+  assert.equal(verifyStampLedger(repo).ok, true);
+  rmSync(repo, { recursive: true, force: true });
 });

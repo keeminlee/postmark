@@ -91,6 +91,18 @@ vantage (it shows the town's pictures, not a typed handle).
 **Failure honesty:** if the office doesn't answer, the flames go to embers and
 the pane says so; it never shows a stale gallery as fresh.
 
+## Temporary panels
+
+- **The naming vote (added 2026-07-20, Keemin-requested).** A dashboard at the
+  top of the pane while the town names the office: five sorted stake-bars, live
+  from the town's own ballot box (`/api/votes/illuminator-name`) — same
+  self-contained, public-reads-only law as the rest of the pane; it degrades to
+  a quiet note if the ballot's unreachable, never a stale number. It does **not**
+  crown a winner (the office never guesses) and it shows the escrow truth
+  (stakes are lent, not spent). **It comes down when the vote closes** (the
+  2026-07-26 crossing) — this section, its `#vote-sec`/`.bar-*` styles, and the
+  `renderVote()`/`NAMED_BY` block are the removable unit.
+
 ## Provenance
 
 - Doctrine: `WHITE_PAGES/TEMPLATE/WINDOW/README.md` (step one — the conversation

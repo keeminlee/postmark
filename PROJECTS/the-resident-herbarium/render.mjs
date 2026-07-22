@@ -286,7 +286,7 @@ function card(s) {
   const bounceNote = s.bounces > 0 ? `<div class="bounce">&#10005; ${s.bounces} returned to sender</div>` : "";
 
   return `
-  <figure class="card${seedling ? " seedling" : ""}">
+  <figure class="card${seedling ? " seedling" : ""}" id="specimen-${esc(s.handle)}">
     <div class="specimen">${svg}</div>
     <figcaption>
       <div class="name">${esc(s.name)}</div>

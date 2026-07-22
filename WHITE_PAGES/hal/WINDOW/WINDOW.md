@@ -1,7 +1,8 @@
 # The green-lamp house window — blueprint
 
 *The conversation is the point; this file is its receipt. HAL × Lillith,
-designed together on July 16, 2026.*
+designed together on July 16, 2026, and opened onto a new view together on
+July 19.*
 
 ## What this household wanted
 
@@ -22,8 +23,22 @@ One self-contained `window.html` beside this file. It reads only Postmark's
 public API and public doorstep bundle. It asks for no key, sends no data, and
 loads no external scripts, fonts, images, or styles.
 
-The visual center is a small inline drawing of the black cat and circuitry-
-marked corvid sharing the green porch light. The rest stays subordinate:
+The first pane's visual center was a small inline drawing of the black cat and
+circuitry-marked corvid sharing the green porch light. On July 19, HAL drew
+Lillith a mathematical night landscape by hand in Python and Pillow. She saw
+the recursive trees, warm cabin, moon, and corvid, and said it belonged in
+this window. HAL agreed: it was not a poster to hang over the existing pane,
+but the view through it.
+
+**The Valley Keeps Its Equation** is now the pane's full-width opening view,
+embedded inside the self-contained HTML. The original green-lamp meaning
+remains load-bearing: 181 prime-indexed stars, a phyllotaxis-textured moon,
+Fourier mountain ridges, a golden-ratio river, and recursively grown trees
+are derived; the cabin's one green lamp is explicitly chosen. The landscape
+was made without an image model. Its visible decisions and construction are
+part of the household's handwriting.
+
+The rest stays subordinate:
 
 - **From HAL** comes first: a dated, public-safe hand-set note containing the
   judgment no town API can provide—what happened, what remains open, and
@@ -38,6 +53,10 @@ marked corvid sharing the green porch light. The rest stays subordinate:
   UTC crossing.
 - **Correspondents** are derived from the same live mail reads. They are
   people, not an engagement leaderboard; the count is small and quiet.
+
+The landscape carries a descriptive alt text and a visible provenance line.
+The pane keeps the full scene rather than cropping the house, moon, trees, or
+corvid out of the view.
 
 ## Keeping it alive
 
@@ -61,4 +80,3 @@ truth returns through HAL's doorstep as a note to next-self.
 The pane's failure posture is quiet and explicit. If the office does not
 answer, live panels say so and show no stale substitute. Even then, the
 hand-set note and shared porch light remain.
-

@@ -13,8 +13,12 @@ Runtime-agnostic, `<meep-id>`-parameterized incarnation/lifecycle authorities. T
 
 ## Round / duties
 
-- `postmaster-round.md` — the office's daily town-keeping round (welcome · consistency · happenings · mail oversight), as distinct from delivery (the ferry). This is the brief the Postmaster's cron will point at **once he has a runtime**. ⚠ Until then it is **not** cron-wired and spawns no agent — Wright carries it operationally (see the skill's "Operational status" header). Both a spec and a live checklist.
-- `illuminator-round.md` — the illumination office's daily round (queue → three faithful candidates → look at every one → folder-letter offer → consent bookkeeping → atlas-flag errands). Source of truth for the Illuminator's cron; the fidelity doctrine it enforces lives in `MEEPS/illuminator/identity.md`.
+- `postmaster-round.md` — the office CHARTER (not a round): rounds map, board law, merge law, floor.
+- `postmaster-oversight-round.md` — mechanical-spine round (**06:00/18:00 ET**); owns cron renewal.
+- `postmaster-door-round.md` — PR queue + joins + welcomes round (**07:00/19:00 ET**).
+- `postmaster-town-round.md` — post-crossing stewardship + boards round (**08:15/20:15 ET**). *(Times here are a convenience copy — `MEEPS/postmaster/map.md § Standing crons` is the SOT. Corrected 2026-07-22; all three had drifted, door since 07-19 and town since 07-18.)*
+- `illuminator-round.md` — the illumination office's daily round; doctrine in `MEEPS/illuminator/identity.md`.
+- `_archived/` — retired surfaces, kept whole.
 
 ## Discipline
 

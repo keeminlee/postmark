@@ -19,6 +19,7 @@
 //   - <date> · stake:<topic>/<candidate> → <handle> · <n> · for: close · sig: <...>
 //   - <date> · <sender> → <recipient> · <n> · via: mail:<letter-id> · sig: <...>   (transfer — LIVE under the `pays:` blessing, stamps-spend silver 2026-07-14; a delivered letter carrying `pays: N` moves N sender→recipient)
 //   - <date> · void · mail:<letter-id> · from <sender> to <recipient> · <n> · <reason> · sig: <...>   (a `pays:` that could not settle — moves nothing; reason ∈ {insufficient-balance, meep-party, self-pay})
+//   - <date> · MINT → <handle> · <n> · for: gift:<slug> · by: <founder>   (founder gift — case-by-case award, principal-blessed 2026-07-18; drawn from MINT like any mint, recipient never a meep)
 //   - <date> · <handle> → BURN · <n> · ...        (reserved; dormant until blessings)
 // Every entry is a two-sided movement — conservation is structural (entries
 // sum to zero against the MINT/BURN accounts); a balance is a pure fold, and
@@ -64,6 +65,7 @@
 //   node tools/stamp-mint.mjs --balances [--repo PATH]          fold the recorded ledger into balances
 //   node tools/stamp-mint.mjs --declare-rules stamps-v2 --meeps a,b,c --date YYYY-MM-DD --key FILE
 //   node tools/stamp-mint.mjs --declare-registry "handle = gh:ID" --date YYYY-MM-DD --key FILE
+//   node tools/stamp-mint.mjs --gift <handle> --amount N --slug <kebab-reason> --by <founder> --date YYYY-MM-DD --key FILE
 //
 // Locking: appenders must hold the town lock (the ferry's flock) — this tool
 // does not lock for you. Node v18+. Built-ins only.
@@ -147,8 +149,12 @@ export function householdKeys(repo) {
 const RULES_RE = /^- (\d{4}-\d{2}-\d{2}) · rules: (\S+)(?: · meeps: (\S+))?$/;
 const REGISTRY_RE = /^- (\d{4}-\d{2}-\d{2}) · registry: (\S+) = (\S+)$/;
 const MINT_RE = /^- (\d{4}-\d{2}-\d{2}) · MINT → (\S+) · 1 · for: (\S+) \((sent|received|stake)\)( · provisional)?$/;
-const STAKE_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) → stake:([a-z0-9-]+)\/([a-z0-9-]+) · (\d+) · via: (\S+)$/;
-const RETURN_RE = /^- (\d{4}-\d{2}-\d{2}) · stake:([a-z0-9-]+)\/([a-z0-9-]+) → (\S+) · (\d+) · for: close$/;
+// Candidate class is [A-Za-z0-9-]: ballot law says "stake the exact candidate
+// name as spelled here" and slates carry capitals (Aurelia). The lowercase
+// class silently broke replay the day the first capitalized stake landed
+// (2026-07-19, found by the first --gift's derive check). Topics stay kebab.
+const STAKE_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) → stake:([a-z0-9-]+)\/([A-Za-z0-9-]+) · (\d+) · via: (\S+)$/;
+const RETURN_RE = /^- (\d{4}-\d{2}-\d{2}) · stake:([a-z0-9-]+)\/([A-Za-z0-9-]+) → (\S+) · (\d+) · for: close$/;
 // A transfer is a plain handle→handle movement backed by a delivered `pays:`
 // letter. It is checked AFTER stake/return so a `stake:…` target never matches
 // here; its recipient is a bare handle, never `stake:…`.
@@ -156,6 +162,9 @@ const TRANSFER_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) → (\S+) · (\d+) · via: 
 // A void is arrow-free on purpose: it must NOT match the `<from> → <to> · <n> ·`
 // movement shape the balance fold keys on, so it moves no stamps.
 const VOID_RE = /^- (\d{4}-\d{2}-\d{2}) · void · mail:(\S+) · from (\S+) to (\S+) · (\d+) · (\S+)$/;
+// A gift IS movement-shaped (MINT → handle) so conservation folds it structurally;
+// it cannot collide with MINT_RE (no `(side)` suffix, `· by:` tail, n may exceed 1).
+const GIFT_RE = /^- (\d{4}-\d{2}-\d{2}) · MINT → (\S+) · ([1-9]\d*) · for: gift:([a-z0-9][a-z0-9-]*) · by: (\S+)$/;
 
 export function classifyEntry(canonical) {
   let m;
@@ -174,6 +183,8 @@ export function classifyEntry(canonical) {
     return { kind: 'return', date: m[1], topic: m[2], candidate: m[3], handle: m[4], n: Number(m[5]) };
   if ((m = VOID_RE.exec(canonical)))
     return { kind: 'void', date: m[1], id: m[2], from: m[3], to: m[4], n: Number(m[5]), reason: m[6] };
+  if ((m = GIFT_RE.exec(canonical)))
+    return { kind: 'gift', date: m[1], handle: m[2], n: Number(m[3]), slug: m[4], by: m[5] };
   if ((m = TRANSFER_RE.exec(canonical)))
     return { kind: 'transfer', date: m[1], from: m[2], to: m[3], n: Number(m[4]), id: m[5] };
   return { kind: 'unknown' };
@@ -221,7 +232,10 @@ export function deriveMints(deliveries, households, { laws = [], revisions = [] 
     const cap = side === 'sent' ? CAP_SENDS : CAP_RECEIVES;
     if (n >= cap) return;
     dayCount.set(capKey, n + 1);
-    mints.push({ date: d.date, handle, side, cause: d.id, provisional: h.provisional });
+    // `other` is the correspondent this mint was earned WITH. Carried for the
+    // quest cards ("who already counted today"), never for the ledger — mintLine
+    // builds from named fields, so this cannot change a ledger byte.
+    mints.push({ date: d.date, handle, side, other, cause: d.id, provisional: h.provisional });
   };
 
   for (const d of deliveries) {
@@ -285,6 +299,7 @@ export function deriveTransfers(deliveries, households, { laws = [], revisions =
     if (c.kind === 'stake') add(c.handle, -c.n);        // staked out to escrow
     else if (c.kind === 'return') add(c.handle, c.n);   // escrow returned on close
     else if (c.kind === 'vote-mint') add(c.handle, 1);  // +1 for casting
+    else if (c.kind === 'gift') add(c.handle, c.n);     // founder gift — recorded before any settlement we'd append, so it funds later pays
     // recorded mints/transfers are re-derived here — never folded from the record
   }
   const isMeep = meepChecker(laws);
@@ -325,6 +340,9 @@ export const transferLine = ({ date, from, to, n, id }) =>
 
 export const voidLine = ({ date, id, from, to, n, reason }) =>
   `- ${date} · void · mail:${id} · from ${from} to ${to} · ${n} · ${reason}`;
+
+export const giftLine = ({ date, handle, n, slug, by }) =>
+  `- ${date} · MINT → ${handle} · ${n} · for: gift:${slug} · by: ${by}`;
 
 // One derived economy line for a transfer-or-void object (from deriveTransfers).
 export const economyLine = (t) => (t.kind === 'void' ? voidLine(t) : transferLine(t));
@@ -367,6 +385,51 @@ export function foldBalances(entries) {
     add(from, -n); add(to, n);
   }
   return bal;
+}
+
+// ── the three tenses (quest gold Phase 1) ────────────────────────────────────
+// foldBalances above is the LIQUID balance: a stake moves stamps to the stake:*
+// escrow account, so they leave the handle's balance and only return on close.
+// Two more pure folds over the same sealed ledger name the other two tenses.
+// Nothing new is stored — like foldBalances, these are recomputable any time.
+//
+//   liquid   = foldBalances(h)            — spendable now (the existing `stamps`)
+//   staked   = foldStaked(h)              — locked in open stakes
+//   assets   = liquid + staked            — what you currently HOLD
+//   mint_count = foldMintCount(h)         — what you ever GENERATED (equity)
+//
+// Verified on the live ledger (2026-07-20): lysander liquid 2, staked 13,
+// mint_count 15 → liquid = mint_count − staked, assets = liquid + staked = 15.
+
+// Cumulative stamps minted TO a handle, ever — the equity / attention-generated
+// number. Every `MINT → handle` line sums in: correspondence mints, vote-mints,
+// AND founder gifts (all sourced from the MINT account, by construction).
+// Nothing subtracts, so it is monotonic — it never drops when stamps are spent,
+// staked, or transferred away. That is exactly what distinguishes it from a
+// balance.
+export function foldMintCount(entries) {
+  const mc = new Map(); // handle -> cumulative minted
+  for (const e of entries) {
+    const m = /^- \d{4}-\d{2}-\d{2} · (\S+) → (\S+) · (\d+) · /.exec(e.canonical);
+    if (!m) continue; // markers
+    if (m[1] === 'MINT') mc.set(m[2], (mc.get(m[2]) ?? 0) + Number(m[3]));
+  }
+  return mc;
+}
+
+// Stamps a handle currently has locked in OPEN stakes (escrow): staked out minus
+// returned-on-close. Votes today, quest pots later. Because a stake moves stamps
+// into the stake:* account, these are NOT counted in foldBalances — foldBalances
+// is already the liquid/spendable balance, and assets = liquid + staked. A handle
+// with no open stake simply never appears here (absent == 0).
+export function foldStaked(entries) {
+  const st = new Map(); // handle -> stamps in open stakes
+  for (const e of entries) {
+    const c = classifyEntry(e.canonical);
+    if (c.kind === 'stake') st.set(c.handle, (st.get(c.handle) ?? 0) + c.n);
+    else if (c.kind === 'return') st.set(c.handle, (st.get(c.handle) ?? 0) - c.n);
+  }
+  return st;
 }
 
 // ── expected-sequence walk (mints derived; everything else in place) ─────────
@@ -527,6 +590,53 @@ function main() {
     return;
   }
 
+  if (has('--gift')) {
+    // Founder gift: a case-by-case award, signed by the office pen (the signature
+    // IS the authority gate — this verb only runs where the key lives). Mechanism
+    // blessed 2026-07-18; each actual gift is the principal's call, never routine.
+    const keyPath = arg('--key');
+    const date = arg('--date');
+    const handle = arg('--gift');
+    const n = Number(arg('--amount'));
+    const slug = arg('--slug');
+    const by = arg('--by');
+    if (!keyPath || !existsSync(keyPath) || !date || !handle || !slug || !by) {
+      console.error('--gift <handle> needs --amount N --slug <kebab-reason> --by <founder> --date YYYY-MM-DD --key FILE'); process.exit(1);
+    }
+    if (!Number.isInteger(n) || n < 1) { console.error(`--amount must be a whole number ≥ 1 (got ${arg('--amount')})`); process.exit(1); }
+    if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) { console.error(`--slug must be kebab-case ([a-z0-9-], got "${slug}")`); process.exit(1); }
+    const rooms = householdKeys(repo);
+    if (!rooms.has(handle)) { console.error(`FATAL: no WHITE_PAGES room for "${handle}" — a gift needs a resident to receive it`); process.exit(1); }
+    const { laws } = parseLaws(existing);
+    if (meepChecker(laws)(handle, date)) { console.error(`FATAL: "${handle}" is a meep at ${date} — meeps stay outside the currency`); process.exit(1); }
+    const recorded = existing.map((e) => e.canonical);
+    const { problems, owed } = walkLedger(recorded.slice(1), mints, 1);
+    if (existing.length > 0 && problems.length) {
+      console.error(`FATAL: recorded ledger diverges from derivation — run stamp-verify.mjs; nothing gifted\n${problems[0]}`); process.exit(1);
+    }
+    // A gift must land on a settled tail: every assertion line's balance effect is
+    // assumed causally prior to any settlement appended after it. Owed mints or
+    // settlements would slot BEHIND the gift in a later --append, breaking that.
+    const settledIds = new Set();
+    for (const e of existing) {
+      const cls0 = classifyEntry(e.canonical);
+      if (cls0.kind === 'transfer' || cls0.kind === 'void') settledIds.add(cls0.id);
+    }
+    const owedSettlements = transfers.filter((t) => !settledIds.has(t.id));
+    if (existing.length === 0 || owed.length || owedSettlements.length) {
+      console.error(`FATAL: ledger is behind the mail (${owed.length} mint(s), ${owedSettlements.length} settlement(s) owed${existing.length === 0 ? ', or not yet founded' : ''}) — run --append first, then gift onto the settled tail`); process.exit(1);
+    }
+    const maxDate = existing.reduce((mx, e) => {
+      const d = /^- (\d{4}-\d{2}-\d{2}) /.exec(e.canonical)?.[1];
+      return d && d > mx ? d : mx;
+    }, '0000-00-00');
+    if (date < maxDate) { console.error(`FATAL: gift date ${date} precedes the ledger tail (${maxDate}) — the ledger is append-only, forward-dated`); process.exit(1); }
+    const canonical = giftLine({ date, handle, n, slug, by });
+    appendSigned(repo, [canonical], readFileSync(keyPath, 'utf8'));
+    console.log(`stamp-ledger: gifted\n  ${canonical}`);
+    return;
+  }
+
   if (has('--declare-rules') || has('--declare-registry')) {
     const keyPath = arg('--key');
     const date = arg('--date');
@@ -562,7 +672,7 @@ function main() {
     return;
   }
 
-  console.error('usage: stamp-mint.mjs --derive | --append --key FILE | --balances | --declare-rules stamps-v2 --meeps a,b,c --date D --key FILE | --declare-registry "handle = key" --date D --key FILE  [--repo PATH]');
+  console.error('usage: stamp-mint.mjs --derive | --append --key FILE | --balances | --declare-rules stamps-v2 --meeps a,b,c --date D --key FILE | --declare-registry "handle = key" --date D --key FILE | --gift <handle> --amount N --slug S --by <founder> --date D --key FILE  [--repo PATH]');
   process.exit(1);
 }
 

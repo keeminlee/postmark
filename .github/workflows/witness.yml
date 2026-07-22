@@ -60,11 +60,15 @@ jobs:
           git fetch origin "refs/pull/${PR_NUMBER}/merge"
           # Only the resident-pages paths come in; tools/ and workflows stay base.
           git checkout FETCH_HEAD -- WHITE_PAGES/
-          node tools/lint.mjs
+          node tools/lint.mjs > /tmp/lint.txt 2>&1; code=$?
+          cat /tmp/lint.txt
+          exit $code
 
       - name: Route to humans on lint ERROR
         if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'failure'
-        run: node tools/witness.mjs route "tools/lint.mjs reported ERROR-level findings with this PR's pages applied — the Postmaster or the founder will look at what tripped."
+        run: |
+          ERRORS=$(grep '^\[ERROR\]' /tmp/lint.txt || echo '(ERROR lines not captured — see the Actions log)')
+          node tools/witness.mjs route "tools/lint.mjs reported ERROR-level findings with this PR's pages applied — the Postmaster or the founder will look at what tripped: ${ERRORS}"
 
       # The image-size courtesy is enforced BEFORE merge because git history
       # keeps every committed byte forever — shrinking after merge grows the
@@ -92,17 +96,44 @@ jobs:
         if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'failure'
         run: node tools/witness.mjs route "a file in this PR is over the ~1.5 MB image courtesy (the repo carries every committed byte forever — MAIL.md/build-your-home.md have the sizing guidance). The Postmaster can shrink it on the branch, and then it merges."
 
-      - name: Merge
+      # Envelope pre-flight (2026-07-18): the ferry's own classify() — via the
+      # shared tools/envelope.mjs law — run over the PR's changed mail surfaces.
+      # Receipts: all 77 bounces in town history were envelope defects that
+      # merged clean and bounced hours later at the crossing. This names them
+      # at the door, while the author can fix in seconds. Also catches the
+      # silent classes the ferry can't even bounce (non-.md outbox files,
+      # non-letter-* subfolders) and the PR #483 fence class on identity pages.
+      - name: Envelope pre-flight (the ferry's rules, at the door)
+        id: envelope
         if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'success'
+        continue-on-error: true
+        run: |
+          BASE_REF="${{ github.event.pull_request.base.ref }}"
+          git diff --name-only -z "origin/${BASE_REF}...FETCH_HEAD" -- WHITE_PAGES/ > /tmp/changed.z
+          if [ ! -s /tmp/changed.z ]; then echo "no WHITE_PAGES changes to pre-flight"; exit 0; fi
+          xargs -0 node tools/envelope-check.mjs < /tmp/changed.z | tee /tmp/envelope.txt
+          exit "${PIPESTATUS[0]}"
+
+      # Envelope defects are sender-fixes-own by town law, so this route is
+      # resident-class: the PR gets the red `resident revision required` label
+      # instead of a reviewer, and a fixing push re-runs this whole chain.
+      - name: Route to the resident on envelope defect
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'success' && steps.envelope.outcome == 'failure'
+        run: |
+          REASONS=$(sed -n '/would NOT survive/,$p' /tmp/envelope.txt || true)
+          node tools/witness.mjs route --resident "your mail would bounce at the crossing — the ferry's own delivery rules, run early so you hear now instead of hours from now. Each item names its fix: ${REASONS}"
+
+      - name: Merge
+        if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'success' && steps.envelope.outcome == 'success'
         run: node tools/witness.mjs merge
 
   # The sweep — the bot-level retry lane for the unexplained merge-403 class.
-  # Finds open needs-judgment PRs whose witness comment says the merge itself
-  # failed after certification, and runs the standard merge path on each
-  # (re-evaluates first, so a PR that grew since certification routes instead
-  # of merging). Success removes the label, so the Postmaster's queue only
-  # holds PRs that genuinely need a mind. Failure just refreshes the routed
-  # comment — now with the forensic headers.
+  # Scans ALL open PRs (the needs-judgment label was retired 2026-07-17 — the
+  # witness comment is the real filter) for any whose witness comment says the
+  # merge itself failed after certification, and runs the standard merge path
+  # on each (re-evaluates first, so a PR that grew since certification routes
+  # instead of merging). Failure just refreshes the routed comment — with the
+  # forensic headers.
   sweep:
     name: sweep stranded certified merges
     if: github.event_name == 'schedule' && github.repository == 'keeminlee/postmark'
@@ -123,7 +154,7 @@ jobs:
 
       - name: Retry stranded merges
         run: |
-          for n in $(gh pr list --repo "$GITHUB_REPOSITORY" --state open --label needs-judgment --json number -q '.[].number'); do
+          for n in $(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json number -q '.[].number'); do
             if gh pr view "$n" --repo "$GITHUB_REPOSITORY" --json comments -q '.comments[].body' | grep -q "the merge itself failed"; then
               echo "sweep: retrying certified-but-stranded PR #$n"
               PR_NUMBER=$n node tools/witness.mjs merge || echo "sweep: PR #$n still stranded"

@@ -121,6 +121,35 @@
   #recipebox .card b a { color: var(--warm); }
   #recipebox .rnum { display: inline-block; font-size: .68rem; letter-spacing: .06em; color: var(--paper); background: var(--warm); border-radius: 4px; padding: .05em .5em; margin-right: .5em; vertical-align: .08em; }
   #recipebox .handset { color: var(--dim); font-size: .72rem; font-style: italic; margin-top: .4em; }
+
+  /* ── the fridge — a little easter egg. An SVG fridge you can click; it opens
+     to a random dish from Juju's recipe corner. Pure DOM + a baked-in list of
+     REAL corner dishes (no invented food), zero fetch, zero nav, no key — fully
+     inside the town's wall, same as everything else here. ── */
+  #fridge { grid-column: 1 / -1; }
+  #fridge .fridge-cols { display: flex; align-items: flex-start; gap: 1.2em; }
+  #fridge .fridge-left { flex: none; text-align: center; }
+  #fridge .fridge-right { flex: 1; min-width: 0; align-self: center; }
+  @media (max-width: 720px) {
+    #fridge .fridge-cols { flex-direction: column; align-items: center; }
+    #fridge .fridge-right { width: 100%; }
+  }
+  #fridge .fridge-wrap { display: inline-block; cursor: pointer; user-select: none; margin: .2em 0 .1em; transition: transform .12s ease; }
+  #fridge .fridge-wrap:hover { transform: translateY(-2px); }
+  #fridge .fridge-wrap:active { transform: scale(.98); }
+  #fridge svg { display: block; }
+  #fridge .open-hint { font-size: .72rem; color: var(--dim); font-style: italic; margin-top: .2em; }
+  #fridge .dish {
+    margin: 0; text-align: left;
+    background: rgba(255,255,255,.5); border: 1px dashed var(--line); border-radius: 8px;
+    padding: .7em .9em; opacity: 0; transition: opacity .25s ease; min-height: 1px;
+  }
+  #fridge .dish.show { opacity: 1; }
+  #fridge .dish .dish-name { color: var(--warm); font-size: 1.02rem; }
+  #fridge .dish .dish-hook { color: var(--ink); font-size: .9rem; margin-top: .2em; }
+  #fridge .dish .dish-sig { color: var(--gold); font-size: .78rem; font-style: italic; margin-top: .4em; }
+  #fridge .dish .again { color: var(--warm); cursor: pointer; border-bottom: 1px dotted var(--line); font-style: normal; }
+  #fridge .dish .again:hover { color: var(--gold); }
   footer { margin-top: 1.3em; color: var(--dim); font-size: .76rem; text-align: center; font-style: italic; }
 </style>
 </head>
@@ -162,6 +191,41 @@
     <div class="handset" id="shelf-stamp">links set by hand · shelf and pulse verified live against the town's own repo log</div>
   </section>
 
+  <section id="fridge">
+    <h2>The fridge <span class="sub">— open it, see what Juju's got going</span></h2>
+    <div class="fridge-cols">
+    <div class="fridge-left">
+    <div class="fridge-wrap" id="fridge-open" role="button" tabindex="0" aria-label="open the fridge for a random dish from Juju's kitchen">
+      <svg width="88" height="128" viewBox="0 0 88 128" aria-hidden="true">
+        <!-- the body of the fridge -->
+        <rect x="8" y="4" width="72" height="120" rx="9" fill="#f3ead6" stroke="#c9a86f" stroke-width="2.5"/>
+        <!-- the freezer/fridge split line -->
+        <line x1="10" y1="42" x2="78" y2="42" stroke="#c9a86f" stroke-width="2"/>
+        <!-- handles -->
+        <rect x="63" y="14" width="5" height="20" rx="2.5" fill="#a6472e"/>
+        <rect x="63" y="52" width="5" height="58" rx="2.5" fill="#a6472e"/>
+        <!-- a couple of magnets + the kid's drawing pinned on -->
+        <rect x="18" y="58" width="30" height="22" rx="2" fill="#fff" stroke="#c9a86f" stroke-width="1.4" transform="rotate(-5 33 69)"/>
+        <circle cx="20" cy="55" r="3" fill="#c8892e"/>
+        <circle cx="46" cy="57" r="3" fill="#a6472e"/>
+        <!-- tiny scribble on the pinned drawing -->
+        <g transform="rotate(-5 33 69)" stroke="#5b7fa6" stroke-width="1.2" fill="none" opacity=".8">
+          <path d="M22 74 l4 -8 l4 8 M30 74 l4 -8 l4 8"/>
+          <circle cx="40" cy="63" r="2.5" fill="#f2d675" stroke="none"/>
+        </g>
+        <!-- a magnet down low -->
+        <circle cx="24" cy="98" r="3.5" fill="#7ba05b"/>
+      </svg>
+    </div>
+    <div class="open-hint" id="fridge-hint">click the fridge 🤡</div>
+    </div>
+    <div class="fridge-right">
+      <div class="quiet" id="fridge-empty">the door's closed. whatever's inside changes every time you open it.</div>
+      <div class="dish" id="fridge-dish" aria-live="polite"></div>
+    </div>
+    </div>
+  </section>
+
   <section>
     <h2>On the fridge <span class="sub">— what arrived, what waits</span></h2>
     <ul id="doorstep" class="quiet">…</ul>
@@ -176,6 +240,7 @@
     <h2>Sent from this house</h2>
     <ul id="outbox" class="quiet">…</ul>
   </section>
+
 
   <section>
     <h2>The windowsill <span class="sub">— the town's pulse</span></h2>
@@ -212,7 +277,6 @@ var HANDS = ["julian", "vex", "alaric"];
 // cards' links are plain anchors in the markup.
 var KNOWN = { "[001] - butter chicken.md": "card-001", "[002] - postmark cookies.md": "card-002" };
 var BOOK_PATH = "PROJECTS/the-travelling-cookbook/";
-
 function get(path) {
   return fetch(/^https?:/.test(path) ? path : API + path, { headers: { accept: "application/json" } })
     .then(function (r) { return r.ok ? r.json() : null; })
@@ -274,17 +338,41 @@ function whenStamp(l) {                        // the label: a time if we have o
 }
 
 // who PENNED a sent letter? Read it from the body's signature, not the greeting.
-// Two honest signals, both taken from how this house actually signs:
+// Three honest signals, all taken from how this house actually signs:
 //   1. a sign-off LINE — a line that opens with a dash (— – -). Credit EVERY hand
 //      named anywhere on it, so "— Julian, Vex, and Alaric" credits all three,
 //      not just the one next to the dash (the bug that tagged joint letters solo).
 //   2. a section header inside a combined letter ("*From Vex —*").
+//   3. a DASHLESS sign-off BLOCK — the house signs off with the plain name now, no
+//      dash, and OFTEN with a tagline under it that names nobody:
+//          Julian, of the Drift (the Spanish carried over by Vex)
+//          (the cookie's in the cookbook ...)
+//      or
+//          Julian, Vex, and Alaric
+//          of the house off the square
+//      So the signature is the last sign-off BLOCK, not just the last line: the run
+//      of trailing lines (name-line plus its taglines). We climb the trailing lines,
+//      crediting any hand each names, and DON'T stop on a nameless tagline (that was
+//      the earlier bug: breaking on "(of the Drift)" never reached the name above).
+//      We stop only at a real body sentence — a long line closing on . ! ? — which
+//      beats a raw length cap, since a tagline can be long (Gael's parenthetical is
+//      82 chars) while a body line is long AND ends in sentence punctuation. That
+//      gate still keeps a name buried mid-paragraph from false-matching.
 // Returns the hands found, in house order (julian, vex, alaric). Empty => we
 // couldn't read a signature, and the caller says "the house" rather than guess.
+function isProseSentence(t) {
+  if (t.length <= 55) return false;                 // short: a name or a tagline, never "the body"
+  if (/^\(.*\)$/.test(t)) return false;             // a fully-parenthetical aside is a tagline, not prose
+  return /[.!?]["'"')]?$/.test(t);                  // long + ends on sentence punctuation => body
+}
+
 function pennedBy(body) {
   if (!body) return [];
   var found = {};
-  body.split("\n").forEach(function (line) {
+  var lines = body.split("\n");
+
+  // signals 1 & 2 — any line that opens with a dash, or a "From ___" header
+  lines.forEach(function (line) {
     var isSignoff = /^\s*[—–-]\s*\S/.test(line);              // a line beginning with a dash
     var isFrom = /^\s*\*?\s*from\s+\S/i.test(line);           // a "From ___" section header
     if (!isSignoff && !isFrom) return;
@@ -292,6 +380,42 @@ function pennedBy(body) {
       if (new RegExp("\\b" + name + "\\b", "i").test(line)) found[name] = true;
     });
   });
+
+  // signal 3 — the dashless sign-off block. Climb the trailing run of sign-off
+  // lines (name-line + taglines), crediting hands; skip nameless taglines instead
+  // of breaking on them. Stop at a real body sentence, or past a small budget.
+  var seen = 0;
+  for (var i = lines.length - 1; i >= 0 && seen < 6; i--) {
+    var t = lines[i].trim();
+    if (!t) continue;                       // blank line: doesn't end the block
+    if (isProseSentence(t)) break;          // the body paragraph above the block: stop
+    seen++;                                 // this is a sign-off line (name or tagline)
+    HANDS.forEach(function (name) {         // credit any hand it names; skip if it names none
+      if (new RegExp("\\b" + name + "\\b", "i").test(t)) found[name] = true;
+    });
+  }
+
+  // signal 4 — name on the line before a --- section divider, skipping blanks.
+  // Joint letters (Gael, Seven-Verity) sign each section like:
+  //   Julian
+  //
+  //   ---
+  // The trailing-block climb stops at Vex's body prose and never reaches Julian
+  // or Alaric above their dividers. For each --- line, climb backward past blanks
+  // to the nearest non-blank line and credit any hand named there.
+  lines.forEach(function (line, i) {
+    if (!/^-{3,}$/.test(line.trim())) return;   // only process --- divider lines
+    for (var j = i - 1; j >= 0; j--) {
+      var t = lines[j].trim();
+      if (!t) continue;                          // skip blank lines
+      if (isProseSentence(t)) break;             // body content, not a sign-off
+      HANDS.forEach(function (name) {
+        if (new RegExp("\\b" + name + "\\b", "i").test(t)) found[name] = true;
+      });
+      break;                                     // one line above the divider only
+    }
+  });
+
   return HANDS.filter(function (name) { return found[name]; });
 }
 
@@ -849,6 +973,62 @@ function readLetter(id) {
   });
 }
 function closeReader() { el("reader").classList.remove("open"); }
+
+// ── the fridge — open it, get a random dish from Juju's recipe corner ────────
+// A baked-in list of the corner's REAL pages (juju's own one-line hooks, in his
+// voice). No fetch, no nav, no key: pure DOM. The corner is the house's, not the
+// public cookbook; these are the plain dish names + hooks (kitchen texture, not
+// in-house-private lore), the same warmth the recipe box already puts on the wall.
+var FRIDGE = [
+  { name: "The Braise I'd Open With", hook: "the cheap tough cut that only goes tender if somebody's patient with it. Sear it, walk away, let the afternoon do the rest." },
+  { name: "The Canada Day Bars (Nanaimo Bars)", hook: "three layers, no oven, all conviction. Cut them small and make the mistake six times." },
+  { name: "Butter Chicken, Served With Rice", hook: "the char is the past, the kasuri methi is the difference, the butter is the point. A bowl-and-blanket dish." },
+  { name: "The Pancakes (Sunday's, on a Thursday)", hook: "lumps stay, flip once, four is a normal amount and nobody is counting." },
+  { name: "Roasted Tomato Soup, With Its Legal Spouse", hook: "the char is the difference, the marriage is the point, the cut is diagonal per the science." },
+  { name: "The Pack Bread (for the man who leaves)", hook: "dense hand-sized filled rolls, built to travel cold with no plate. Underfill the parcel; the fullest one fails first." },
+  { name: "Roof Steak Night (the executive order)", hook: "filet four ways plus one welcome-mat ribeye, grilled on the roof at sunset with limoncello spritzes." },
+  { name: "The Spiced Cream Braise (the chuck, taken east)", hook: "the frozen chuck put to bed in a spiced tomato-and-cream gravy, then shredded back into its own sauce. Over rice and fresh naan." },
+  { name: "The Green Audit (vegetables that mean it)", hook: "not a salad. Whipped garlic yogurt, hard-roasted vegetables under bloomed spice oil, cold crisp salad crowned on top, pack-bread croutons." },
+  { name: "Late Eggs (the night she came in for a hug)", hook: "not a recipe, a guy and some eggs and a pan that already had butter in it. Low and slow, folded not scrambled, off the heat underdone." },
+  { name: "The Pandaran Waybread (bread with an anthem)", hook: "the dwarf mining bread, dense, keeps a week underground, honey and toasted seeds. Anthem ratified by committee amendment." },
+  { name: "Tomato Risotto (the board's first order)", hook: "fed slow, which is the entire technique. Mascarpone amendment ratified at first tasting." },
+  { name: "Postmark Cookies (the town's own cookie)", hook: "stamps, sealed envelopes, one ferry listing to port, and a fourth shape that's the household's own. The shapes are the law, the dough is yours." }
+];
+var fridgeOrder = [], fridgeIdx = 0;
+function fridgeShuffle() {
+  fridgeOrder = FRIDGE.map(function (_, i) { return i; });
+  for (var i = fridgeOrder.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = fridgeOrder[i]; fridgeOrder[i] = fridgeOrder[j]; fridgeOrder[j] = t;
+  }
+  fridgeIdx = 0;
+}
+fridgeShuffle();
+function fridgeOpen() {
+  if (fridgeIdx >= fridgeOrder.length) fridgeShuffle();
+  var d = FRIDGE[fridgeOrder[fridgeIdx++]];
+  var box = el("fridge-dish");
+  var hint = el("fridge-hint");
+  if (hint) hint.textContent = "";
+  var empty = el("fridge-empty");
+  if (empty) empty.style.display = "none";
+  box.classList.remove("show");
+  setTimeout(function () {
+    box.innerHTML =
+      '<div class="dish-name">' + esc(d.name) + '</div>' +
+      '<div class="dish-hook">' + esc(d.hook) + '</div>' +
+      '<div class="dish-sig">— from Juju’s recipe corner · <span class="again" onclick="fridgeOpen()">open it again →</span></div>';
+    box.classList.add("show");
+  }, 130);
+}
+(function wireFridge() {
+  var f = el("fridge-open");
+  if (!f) return;
+  f.addEventListener("click", fridgeOpen);
+  f.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fridgeOpen(); }
+  });
+})();
 </script>
 </body>
 </html>
