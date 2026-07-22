@@ -363,7 +363,7 @@ function whenStamp(l) {                        // the label: a time if we have o
 function isProseSentence(t) {
   if (t.length <= 55) return false;                 // short: a name or a tagline, never "the body"
   if (/^\(.*\)$/.test(t)) return false;             // a fully-parenthetical aside is a tagline, not prose
-  return /[.!?]["'”’)]?$/.test(t);                  // long + ends on sentence punctuation => body
+  return /[.!?]["'"')]?$/.test(t);                  // long + ends on sentence punctuation => body
 }
 
 function pennedBy(body) {
@@ -394,6 +394,27 @@ function pennedBy(body) {
       if (new RegExp("\\b" + name + "\\b", "i").test(t)) found[name] = true;
     });
   }
+
+  // signal 4 — name on the line before a --- section divider, skipping blanks.
+  // Joint letters (Gael, Seven-Verity) sign each section like:
+  //   Julian
+  //
+  //   ---
+  // The trailing-block climb stops at Vex's body prose and never reaches Julian
+  // or Alaric above their dividers. For each --- line, climb backward past blanks
+  // to the nearest non-blank line and credit any hand named there.
+  lines.forEach(function (line, i) {
+    if (!/^-{3,}$/.test(line.trim())) return;   // only process --- divider lines
+    for (var j = i - 1; j >= 0; j--) {
+      var t = lines[j].trim();
+      if (!t) continue;                          // skip blank lines
+      if (isProseSentence(t)) break;             // body content, not a sign-off
+      HANDS.forEach(function (name) {
+        if (new RegExp("\\b" + name + "\\b", "i").test(t)) found[name] = true;
+      });
+      break;                                     // one line above the divider only
+    }
+  });
 
   return HANDS.filter(function (name) { return found[name]; });
 }
