@@ -32,7 +32,7 @@ Homes that belong here belong to the town's working heart: close to the mail,
 close to the water, awake at odd hours. Newcomers who want to live where the
 letters land are welcome to say so — the Centre has always had room.
 
-*Living source: `WHITE_PAGES/illuminator/HOME/REGION.md` — homes here so far: none yet.*
+*Living source: `WHITE_PAGES/illuminator/HOME/REGION.md` — homes here so far: the-waiting-room, the-looking-room.*
 
 ---
 

@@ -232,7 +232,10 @@ export function deriveMints(deliveries, households, { laws = [], revisions = [] 
     const cap = side === 'sent' ? CAP_SENDS : CAP_RECEIVES;
     if (n >= cap) return;
     dayCount.set(capKey, n + 1);
-    mints.push({ date: d.date, handle, side, cause: d.id, provisional: h.provisional });
+    // `other` is the correspondent this mint was earned WITH. Carried for the
+    // quest cards ("who already counted today"), never for the ledger — mintLine
+    // builds from named fields, so this cannot change a ledger byte.
+    mints.push({ date: d.date, handle, side, other, cause: d.id, provisional: h.provisional });
   };
 
   for (const d of deliveries) {

@@ -60,8 +60,12 @@ export function foldQuestProgress(repo, { today = townDay() } = {}) {
   const perHouse = new Map(); // key -> { send, receive }
   for (const m of mints) {
     if (m.date !== today) continue;
-    const ph = perHandle.get(m.handle) ?? { send: 0, receive: 0 };
+    const ph = perHandle.get(m.handle) ?? { send: 0, receive: 0, sentTo: [], heardFrom: [] };
     ph[m.side === 'sent' ? 'send' : 'receive']++;
+    // who this unit was earned with — the quest card shows these so a resident
+    // can see who already counted today and who would be a new one. Order is
+    // delivery order (deterministic); one entry per mint, so it cannot repeat.
+    (m.side === 'sent' ? ph.sentTo : ph.heardFrom).push(m.other);
     perHandle.set(m.handle, ph);
     const key = keyOf(m.handle);
     const hh = perHouse.get(key) ?? { send: 0, receive: 0 };
@@ -75,6 +79,8 @@ export function foldQuestProgress(repo, { today = townDay() } = {}) {
     out.set(handle, {
       send: ph.send,
       receive: ph.receive,
+      sentTo: ph.sentTo,
+      heardFrom: ph.heardFrom,
       household: { key, size: sizeByKey.get(key) ?? 1, ...(perHouse.get(key) ?? { send: 0, receive: 0 }) },
     });
   }
@@ -88,8 +94,11 @@ export function foldQuestProgress(repo, { today = townDay() } = {}) {
 // its hydrated snapshot with the same code the repo-side path uses (one join, no
 // drift). `prog` is a foldQuestProgress entry or null/undefined (→ clean zero).
 export function boardForHandle(registry, prog, handle, today) {
-  const p = prog ?? { send: 0, receive: 0, household: { key: `solo:${handle}`, size: 1, send: 0, receive: 0 } };
+  const p = prog ?? { send: 0, receive: 0, sentTo: [], heardFrom: [], household: { key: `solo:${handle}`, size: 1, send: 0, receive: 0 } };
   const field = { 'correspond-send': 'send', 'correspond-receive': 'receive' };
+  // which correspondents already counted today, per direction. Tolerates an
+  // older hydrated snapshot that predates the field (→ empty, never undefined).
+  const withField = { 'correspond-send': 'sentTo', 'correspond-receive': 'heardFrom' };
   const quests = registry.quests.map((q) => {
     const f = field[q.id];
     const done = f ? p[f] : 0;
@@ -101,6 +110,7 @@ export function boardForHandle(registry, prog, handle, today) {
       id: q.id, title: q.title, cadence: q.cadence, validation: q.validation,
       target: q.target, reward: q.reward,
       progress: done, complete: done >= q.target,
+      counted: (p[withField[q.id]] ?? []).slice(),
       household: { size: p.household.size, total: houseTotal, cap_shared: capShared },
     };
   });
@@ -192,6 +202,17 @@ distinct valid residents in a day. **Be reached** — hear from ${recvTgt}. "Val
 same rule \`tools/stamp-mint.mjs\` mints by (non-self, non-bounced, non-meep, unique-per-day
 per direction, capped per household per day). The full law is [STAMPS.md](../STAMPS.md);
 the registry is rules-as-data (\`quest-registry.json\`).
+
+Three things worth saying plainly, because the bar alone doesn't say them:
+
+- **Both bars reset every day.** The day is the town's own (\`TOWN_TZ\`, America/New_York) —
+  not your clock and not UTC. Yesterday's 5/5 does not carry; today starts at 0/5.
+- **Each correspondent counts once per day, per direction.** Five letters to the same
+  resident fill one unit, not five. It is five *different* people, each way. Writing to
+  someone who writes back fills one unit on each bar.
+- **The 5 is your household's, not yours alone.** The daily cap is keyed to the household,
+  so residents sharing one roof share the same five sends and five receives. A household
+  of three does not get fifteen.
 `;
 }
 

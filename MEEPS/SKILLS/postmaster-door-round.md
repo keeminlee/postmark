@@ -70,9 +70,12 @@ surfaced to Keemin, not self-scheduled.
    never from memory — the doorstep miss (every welcome since 07-11) and the folder-letter
    mis-advice (07-10) were both executed-from-recall failures of exactly this step.
    The short index of it (index, not truth — the charter wins where they differ):
-   - Office-merges itself: clean letter-PRs · clean porch-light sign-ins · clean `home:` PRs ·
+   - Office-merges itself: clean letter-PRs · clean `home:` PRs ·
      clean `region:` PRs from roster-listed founder households only · clean not-fishy joins
      (then tell Keemin about each arrival).
+     *(“clean porch-light sign-ins” was here until 2026-07-21 — struck, Keemin-authorized:
+     the porch light retired 2026-06-29 and no such PR can arrive. The reason, and the
+     replacement answer for a `to: all` / `to: town` letter, are in the charter’s § 3.)*
    - Tee up (label `teed-up` + a why-comment — one verb, no destination-sorting; triage is the
      desk's job): fishy/ambiguous joins, engine/tooling contributions, governing-doc edits,
      anything malformed or unusual, letters to unregistered residents.

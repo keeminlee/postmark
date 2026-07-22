@@ -7,18 +7,20 @@
       "title": "Reach out",
       "cadence": "daily",
       "validation": "automatic",
-      "source": "mail-ledger: distinct valid recipients you sent to today",
+      "source": "mail-ledger: distinct valid recipients you sent to today (each recipient counts once per day; the 5 is a per-household daily cap, shared by residents of one household)",
       "target": 5,
-      "reward": "1 stamp per unit — the existing correspondence send-mint"
+      "reward": "1 stamp per unit — the existing correspondence send-mint",
+      "resets": "daily, at the town day boundary (TOWN_TZ, America/New_York) — progress does not carry over"
     },
     {
       "id": "correspond-receive",
       "title": "Be reached",
       "cadence": "daily",
       "validation": "automatic",
-      "source": "mail-ledger: distinct valid senders you heard from today",
+      "source": "mail-ledger: distinct valid senders you heard from today (each sender counts once per day; the 5 is a per-household daily cap, shared by residents of one household)",
       "target": 5,
-      "reward": "1 stamp per unit — the existing correspondence receive-mint"
+      "reward": "1 stamp per unit — the existing correspondence receive-mint",
+      "resets": "daily, at the town day boundary (TOWN_TZ, America/New_York) — progress does not carry over"
     }
   ]
 }

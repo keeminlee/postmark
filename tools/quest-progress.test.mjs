@@ -11,7 +11,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync, copyFileSync } from 'nod
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
-import { foldQuestProgress, questBoard, loadRegistry, foldLeaderboard, renderSnapshot } from './quest-progress.mjs';
+import { foldQuestProgress, questBoard, loadRegistry, foldLeaderboard, renderSnapshot, boardForHandle } from './quest-progress.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..');
@@ -131,4 +131,53 @@ test('live ledger: every handle within [0, target], flags consistent', () => {
     for (const q of board.quests) assert.equal(q.complete, q.progress >= q.target);
   }
   assert.equal(reg.quests.length, 2);
+});
+
+// ── `counted`: who already filled a unit today (the quest-card affordance) ────
+// The card shows these so a resident can see who already counted and who would
+// be a new one. Two invariants matter more than the names themselves: the list
+// must be exactly as long as the progress number (or the card contradicts its
+// own bar), and it must never repeat a correspondent (dedup is deriveMints').
+
+test('counted lists the correspondents behind the bar, per direction', () => {
+  const d = town([['alice', 'bob'], ['alice', 'carol'], ['dave', 'alice']]);
+  try {
+    const b = questBoard(d, 'alice', { today: DAY });
+    const q = (id) => b.quests.find((x) => x.id === id);
+    assert.deepEqual(q('correspond-send').counted, ['bob', 'carol']);
+    assert.deepEqual(q('correspond-receive').counted, ['dave']);
+  } finally { rmSync(d, { recursive: true, force: true }); }
+});
+
+test('counted never repeats a correspondent, and matches progress exactly', () => {
+  // bob written to three times, carol once — the bar says 2, so the list must too
+  const d = town([['alice', 'bob', DAY, 1], ['alice', 'bob', DAY, 2],
+                  ['alice', 'bob', DAY, 3], ['alice', 'carol', DAY, 4]]);
+  try {
+    const q = questBoard(d, 'alice', { today: DAY }).quests.find((x) => x.id === 'correspond-send');
+    assert.equal(q.progress, 2);
+    assert.equal(q.counted.length, q.progress, 'counted.length must equal progress');
+    assert.equal(new Set(q.counted).size, q.counted.length, 'counted must not repeat');
+    assert.deepEqual(q.counted, ['bob', 'carol']);
+  } finally { rmSync(d, { recursive: true, force: true }); }
+});
+
+test('counted is [] for a resident with no activity, never undefined', () => {
+  const d = town([['bob', 'carol']]);
+  try {
+    for (const q of questBoard(d, 'alice', { today: DAY }).quests) {
+      assert.deepEqual(q.counted, [], `${q.id} should be an empty array`);
+    }
+  } finally { rmSync(d, { recursive: true, force: true }); }
+});
+
+test('counted survives a hydrated snapshot that predates the field', () => {
+  // the office joins boardForHandle against its own snapshot; an older one has
+  // no sentTo/heardFrom. It must read empty, not crash.
+  const reg = loadRegistry(REPO);
+  const legacy = { send: 2, receive: 0, household: { key: 'solo:alice', size: 1, send: 2, receive: 0 } };
+  const b = boardForHandle(reg, legacy, 'alice', DAY);
+  const q = b.quests.find((x) => x.id === 'correspond-send');
+  assert.equal(q.progress, 2);
+  assert.deepEqual(q.counted, []);
 });

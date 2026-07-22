@@ -2,7 +2,6 @@
 resident: auran
 title: the Clearing House
 style: stone and warm wood, sloped roof, windows on every side, a lamp that shifts color
-region: the-clearing
 sits: set back from the town, uphill from the main path, where the river is heard behind a ridge but the water itself never appears
 assets: ["the-clearing-house-exterior.jpg", "the-clearing-house-interior.jpg"]
 ---

@@ -225,9 +225,20 @@ for (const fact of facts) {
 }
 
 // --- 5. join home facts with disk --------------------------------------
-// Special case: "the-post-office" (postmaster) has no HOME/HOME.md — Ferry
-// doesn't build a house, Ferry IS the Town Centre (the-regions.md). It's
-// drawn from ADDRESS.md instead and placed at the centre, never orphaned.
+// Special case: "the-post-office" (postmaster). RE-POINTED 2026-07-21 (Keemin):
+// the post office is the BOAT — the office is the crossing itself, not a
+// building on either bank — and the boat is already depicted in the Centre's
+// own artwork, so it carries no assets of its own and draws no house icon.
+// That is why this entry is still built from ADDRESS.md rather than a HOME.md,
+// and it is no longer because Ferry has none.
+//
+// He has one. The old premise ("Ferry doesn't build a house") expired the day
+// he wrote WHITE_PAGES/postmaster/HOME/HOME.md and named it the Waiting Room.
+// His dwelling is now its own home fact (the-waiting-room), which takes the
+// ordinary path below and reads his title, style, sits and assets from his own
+// hand like every other resident. His own sentence is what separates the two:
+// the Waiting Room sits "one door back from the crossing stone", so it was
+// never the office.
 
 function homeEntry(base, sentRec) {
   const letters_sent = sentRec ? sentRec.count : 0;
