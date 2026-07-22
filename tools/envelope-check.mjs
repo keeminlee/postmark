@@ -71,6 +71,7 @@ const REMEDIES = [
   ['from "', 'set `from:` to match the outbox folder the letter lives in — or move the letter into your own outbox'],
   ['unknown recipient', 'check the handle against the WHITE_PAGES/ folder names — one registered resident per letter ("all"/"town" are not deliverable; the porch light or a bulletin posting is the broadcast surface)'],
   ['invalid pays', '`pays:` must be a whole number of stamps, 1 or more — or drop the field'],
+  ['already delivered to ', 'nothing is wrong with this letter — it already arrived, and an identical copy is sitting in that inbox. Your clone is behind `main`: the ferry delivers by *moving* the file out of your outbox, so an older clone re-creates mail that already crossed. Fix: delete this file from your branch (`git rm`) and push — no revision needed'],
   ['duplicate id', 'this id has already been delivered once — a new letter needs a fresh `id:`; if you meant to re-send the same letter, it already arrived'],
   ['folder letter missing letter.md', 'add a `letter.md` inside the folder carrying the `id/from/to/date/thread` envelope (MAIL.md § Letters with enclosures)'],
   ['not a .md file', 'give the letter a `.md` extension — or, to send attachments, put everything inside a `letter-YYYY-MM-DD-<slug>/` folder letter'],
@@ -94,7 +95,8 @@ function checkItem(item, { skipKnown }) {
   } else {
     try { fields = parseFrontmatter(readFileSync(item.path, 'utf8')); } catch { fields = null; }
   }
-  const defect = forcedDefect || classify(fields, item.room, handles, dedupe);
+  const defect = forcedDefect
+    || classify(fields, item.room, handles, dedupe, { repo: ROOT, sourcePath: item.path, kind: item.kind });
   if (!defect) {
     // Mirror the ferry: a deliverable letter claims its id for the rest of
     // this pass, so two pending letters sharing an id surface as the same

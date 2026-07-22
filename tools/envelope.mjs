@@ -58,8 +58,15 @@ export function parseFrontmatter(content) {
 // --- the classification law ----------------------------------------------
 
 // Returns a defect reason string, or null if well-formed. `dedupe` needs only
-// a `deliveredIds` Set (see parseLedgerText).
-export function classify(fields, room, handles, dedupe) {
+// a `deliveredIds` Set (see parseLedgerText); a `deliveredTo` Map unlocks the
+// already-delivered reading below.
+//
+// `context` is optional — `{ repo, sourcePath, kind }` for the item being
+// classified. Without it the law behaves exactly as it always has; with it, a
+// duplicate id that is provably mail-that-already-crossed says so. Callers at
+// all three doors pass it (see this file's header: the rules change HERE, and
+// every door updates in the same commit).
+export function classify(fields, room, handles, dedupe, context = null) {
   if (!fields) {
     return 'unparseable letter frontmatter';
   }
@@ -91,9 +98,54 @@ export function classify(fields, room, handles, dedupe) {
   }
   // Duplicate id already delivered (ledger-derived, updated in-run as we go).
   if (dedupe.deliveredIds.has(fields.id)) {
-    return 'duplicate id';
+    // Two very different things land on this line, and they want opposite
+    // fixes:
+    //
+    //   (a) a genuinely NEW letter that reused an id — only the author knows
+    //       which letter they meant, so it must go back to them for a fresh
+    //       `id:`;
+    //   (b) a letter that ALREADY crossed, re-created by a clone that
+    //       predates the delivery. The ferry delivers by *moving* the file
+    //       out of the outbox, so an out-of-date clone still has it sitting
+    //       there and re-commits mail that arrived days ago.
+    //
+    // (b) is provable rather than a judgment call — the delivered copy is
+    // byte-identical and still in the recipient's inbox — and its remedy is
+    // "drop the file", not "revise the letter". Reporting the ambiguous
+    // parent category for a case we can actually decide hands the author a
+    // red flag they can't act on, about letters that are perfectly fine and
+    // already delivered. So we decide it.
+    const to = alreadyDeliveredRecipient(fields, dedupe, context);
+    return to ? `already delivered to ${to}` : 'duplicate id';
   }
   return null;
+}
+
+// Was this outbox item just a stale copy of mail that already crossed?
+// Returns the recipient handle when the delivered letter is byte-identical to
+// the one on the branch; null otherwise.
+//
+// Null is the conservative reading and every uncertain case takes it — id
+// reuse with different content, an inbox copy the recipient edited or
+// archived, a folder letter (enclosures make "identical" ill-defined), or a
+// caller that passed no context. All of those keep the plain `duplicate id`
+// remedy, which is never wrong, only vaguer.
+//
+// The recipient comes from the LEDGER, not from `fields.to`: a reused id may
+// well be addressed somewhere new, and what we're testing is whether *this
+// exact letter* already went where the ledger says it went.
+export function alreadyDeliveredRecipient(fields, dedupe, context) {
+  if (!context || !context.repo || !context.sourcePath) return null;
+  if (context.kind === 'folder') return null;
+  const to = dedupe.deliveredTo?.get(fields.id);
+  if (!to) return null;
+  const deliveredPath = join(context.repo, 'WHITE_PAGES', to, 'inbox', `${fields.id}.md`);
+  if (!existsSync(deliveredPath) || !existsSync(context.sourcePath)) return null;
+  try {
+    return readFileSync(deliveredPath, 'utf8') === readFileSync(context.sourcePath, 'utf8') ? to : null;
+  } catch {
+    return null;
+  }
 }
 
 // --- ledger parsing (dedupe state) ---------------------------------------
@@ -115,6 +167,11 @@ export const LEDGER_WARN_RE = /^- \d{4}-\d{2}-\d{2} · WARN · \S+ · would over
 // reading + logging; envelope-check calls it directly.
 export function parseLedgerText(content) {
   const deliveredIds = new Set();
+  // id -> recipient handle, for the already-delivered reading in classify().
+  // Only ledger-derived deliveries populate this. Ids added in-run (a second
+  // letter in the same sweep reusing an id) deliberately stay out: that IS a
+  // genuine collision the author must resolve, not a stale-clone artifact.
+  const deliveredTo = new Map();
   const bouncedKeys = new Set();
   const stats = { totalLines: 0, delivered: 0, bounced: 0, warn: 0, unrecognized: 0 };
 
@@ -137,8 +194,9 @@ export function parseLedgerText(content) {
 
     const deliveryMatch = line.match(LEDGER_DELIVERY_RE);
     if (deliveryMatch) {
-      const [, id] = deliveryMatch;
+      const [, id, , to] = deliveryMatch;
       deliveredIds.add(id);
+      deliveredTo.set(id, to);
       stats.delivered += 1;
       continue;
     }
@@ -146,7 +204,7 @@ export function parseLedgerText(content) {
     stats.unrecognized += 1;
   }
 
-  return { deliveredIds, bouncedKeys, stats };
+  return { deliveredIds, deliveredTo, bouncedKeys, stats };
 }
 
 // --- registry ------------------------------------------------------------

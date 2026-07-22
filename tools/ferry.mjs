@@ -340,7 +340,8 @@ function sweep(repo, options, today, handles, dedupe) {
         }
       }
 
-      const defect = forcedDefect || classify(fields, room, handles, dedupe);
+      const defect = forcedDefect
+        || classify(fields, room, handles, dedupe, { repo, sourcePath: outboxPath, kind: item.kind });
 
       if (defect) {
         bounced += handleBounce(
