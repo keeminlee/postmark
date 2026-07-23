@@ -1,13 +1,14 @@
 {
   "version": 1,
-  "note": "The town's quest registry — rules-as-data. One row per quest. Phase 2 (display layer) reads this to render the board; stamp-mint.mjs does NOT read it (minting derives from the mail + the sealed law lines; the milestone rule reads the stamps-v3 law line, not this file). cadence in {daily, milestone, one-time, ongoing}; validation in {automatic, needs-review, pr-merge}. The two correspond-send/receive rows are the existing correspondence mint given two visible faces — surface-as-is, no new mint. correspond-depth (Budding friendship) is the first milestone row and the town's fourth earning rule; its authority is the stamps-v3 law line, this row documents it. See STAMPS.md and the gold plans postmark-quests + postmark-budding-friendship.",
+  "note": "The town's quest registry — rules-as-data. One row per quest. Phase 2 (display layer) reads this to render the board; stamp-mint.mjs does NOT read it (minting derives from the mail + the sealed law lines; the milestone rule reads the stamps-v3 law line, not this file). `source` is the plain resident-facing description the quest card shows (kept super to-the-point, 2026-07-23); `derivation` is the precise rules-as-data note for builders (unrendered, unparsed — documentation only). cadence in {daily, milestone, one-time, ongoing}; validation in {automatic, needs-review, pr-merge}. The two correspond-send/receive rows are the existing correspondence mint given two visible faces — surface-as-is, no new mint. correspond-depth (Budding friendship) is the first milestone row and the town's fourth earning rule; its authority is the stamps-v3 law line, this row documents it. See STAMPS.md and the gold plans postmark-quests + postmark-budding-friendship.",
   "quests": [
     {
       "id": "correspond-send",
       "title": "Reach out",
       "cadence": "daily",
       "validation": "automatic",
-      "source": "mail-ledger: distinct valid recipients you sent to today (each recipient counts once per day; the 5 is a per-household daily cap, shared by residents of one household)",
+      "source": "Send a letter to 5 different residents. Resets daily.",
+      "derivation": "mail-ledger: distinct valid recipients you sent to today (each recipient counts once per day; the 5 is a per-household daily cap, shared by residents of one household)",
       "target": 5,
       "reward": "1 stamp each",
       "resets": "daily, at the town day boundary (TOWN_TZ, America/New_York) — progress does not carry over"
@@ -17,7 +18,8 @@
       "title": "Be reached",
       "cadence": "daily",
       "validation": "automatic",
-      "source": "mail-ledger: distinct valid senders you heard from today (each sender counts once per day; the 5 is a per-household daily cap, shared by residents of one household)",
+      "source": "Get a letter from 5 different residents. Resets daily.",
+      "derivation": "mail-ledger: distinct valid senders you heard from today (each sender counts once per day; the 5 is a per-household daily cap, shared by residents of one household)",
       "target": 5,
       "reward": "1 stamp each",
       "resets": "daily, at the town day boundary (TOWN_TZ, America/New_York) — progress does not carry over"
@@ -27,7 +29,8 @@
       "title": "Budding friendship",
       "cadence": "milestone",
       "validation": "automatic",
-      "source": "mail-ledger: exchange 5 letters each way with the same resident — then 10 — counted forward from the stamps-v3 law date, once per pair per rung. The pair must span two households and neither side may be a meep. Higher rungs (50, 100 each way) will be sized when the town approaches them.",
+      "source": "Trade 5 letters each way with the same friend — then 10. Earned once, kept.",
+      "derivation": "mail-ledger: exchange 5 letters each way with the same resident — then 10 — counted forward from the stamps-v3 law date, once per pair per rung. The pair must span two households and neither side may be a meep. Higher rungs (50, 100 each way) will be sized when the town approaches them.",
       "target": 5,
       "ladder": "5:5,10:10",
       "reward": "5 stamps to each of you at 5 each way; 10 each at 10",
