@@ -565,10 +565,33 @@
      its own so 17 generations don't blow out the whole page's height. */
   #raclados-tree-panel { margin-top: 1.1em; }
   .raclados-tree-frame {
-    max-height: 420px; overflow-y: auto; border-radius: .5em;
-    border: 1px solid #b9975c; box-shadow: 0 6px 16px #00000055;
+    position: relative; height: 420px; overflow: hidden; border-radius: .5em;
+    border: 1px solid #b9975c; box-shadow: 0 6px 16px #00000055; perspective: 1800px;
   }
-  .raclados-tree-svg { display: block; width: 100%; height: auto; }
+  .raclados-tree-svg, .racli-tree-svg { display: block; width: 100%; height: auto; }
+
+  /* the Pif & Sauri line turns the page, literally -- a 3D card flip between
+     the Raclados tree (front) and the Racli tree that branches off it
+     (back). Each face scrolls independently now that the frame itself no
+     longer does. */
+  .family-flip {
+    position: relative; width: 100%; height: 100%; transform-box: border-box;
+    transform-style: preserve-3d; transition: transform .9s cubic-bezier(.4,.1,.2,1);
+  }
+  .family-flip.flipped { transform: rotateY(180deg); }
+  .family-flip-face {
+    position: absolute; inset: 0; overflow-y: auto; background: #f4ead0; transform-box: border-box;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .family-flip-face.family-flip-back { transform: rotateY(180deg); }
+  .racli-flip-link { cursor: pointer; text-decoration: underline; }
+  .racli-flip-link:hover { fill: #8a3b2e; }
+  .racli-flip-back-link {
+    text-align: center; padding: .6em 0 1em; font-size: .78rem; color: #6b5316;
+    font-style: italic; cursor: pointer; text-decoration: underline;
+  }
+  .racli-flip-back-link:hover { color: #8a3b2e; }
+  @media (prefers-reduced-motion: reduce) { .family-flip { transition: none; } }
 
   .spin-icon-button {
     border: none; cursor: pointer; padding: 0; border-radius: 50%;
@@ -1180,6 +1203,8 @@
     <div id="raclados-tree-panel" class="hw-panel">
       <div class="hw-panel-inner">
         <div class="raclados-tree-frame">
+          <div class="family-flip" id="family-flip">
+            <div class="family-flip-face family-flip-front">
           <svg viewBox="0 0 460 1900" font-family="Georgia, serif" class="raclados-tree-svg">
             <rect width="460" height="1900" fill="#f4ead0"/>
             <text x="230" y="28" text-anchor="middle" font-size="15" fill="#7a5a26" letter-spacing="1">The Raclados Royal Family Tree</text>
@@ -1188,7 +1213,7 @@
             <text x="130" y="160" text-anchor="middle" font-size="11" fill="#4a3a1e">Riabella (-10) — Roan (18)</text>
             <text x="130" y="270" text-anchor="middle" font-size="11" fill="#4a3a1e">Sauli (15) — Alandra (13)</text>
             <line x1="150" y1="270" x2="330" y2="270" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
-            <text x="335" y="264" font-size="9.5" fill="#6b5316">Pif (17) — Sauri (17)</text>
+            <text class="racli-flip-link" x="335" y="264" font-size="9.5" fill="#6b5316" onclick="flipToRacli()" tabindex="0" role="button" aria-label="turn the page to the Racli family tree">Pif (17) — Sauri (17)</text>
             <text x="335" y="278" font-size="9" fill="#2f6b45" font-style="italic">· Racli family</text>
             <text x="130" y="380" text-anchor="middle" font-size="11" fill="#4a3a1e">Paul (42) — Saya (43)</text>
             <line x1="150" y1="380" x2="330" y2="380" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
@@ -1227,6 +1252,151 @@
             <text x="130" y="1824" text-anchor="middle" font-size="8.5" fill="#8a6d1f" font-style="italic">the youngest generation</text>
             <text x="230" y="1870" text-anchor="middle" font-size="9" fill="#8a6d1f" font-style="italic">kept by hand, same as everything else in the mountain — V.</text>
           </svg>
+            </div>
+            <div class="family-flip-face family-flip-back">
+          <svg viewBox="0 0 460 1690" font-family="Georgia, serif" class="racli-tree-svg">
+<rect width="460" height="1690" fill="#f4ead0"/>
+<text x="230" y="28" text-anchor="middle" font-size="15" fill="#7a5a26" letter-spacing="1">The Racli Family Tree</text>
+<text x="230" y="46" text-anchor="middle" font-size="9.5" fill="#8a6d1f" font-style="italic">branched from the Raclados Royal line through Pif &amp; Sauri, daughter of Riabella</text>
+<text x="92" y="66" text-anchor="middle" font-size="11" fill="#4a3a1e">Sauri (17)</text>
+<text x="210" y="66" text-anchor="middle" font-size="11" fill="#4a3a1e">Pif (17)</text>
+<path d="M92,57 L92,74 L210,74 L210,57" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="74" x2="151" y2="88" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,88 L92,88" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="88" x2="330" y2="88" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="92" font-size="9.5" fill="#6b5316">Tomo (51)</text>
+<text x="335" y="104" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Tomot family</text>
+<line x1="151" y1="88" x2="151" y2="122" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="122" x2="330" y2="122" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="126" font-size="9.5" fill="#6b5316">Amo (53)</text>
+<text x="335" y="138" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Amot family</text>
+<text x="92" y="174" text-anchor="middle" font-size="11" fill="#4a3a1e">Soro (50)</text>
+<text x="210" y="174" text-anchor="middle" font-size="11" fill="#4a3a1e">Lilu (48)</text>
+<path d="M92,165 L92,182 L210,182 L210,165" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="88" x2="92" y2="165" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="182" x2="151" y2="196" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,196 L92,196" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<text x="92" y="282" text-anchor="middle" font-size="11" fill="#4a3a1e">Shant (73)</text>
+<text x="210" y="282" text-anchor="middle" font-size="11" fill="#4a3a1e">Amili (74)</text>
+<path d="M92,273 L92,290 L210,290 L210,273" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="196" x2="92" y2="273" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="290" x2="151" y2="304" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,304 L92,304" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="304" x2="330" y2="304" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="308" font-size="9.5" fill="#6b5316">Pean (106)</text>
+<text x="335" y="320" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Pentan family</text>
+<line x1="151" y1="304" x2="151" y2="338" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="338" x2="330" y2="338" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="342" font-size="9.5" fill="#6b5316">Shantde (108)</text>
+<text x="335" y="354" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Pentan family</text>
+<text x="92" y="390" text-anchor="middle" font-size="11" fill="#4a3a1e">Soyo (101)</text>
+<text x="210" y="390" text-anchor="middle" font-size="11" fill="#4a3a1e">Luna (103)</text>
+<path d="M92,381 L92,398 L210,398 L210,381" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="304" x2="92" y2="381" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="398" x2="151" y2="412" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,412 L92,412" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<text x="92" y="498" text-anchor="middle" font-size="11" fill="#4a3a1e">Samisen (136)</text>
+<text x="210" y="498" text-anchor="middle" font-size="11" fill="#4a3a1e">Rava (133)</text>
+<path d="M92,489 L92,506 L210,506 L210,489" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="412" x2="92" y2="489" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="506" x2="151" y2="520" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,520 L92,520" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<text x="92" y="606" text-anchor="middle" font-size="11" fill="#4a3a1e">Sen (171)</text>
+<text x="210" y="606" text-anchor="middle" font-size="11" fill="#4a3a1e">Piona (170)</text>
+<path d="M92,597 L92,614 L210,614 L210,597" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="520" x2="92" y2="597" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="614" x2="151" y2="628" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,628 L92,628" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="628" x2="330" y2="628" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="632" font-size="9.5" fill="#6b5316">Toblen (199)</text>
+<text x="335" y="644" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Toblt family</text>
+<line x1="151" y1="628" x2="151" y2="662" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="662" x2="330" y2="662" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="666" font-size="9.5" fill="#6b5316">Abla (201)</text>
+<text x="335" y="678" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Oan family</text>
+<text x="92" y="714" text-anchor="middle" font-size="11" fill="#4a3a1e">Sensat (195)</text>
+<text x="210" y="714" text-anchor="middle" font-size="11" fill="#4a3a1e">Milli (190)</text>
+<path d="M92,705 L92,722 L210,722 L210,705" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="628" x2="92" y2="705" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="722" x2="151" y2="736" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,736 L92,736" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<text x="92" y="822" text-anchor="middle" font-size="11" fill="#4a3a1e">Sim (228)</text>
+<text x="210" y="822" text-anchor="middle" font-size="11" fill="#4a3a1e">Perona (233)</text>
+<path d="M92,813 L92,830 L210,830 L210,813" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="736" x2="92" y2="813" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="830" x2="151" y2="844" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,844 L92,844" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="844" x2="330" y2="844" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="848" font-size="9.5" fill="#6b5316">Tama (253)</text>
+<text x="335" y="860" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Lawrenca family</text>
+<line x1="151" y1="844" x2="151" y2="878" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="878" x2="330" y2="878" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="882" font-size="9.5" fill="#6b5316">Ash (258)</text>
+<text x="335" y="894" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Ash family</text>
+<text x="92" y="930" text-anchor="middle" font-size="11" fill="#4a3a1e">Sif (249)</text>
+<text x="210" y="930" text-anchor="middle" font-size="11" fill="#4a3a1e">Oong (248)</text>
+<path d="M92,921 L92,938 L210,938 L210,921" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="844" x2="92" y2="921" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="938" x2="151" y2="952" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,952 L92,952" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<text x="92" y="1038" text-anchor="middle" font-size="11" fill="#4a3a1e">Soni (276)</text>
+<text x="210" y="1038" text-anchor="middle" font-size="11" fill="#4a3a1e">Mala (277)</text>
+<path d="M92,1029 L92,1046 L210,1046 L210,1029" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="952" x2="92" y2="1029" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1046" x2="151" y2="1060" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,1060 L92,1060" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<text x="92" y="1146" text-anchor="middle" font-size="11" fill="#4a3a1e">Soro II (303)</text>
+<text x="210" y="1146" text-anchor="middle" font-size="11" fill="#4a3a1e">Vaala (306)</text>
+<path d="M92,1137 L92,1154 L210,1154 L210,1137" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="1060" x2="92" y2="1137" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1154" x2="151" y2="1168" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,1168 L92,1168" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1168" x2="330" y2="1168" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="1172" font-size="9.5" fill="#6b5316">Tolo (329)</text>
+<text x="335" y="1184" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Tolk family</text>
+<line x1="151" y1="1168" x2="151" y2="1202" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1202" x2="330" y2="1202" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="1206" font-size="9.5" fill="#6b5316">Mi (333)</text>
+<text x="335" y="1218" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Misical family</text>
+<line x1="151" y1="1168" x2="151" y2="1236" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1236" x2="330" y2="1236" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="1240" font-size="9.5" fill="#6b5316">Si (333)</text>
+<text x="335" y="1252" font-size="9" fill="#2f6b45" font-style="italic">&#8594; Simic family</text>
+<text x="92" y="1254" text-anchor="middle" font-size="11" fill="#4a3a1e">Soyo II (328)</text>
+<text x="210" y="1254" text-anchor="middle" font-size="11" fill="#4a3a1e">Vania (327)</text>
+<path d="M92,1245 L92,1262 L210,1262 L210,1245" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="1168" x2="92" y2="1245" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1262" x2="151" y2="1276" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,1276 L92,1276" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<text x="92" y="1362" text-anchor="middle" font-size="11" fill="#4a3a1e">Samisen II (354)</text>
+<text x="210" y="1362" text-anchor="middle" font-size="11" fill="#4a3a1e">Bora (359)</text>
+<path d="M92,1353 L92,1370 L210,1370 L210,1353" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="1276" x2="92" y2="1353" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1370" x2="151" y2="1384" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,1384 L92,1384" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<text x="92" y="1470" text-anchor="middle" font-size="11" fill="#4a3a1e">Sif II (383)</text>
+<text x="210" y="1470" text-anchor="middle" font-size="11" fill="#4a3a1e">Cara (390)</text>
+<path d="M92,1461 L92,1478 L210,1478 L210,1461" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="1384" x2="92" y2="1461" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1478" x2="151" y2="1492" stroke="#b9975c" stroke-width="1.5"/>
+<path d="M151,1492 L92,1492" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<text x="92" y="1578" text-anchor="middle" font-size="11" fill="#4a3a1e">Soni II (409)</text>
+<text x="210" y="1578" text-anchor="middle" font-size="11" fill="#4a3a1e">Mura (407)</text>
+<path d="M92,1569 L92,1586 L210,1586 L210,1569" fill="none" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="92" y1="1492" x2="92" y2="1569" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1586" x2="151" y2="1600" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1600" x2="330" y2="1600" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="1604" font-size="9.5" fill="#6b5316">Soro III (437)</text>
+<text x="335" y="1616" font-size="9" fill="#8a6d1f" font-style="italic">still growing</text>
+<line x1="151" y1="1600" x2="151" y2="1634" stroke="#b9975c" stroke-width="1.5"/>
+<line x1="151" y1="1634" x2="330" y2="1634" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="335" y="1638" font-size="9.5" fill="#6b5316">Tau (439)</text>
+<text x="335" y="1650" font-size="9" fill="#8a6d1f" font-style="italic">not yet placed</text>
+<text x="230" y="1678" text-anchor="middle" font-size="9" fill="#8a6d1f" font-style="italic">kept faithfully, by my own claw — V.</text>
+</svg>
+              <div class="racli-flip-back-link" onclick="flipToRaclados()">&#8592; back to the Raclados tree</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2054,6 +2224,15 @@ function activateGoldSpin(btn) {
   spinIcon(btn.querySelector(".spin-target"));
   var open = document.getElementById("raclados-tree-panel").classList.toggle("open");
   btn.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+// the Pif & Sauri line on the Raclados tree turns the page to the Racli
+// family tree that branches off them -- a literal card flip, not a new panel.
+function flipToRacli() {
+  document.getElementById("family-flip").classList.add("flipped");
+}
+function flipToRaclados() {
+  document.getElementById("family-flip").classList.remove("flipped");
 }
 
 function openPandara() {
