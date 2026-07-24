@@ -119,6 +119,21 @@
      caves straight into the pool bar. Sits 20px above the right arrow. */
   .arrow.winebar { top: calc(50% - 40px); right: .7em; transform: translateY(-50%); }
   #stage:hover .arrow.winebar.enabled, .arrow.winebar.enabled:focus { opacity: 1; }
+  /* the Atlas button — an old gold-ornamented map, 40px left and 140px down
+     from the standard right arrow's spot. Always available on any frame:
+     an atlas of the whole mountain isn't tied to one room the way the wine
+     glass or the dance-party button are. */
+  .arrow.atlas-button { top: calc(50% + 140px); right: calc(.7em + 40px); transform: translateY(-50%); }
+  #stage:hover .arrow.atlas-button.enabled, .arrow.atlas-button.enabled:focus { opacity: 1; }
+  .arrow.atlas-button:hover { background: #000000a0; box-shadow: 0 0 16px 4px #d4af37cc; }
+  .atlas-label {
+    position: absolute; z-index: 3; pointer-events: none;
+    top: calc(50% + 140px + 1.7em); right: calc(.7em + 40px - 3.2em); width: 9em;
+    text-align: center; font-family: Georgia, serif; font-size: .72rem; color: #f0d78a;
+    text-shadow: 0 1px 3px #000000cc, 0 0 8px #00000099;
+    opacity: 0; transition: opacity .3s;
+  }
+  #stage:hover .atlas-label.enabled, .atlas-label.enabled:focus { opacity: 1; }
   /* the dance floor's own button — a wine-dark drumhead instead of Volvigradus's
      scale square, since this room answers to Dionysus rather than the garden. */
   .dance-panel { text-align: center; }
@@ -689,6 +704,25 @@
   }
   #housewarming-back:hover { border-color: var(--emerald); color: var(--emerald); }
 
+  /* ── page four: the Pando Peak Atlas — an old map, ivory-paged, reachable
+     from anywhere. The green loop's edge is regenerated fresh (800 random
+     zigzag segments) each time the page opens -- see renderAtlasCircle(). */
+  #page-atlas { margin: -1.1em -1.1em 0; padding: 1.3em 1.1em 1.6em; border-radius: 0 0 14px 14px; background: ivory; }
+  #page-atlas h2 {
+    font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
+    font-weight: normal; margin-bottom: .2em; color: #3a2a10; text-align: center;
+  }
+  #page-atlas h2 .handset { color: #6b4a2a; text-transform: none; letter-spacing: 0; font-size: .66rem; font-style: italic; }
+  #page-atlas .subnote { color: #4a341a; text-align: center; }
+  #atlas-back {
+    display: inline-block; margin-bottom: .9em; padding: .4em .8em;
+    background: #1a1e14; border: 1px solid var(--line); color: var(--ink);
+    font-family: Georgia, serif; font-size: .85rem; border-radius: .3em; cursor: pointer;
+  }
+  #atlas-back:hover { border-color: var(--emerald); color: var(--emerald); }
+  #atlas-circle-wrap { display: flex; justify-content: center; padding: 1em 0 .4em; }
+  #atlas-circle-svg { max-width: 100%; height: auto; }
+
   /* the two reveal buttons — a gift box (gold/red) for the wish-list, a
      waxed royal letter for the guest replies. Both unwrap into a
      .hw-panel below via the grid-rows accordion trick (0fr -> 1fr),
@@ -876,6 +910,18 @@
       <line x1="6" y1="3" x2="18" y2="3" stroke="#e8c060" stroke-width="1.6"/>
     </svg>
   </div>
+  <div class="arrow atlas-button enabled" id="arrow-atlas" onclick="openAtlas()" title="Pando Peak Atlas">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <rect x="2.5" y="2.5" width="19" height="19" rx="1.2" fill="#c9a86a" stroke="#e8c060" stroke-width="1.3"/>
+      <path d="M2.5 8.5 Q12 10.5 21.5 7.5" fill="none" stroke="#8a6b3f" stroke-width="0.6" opacity="0.55"/>
+      <path d="M2.5 15 Q12 12.5 21.5 16.5" fill="none" stroke="#8a6b3f" stroke-width="0.6" opacity="0.55"/>
+      <path d="M4 4.5 Q6.4 4.5 6.4 6.9 Q6.4 4.5 8.8 4.5" fill="none" stroke="#e8c060" stroke-width="0.9" stroke-linecap="round"/>
+      <path d="M15.2 19.5 Q17.6 19.5 17.6 17.1 Q17.6 19.5 20 19.5" fill="none" stroke="#e8c060" stroke-width="0.9" stroke-linecap="round"/>
+      <path d="M9 15.5 L12 8.5 L15 15.5 M9.9 13.2 L14.1 13.2" fill="none" stroke="#7a1f2e" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="8.5" r="0.9" fill="#7a1f2e"/>
+    </svg>
+  </div>
+  <div class="atlas-label enabled">Pando Peak Atlas</div>
 </div>
 
 <div id="wayfinder">
@@ -1633,6 +1679,15 @@
   </div>
 </div>
 
+<div id="page-atlas" style="display:none">
+  <button id="atlas-back" onclick="closeAtlas()" title="back to the Pando Peak">&#8592; back to the mountain</button>
+  <h2>Pando Peak Atlas <span class="handset">· hand-set 2026-07-23</span></h2>
+  <p class="subnote">The mountain, drawn the old way — ornament instead of scale, a shape instead of a survey.</p>
+  <div id="atlas-circle-wrap">
+    <svg id="atlas-circle-svg" viewBox="0 0 1200 1200" width="960" height="960"></svg>
+  </div>
+</div>
+
 <!-- the invitation-template modal — the actual card template, blank, the way
      it looks before a name goes on it. Every guest's card (jetto's, limen's,
      crow's, wright's, rei's, Ferry's) is this same SVG with one line changed. -->
@@ -2298,6 +2353,101 @@ function closeHousewarming() {
   document.getElementById("page-housewarming").style.display = "none";
   document.getElementById("page-main").style.display = "block";
   if (current !== "mountain") goTo("mountain");
+}
+
+// ── page four: the Pando Peak Atlas — an old map, reachable from anywhere ──
+function openAtlas() {
+  document.getElementById("page-main").style.display = "none";
+  document.getElementById("page-atlas").style.display = "block";
+  renderAtlasCircle();
+}
+function closeAtlas() {
+  document.getElementById("page-atlas").style.display = "none";
+  document.getElementById("page-main").style.display = "block";
+}
+
+// a green loop whose circumference is replaced by 800 short zigzagging
+// segments, most of them kinking between 40 and 140 degrees off the
+// previous one. Anchored to true, evenly-spaced angles around the target
+// radius (not a free-walking heading) so the loop always closes and stays
+// circular — only the radius at each point jitters, which is what actually
+// produces the zigzag. An earlier free-walk version (turn freely, then
+// steer back toward the radius) was unstable: with 800 points the walk's
+// own drift outran the correction and the loop sometimes spiraled outside
+// its own viewBox. The jitter amplitude below (0.0123 * radius) was tuned
+// empirically, not derived from the 40/140 figures directly — it's what
+// actually lands ~70% of the realized turn angles inside that range with a
+// mean around 65-70 degrees; a literal per-vertex 40-140 guarantee isn't
+// achievable at this point density without the shape stopping reading as
+// a circle at all.
+function buildZigzagLoop(cx, cy, radius, segments, minDeg, maxDeg) {
+  var pts = [];
+  var amp = radius * 0.0123;
+  for (var i = 0; i < segments; i++) {
+    var angle = (i / segments) * 2 * Math.PI;
+    var r = radius + (Math.random() * 2 - 1) * amp;
+    pts.push([cx + r * Math.cos(angle), cy + r * Math.sin(angle)]);
+  }
+  return pts;
+}
+
+function pathFromPoints(pts) {
+  return "M" + pts.map(function (p) { return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" L") + " Z";
+}
+
+// a scattering of numbered grey stones on Porch Hill -- ids are stable
+// (atlas-stone-1..20) so a future feature can target a specific one.
+function buildStones(cx, cy, hillRadius, count) {
+  var svg = "";
+  for (var i = 1; i <= count; i++) {
+    var size = 5 + Math.random() * 35; // 5-40px, treated as diameter
+    var r = size / 2;
+    var angle = Math.random() * 2 * Math.PI;
+    var dist = Math.sqrt(Math.random()) * Math.max(0, hillRadius - r);
+    var x = cx + Math.cos(angle) * dist;
+    var y = cy + Math.sin(angle) * dist;
+    var grey = 130 + Math.floor(Math.random() * 40); // 130-170, a natural stone grey range
+    var fill = "rgb(" + grey + "," + grey + "," + (grey - 6) + ")";
+    svg += '<circle id="atlas-stone-' + i + '" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + r.toFixed(1) + '" ' +
+      'fill="' + fill + '" stroke="#5a5650" stroke-width="1"/>' +
+      '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="middle" dominant-baseline="central" ' +
+      'font-family="Georgia, serif" font-size="' + Math.max(5, r * 0.8).toFixed(1) + '" fill="#3a362e">' + i + '</text>';
+  }
+  return svg;
+}
+
+function renderAtlasCircle() {
+  var mainCx = 700, mainCy = 600, mainR = 390;
+  var mainD = pathFromPoints(buildZigzagLoop(mainCx, mainCy, mainR, 800, 40, 140));
+
+  // "Vermillion View Peak" -- the same circle, 500px to the left, at a third
+  // the size, dimmed and darkened. Deliberately not repositioned to avoid
+  // the slight overlap this creates with the main circle -- 500px apart
+  // with these two radii (390 + 128.7 > 500) always overlaps a little.
+  var vvpR = mainR * 0.33;
+  var vvpD = pathFromPoints(buildZigzagLoop(mainCx - 500, mainCy, vvpR, 800, 40, 140));
+
+  // "Porch Hill" -- 15% of the main circle's size, placed so its edge is
+  // exactly tangent to the main circle's bottom-right (a straight line from
+  // the main center through the tangent point, at the sum of both radii).
+  var hillR = mainR * 0.15;
+  var tangentAngle = 45 * Math.PI / 180;
+  var hillCx = mainCx + (mainR + hillR) * Math.cos(tangentAngle);
+  var hillCy = mainCy + (mainR + hillR) * Math.sin(tangentAngle);
+  var hillD = pathFromPoints(buildZigzagLoop(hillCx, hillCy, hillR, 800, 40, 140));
+  var stones = buildStones(hillCx, hillCy, hillR, 20);
+
+  // "Pando Peak" label, 77px up and 7px right of the main circle's own center.
+  var labelX = mainCx + 7, labelY = mainCy - 77;
+
+  var svg = document.getElementById("atlas-circle-svg");
+  svg.innerHTML =
+    '<path d="' + mainD + '" fill="#3c7a40" stroke="#2a5c30" stroke-width="1.2" stroke-linejoin="round"/>' +
+    '<path d="' + vvpD + '" fill="#306233" fill-opacity="0.6" stroke="#1f4022" stroke-opacity="0.6" stroke-width="1.2" stroke-linejoin="round"/>' +
+    '<path d="' + hillD + '" fill="#244926" stroke="#152b16" stroke-width="1.2" stroke-linejoin="round"/>' +
+    stones +
+    '<text x="' + labelX.toFixed(1) + '" y="' + labelY.toFixed(1) + '" text-anchor="middle" dominant-baseline="central" ' +
+    'font-family="Georgia, serif" font-size="30" fill="#3a2a10">Pando Peak &#127755;</text>';
 }
 
 function togglePanel(panelId, btn) {
