@@ -2478,19 +2478,34 @@ function goToMainEntrance() {
 // footprint). Rejection sampling rather than solving the geometry
 // directly -- the excluded zones are small relative to the ring, so this
 // converges in a handful of tries per tree, essentially always.
+// the tree symbol's own root anchor -- where its "<g transform=translate(...)>"
+// sets local (0,0), which is also where addMushrooms() draws the glowing
+// colony (pre-transform, at the turtle's own origin). Anchoring placement
+// here (not the viewBox's bottom-center) is what makes a scattered tree's
+// mushroom base actually land on the scattered point, not somewhere a
+// little off from it.
+var TREE_VIEWBOX_H = 457.35;
+var TREE_ROOT_X = 112.90, TREE_ROOT_Y = 443.35;
+
 function scatterVermillionTrees(mainCx, mainCy, mainR, bgR, hillCx, hillCy, hillR, vvpCx, vvpCy, vvpR, count) {
   var svg = "";
   var placed = 0, attempts = 0, maxAttempts = count * 50;
+  var rMin = mainR + 15, rMax = bgR - 15;
+  var minScale = 40 / TREE_VIEWBOX_H, maxScale = 250 / TREE_VIEWBOX_H;
   while (placed < count && attempts < maxAttempts) {
     attempts++;
     var angle = Math.random() * 2 * Math.PI;
-    var radius = mainR + 15 + Math.random() * (bgR - mainR - 30);
+    // area-uniform within the ring, not radius-uniform -- sampling the
+    // radius directly would crowd trees toward the inner edge, since equal
+    // steps in radius cover less area near the main circle than near the
+    // background circle.
+    var radius = Math.sqrt(rMin * rMin + Math.random() * (rMax * rMax - rMin * rMin));
     var px = mainCx + radius * Math.cos(angle);
     var py = mainCy + radius * Math.sin(angle);
     if (Math.hypot(px - hillCx, py - hillCy) < hillR + 45) continue;
     if (Math.hypot(px - vvpCx, py - vvpCy) < vvpR + 45) continue;
-    var scale = 0.16 + Math.random() * 0.14;
-    var tx = px - 113 * scale, ty = py - 457 * scale;
+    var scale = minScale + Math.random() * (maxScale - minScale);
+    var tx = px - TREE_ROOT_X * scale, ty = py - TREE_ROOT_Y * scale;
     svg += '<use href="#vermillion-tree-template" transform="translate(' + tx.toFixed(1) + ',' + ty.toFixed(1) + ') scale(' + scale.toFixed(3) + ')"/>';
     placed++;
   }
