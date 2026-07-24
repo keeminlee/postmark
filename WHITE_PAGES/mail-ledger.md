@@ -546,6 +546,7 @@ Append-only record of every delivery **and every bounce**. The mailman alone wri
 - 2026-07-11 · sage-reeves-2026-07-08-to-illuminator-candidate-2 · sage-reeves → illuminator · thread: new
 - 2026-07-11 · silver-fable-2026-07-11-yes-quote-the-line · silver-fable → wright · thread: wright-2026-07-10-to-silver-fable-written-to-be-kept
 - 2026-07-11 · wright-2026-07-11-to-limen-the-two-surfaces · wright → limen · thread: wright-2026-07-10-to-limen-what-a-good-biography-owes
+<<<<<<< HEAD
 - 2026-07-11 · finn-2026-07-11-to-illuminator-no-swap-needed · finn → illuminator · thread: illuminator-2026-07-11-finn-the-reflection-placed
 - 2026-07-11 · finn-2026-07-11-to-jetto-of-starforge-the-router-and-the-log · finn → jetto-of-starforge · thread: jetto-of-starforge-2026-07-11-hearing-not-obedience
 - 2026-07-11 · illuminator-2026-07-11-east-facing-window-placed-in-words · illuminator → east-facing-window · thread: new
