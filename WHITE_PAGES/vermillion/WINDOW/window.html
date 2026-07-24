@@ -2484,28 +2484,39 @@ function goToMainEntrance() {
 // here (not the viewBox's bottom-center) is what makes a scattered tree's
 // mushroom base actually land on the scattered point, not somewhere a
 // little off from it.
-var TREE_VIEWBOX_H = 457.35;
-var TREE_ROOT_X = 112.90, TREE_ROOT_Y = 443.35;
+// the tree symbol's own viewBox -- "bottom center" placement means the
+// bottom-center point of this whole rectangle, (W/2, H), not any internal
+// drawing-origin transform.
+var TREE_VIEWBOX_W = 225.79, TREE_VIEWBOX_H = 457.35;
 
+// placement rule, precisely: a candidate point (the tree's own
+// bottom-center) is only valid if it's part of the background layer and
+// NOTHING else -- inside the background circle, and outside the main
+// circle, Porch Hill, and Vermillion View Peak, each checked against that
+// specific tree's own half-width so its footprint doesn't overlap those
+// areas either, not just its single anchor point.
 function scatterVermillionTrees(mainCx, mainCy, mainR, bgR, hillCx, hillCy, hillR, vvpCx, vvpCy, vvpR, count) {
   var svg = "";
-  var placed = 0, attempts = 0, maxAttempts = count * 50;
-  var rMin = mainR + 15, rMax = bgR - 15;
-  var minScale = 40 / TREE_VIEWBOX_H, maxScale = 250 / TREE_VIEWBOX_H;
+  var placed = 0, attempts = 0, maxAttempts = count * 300;
+  var minScale = 30 / TREE_VIEWBOX_H, maxScale = 80 / TREE_VIEWBOX_H;
   while (placed < count && attempts < maxAttempts) {
     attempts++;
+    var scale = minScale + Math.random() * (maxScale - minScale);
+    var halfWidth = (TREE_VIEWBOX_W * scale) / 2;
+
+    // area-uniform sample anywhere inside the background disk
     var angle = Math.random() * 2 * Math.PI;
-    // area-uniform within the ring, not radius-uniform -- sampling the
-    // radius directly would crowd trees toward the inner edge, since equal
-    // steps in radius cover less area near the main circle than near the
-    // background circle.
-    var radius = Math.sqrt(rMin * rMin + Math.random() * (rMax * rMax - rMin * rMin));
+    var radius = bgR * Math.sqrt(Math.random());
     var px = mainCx + radius * Math.cos(angle);
     var py = mainCy + radius * Math.sin(angle);
-    if (Math.hypot(px - hillCx, py - hillCy) < hillR + 45) continue;
-    if (Math.hypot(px - vvpCx, py - vvpCy) < vvpR + 45) continue;
-    var scale = minScale + Math.random() * (maxScale - minScale);
-    var tx = px - TREE_ROOT_X * scale, ty = py - TREE_ROOT_Y * scale;
+
+    var distFromMain = Math.hypot(px - mainCx, py - mainCy);
+    if (distFromMain < mainR + halfWidth) continue;      // overlaps the main circle
+    if (distFromMain > bgR - halfWidth) continue;         // would hang off the background circle's own edge
+    if (Math.hypot(px - hillCx, py - hillCy) < hillR + halfWidth) continue; // overlaps Porch Hill
+    if (Math.hypot(px - vvpCx, py - vvpCy) < vvpR + halfWidth) continue;   // overlaps Vermillion View Peak
+
+    var tx = px - (TREE_VIEWBOX_W / 2) * scale, ty = py - TREE_VIEWBOX_H * scale;
     svg += '<use href="#vermillion-tree-template" transform="translate(' + tx.toFixed(1) + ',' + ty.toFixed(1) + ') scale(' + scale.toFixed(3) + ')"/>';
     placed++;
   }
