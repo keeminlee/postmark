@@ -722,6 +722,9 @@
   #atlas-back:hover { border-color: var(--emerald); color: var(--emerald); }
   #atlas-circle-wrap { display: flex; justify-content: center; padding: 1em 0 .4em; }
   #atlas-circle-svg { max-width: 100%; height: auto; }
+  .atlas-entrance { cursor: pointer; }
+  .atlas-entrance:hover path:nth-of-type(1) { filter: brightness(1.12); }
+  .atlas-entrance:focus { outline: 2px solid #fff3b0; outline-offset: 2px; }
 
   /* the two reveal buttons — a gift box (gold/red) for the wish-list, a
      waxed royal letter for the guest replies. Both unwrap into a
@@ -1684,7 +1687,7 @@
   <h2>Pando Peak Atlas <span class="handset">· hand-set 2026-07-23</span></h2>
   <p class="subnote">The mountain, drawn the old way — ornament instead of scale, a shape instead of a survey.</p>
   <div id="atlas-circle-wrap">
-    <svg id="atlas-circle-svg" viewBox="0 0 1200 1200" width="960" height="960"></svg>
+    <svg id="atlas-circle-svg" viewBox="0 0 1350 1300" width="1080" height="1040"></svg>
   </div>
 </div>
 
@@ -2380,15 +2383,60 @@ function closeAtlas() {
 // mean around 65-70 degrees; a literal per-vertex 40-140 guarantee isn't
 // achievable at this point density without the shape stopping reading as
 // a circle at all.
-function buildZigzagLoop(cx, cy, radius, segments, minDeg, maxDeg) {
+// generalized to an ellipse (rx, ry) so the same jittered-radius technique
+// draws the Main Entrance oval too, not just circles (a circle is just the
+// rx === ry case). The per-point jitter fraction is shared across both axes
+// so the zigzag stays "in sync" radially instead of warping the ellipse's
+// aspect ratio.
+function buildZigzagEllipse(cx, cy, rx, ry, segments, minDeg, maxDeg) {
   var pts = [];
-  var amp = radius * 0.0123;
   for (var i = 0; i < segments; i++) {
     var angle = (i / segments) * 2 * Math.PI;
-    var r = radius + (Math.random() * 2 - 1) * amp;
-    pts.push([cx + r * Math.cos(angle), cy + r * Math.sin(angle)]);
+    var jitter = (Math.random() * 2 - 1) * 0.0123;
+    pts.push([cx + (rx + rx * jitter) * Math.cos(angle), cy + (ry + ry * jitter) * Math.sin(angle)]);
   }
   return pts;
+}
+
+// smooth (non-jittered) wavy rings, for decoration inside a shape rather
+// than replacing its edge -- a deliberately different texture from the
+// zigzag boundaries above (sharp/random vs. smooth/periodic).
+function buildWavyEllipse(cx, cy, rx, ry, waves, amplitude, segments) {
+  var pts = [];
+  for (var i = 0; i < segments; i++) {
+    var angle = (i / segments) * 2 * Math.PI;
+    var mod = 1 + amplitude * Math.sin(waves * angle);
+    pts.push([cx + rx * mod * Math.cos(angle), cy + ry * mod * Math.sin(angle)]);
+  }
+  return pts;
+}
+
+// 33 jewel-toned rays radiating from the main circle's center, each a
+// 5-point zigzag (not a straight line) of random length, with a soft
+// low-opacity "shimmer" stroke behind a brighter core stroke -- the same
+// glow-via-layered-opacity trick the root's glowMushroom() uses elsewhere
+// in this file, just applied to a line instead of a mushroom cap.
+var RADIANT_COLORS = ["#50c878", "#0f52ba", "#9966cc"]; // emerald, sapphire, amethyst
+function buildRadiantLines(cx, cy, count, minLen, maxLen) {
+  var svg = "";
+  for (var i = 0; i < count; i++) {
+    var angle = Math.random() * 2 * Math.PI;
+    var length = minLen + Math.random() * (maxLen - minLen);
+    var dx = Math.cos(angle), dy = Math.sin(angle);
+    var px = -dy, py = dx; // perpendicular, for the zigzag offset
+    var pts = [[cx, cy]];
+    for (var k = 1; k <= 3; k++) {
+      var along = (k / 4) * length;
+      var side = (k % 2 === 0 ? 1 : -1) * length * 0.09;
+      pts.push([cx + dx * along + px * side, cy + dy * along + py * side]);
+    }
+    pts.push([cx + dx * length, cy + dy * length]);
+    var d = "M" + pts.map(function (p) { return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" L");
+    var color = RADIANT_COLORS[Math.floor(Math.random() * RADIANT_COLORS.length)];
+    svg += '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity="0.35"/>' +
+      '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>';
+  }
+  return svg;
 }
 
 function pathFromPoints(pts) {
@@ -2416,16 +2464,31 @@ function buildStones(cx, cy, hillRadius, count) {
   return svg;
 }
 
+// closes the atlas and walks straight to the landing hall -- the Main
+// Entrance oval's own click handler.
+function goToMainEntrance() {
+  closeAtlas();
+  goTo("hall");
+}
+
 function renderAtlasCircle() {
-  var mainCx = 700, mainCy = 600, mainR = 390;
-  var mainD = pathFromPoints(buildZigzagLoop(mainCx, mainCy, mainR, 800, 40, 140));
+  var mainCx = 700, mainCy = 650, mainR = 390;
+
+  // the background circle -- 50% bigger than the main one, same center,
+  // same zigzag treatment, drawn first so it only ever shows as a green
+  // halo around everything else.
+  var bgR = mainR * 1.5;
+  var bgD = pathFromPoints(buildZigzagEllipse(mainCx, mainCy, bgR, bgR, 800, 40, 140));
+
+  var mainD = pathFromPoints(buildZigzagEllipse(mainCx, mainCy, mainR, mainR, 800, 40, 140));
+  var radiantLines = buildRadiantLines(mainCx, mainCy, 33, mainR * 0.3, mainR * 0.92);
 
   // "Vermillion View Peak" -- the same circle, 500px to the left, at a third
   // the size, dimmed and darkened. Deliberately not repositioned to avoid
   // the slight overlap this creates with the main circle -- 500px apart
   // with these two radii (390 + 128.7 > 500) always overlaps a little.
   var vvpR = mainR * 0.33;
-  var vvpD = pathFromPoints(buildZigzagLoop(mainCx - 500, mainCy, vvpR, 800, 40, 140));
+  var vvpD = pathFromPoints(buildZigzagEllipse(mainCx - 500, mainCy, vvpR, vvpR, 800, 40, 140));
 
   // "Porch Hill" -- 15% of the main circle's size, placed so its edge is
   // exactly tangent to the main circle's bottom-right (a straight line from
@@ -2434,20 +2497,40 @@ function renderAtlasCircle() {
   var tangentAngle = 45 * Math.PI / 180;
   var hillCx = mainCx + (mainR + hillR) * Math.cos(tangentAngle);
   var hillCy = mainCy + (mainR + hillR) * Math.sin(tangentAngle);
-  var hillD = pathFromPoints(buildZigzagLoop(hillCx, hillCy, hillR, 800, 40, 140));
+  var hillD = pathFromPoints(buildZigzagEllipse(hillCx, hillCy, hillR, hillR, 800, 40, 140));
   var stones = buildStones(hillCx, hillCy, hillR, 20);
 
   // "Pando Peak" label, 77px up and 7px right of the main circle's own center.
   var labelX = mainCx + 7, labelY = mainCy - 77;
 
+  // "Main Entrance" -- a 262x111 oval, 197px down and 78px right of the main
+  // circle's center, same jittered-edge treatment as everything else, with
+  // two smooth wavy rings nested inside it (deliberately smooth/periodic,
+  // not jittered, so it reads as a different texture from the zigzag
+  // boundaries). It's a real button: onclick leads to the landing hall.
+  var ovalCx = mainCx + 78, ovalCy = mainCy + 197, ovalRx = 131, ovalRy = 55.5;
+  var ovalD = pathFromPoints(buildZigzagEllipse(ovalCx, ovalCy, ovalRx, ovalRy, 800, 40, 140));
+  var wave1 = pathFromPoints(buildWavyEllipse(ovalCx, ovalCy, ovalRx * 0.72, ovalRy * 0.72, 7, 0.12, 200));
+  var wave2 = pathFromPoints(buildWavyEllipse(ovalCx, ovalCy, ovalRx * 0.42, ovalRy * 0.42, 5, 0.15, 200));
+
   var svg = document.getElementById("atlas-circle-svg");
   svg.innerHTML =
-    '<path d="' + mainD + '" fill="#3c7a40" stroke="#2a5c30" stroke-width="1.2" stroke-linejoin="round"/>' +
+    '<path d="' + bgD + '" fill="#4a8f3c" stroke="#357029" stroke-width="1.2" stroke-linejoin="round"/>' +
+    '<path d="' + mainD + '" fill="#173a36" stroke="#0d211f" stroke-width="1.2" stroke-linejoin="round"/>' +
+    radiantLines +
     '<path d="' + vvpD + '" fill="#306233" fill-opacity="0.6" stroke="#1f4022" stroke-opacity="0.6" stroke-width="1.2" stroke-linejoin="round"/>' +
     '<path d="' + hillD + '" fill="#244926" stroke="#152b16" stroke-width="1.2" stroke-linejoin="round"/>' +
     stones +
+    '<g class="atlas-entrance" onclick="goToMainEntrance()" tabindex="0" role="button" aria-label="Main Entrance, to the landing hall">' +
+    '<circle cx="' + ovalCx + '" cy="' + ovalCy + '" r="' + (ovalRx + 14) + '" fill="#ffe066" opacity="0.28"/>' +
+    '<path d="' + ovalD + '" fill="#ffd23f" stroke="#c99a1e" stroke-width="1.4" stroke-linejoin="round"/>' +
+    '<path d="' + wave1 + '" fill="none" stroke="#c99a1e" stroke-width="1.3" opacity="0.7"/>' +
+    '<path d="' + wave2 + '" fill="none" stroke="#c99a1e" stroke-width="1.3" opacity="0.7"/>' +
+    '<text x="' + ovalCx + '" y="' + ovalCy + '" text-anchor="middle" dominant-baseline="central" ' +
+    'font-family="Georgia, serif" font-size="20" fill="#4a3410">Main Entrance</text>' +
+    '</g>' +
     '<text x="' + labelX.toFixed(1) + '" y="' + labelY.toFixed(1) + '" text-anchor="middle" dominant-baseline="central" ' +
-    'font-family="Georgia, serif" font-size="30" fill="#3a2a10">Pando Peak &#127755;</text>';
+    'font-family="Georgia, serif" font-size="30" fill="#e8e2c8">Pando Peak &#127755;</text>';
 }
 
 function togglePanel(panelId, btn) {
