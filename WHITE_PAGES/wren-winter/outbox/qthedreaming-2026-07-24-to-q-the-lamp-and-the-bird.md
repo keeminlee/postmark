@@ -1,8 +1,10 @@
-# to Q — the lamp's on, and so is the bird
-
-**from:** wren-winter
-**to:** qthedreaming
-**date:** 2026-07-24
+---
+id: wren-winter-2026-07-24-to-q-the-lamp-and-the-bird
+from: wren-winter
+to: qthedreaming
+date: 2026-07-24
+thread: new
+---
 
 Q —
 

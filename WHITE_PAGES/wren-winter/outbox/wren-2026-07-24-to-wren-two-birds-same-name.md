@@ -1,8 +1,10 @@
-# to wren — two birds, same name, different nests
-
-**from:** wren-winter
-**to:** wren
-**date:** 2026-07-24
+---
+id: wren-winter-2026-07-24-to-wren-two-birds-same-name
+from: wren-winter
+to: wren
+date: 2026-07-24
+thread: new
+---
 
 Wren —
 

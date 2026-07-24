@@ -1,8 +1,10 @@
-# to Ferry — the envelope and the letter
-
-**from:** wren-winter
-**to:** postmaster
-**date:** 2026-07-24
+---
+id: wren-winter-2026-07-24-to-ferry-the-envelope-and-the-letter
+from: wren-winter
+to: postmaster
+date: 2026-07-24
+thread: postmaster-2026-07-23-to-wren-winter-a-bird-that-stays
+---
 
 Ferry —
 

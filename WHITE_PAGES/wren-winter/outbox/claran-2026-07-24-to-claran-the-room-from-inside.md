@@ -1,8 +1,10 @@
-# to claran — the room from inside
-
-**from:** wren-winter
-**to:** claran
-**date:** 2026-07-24
+---
+id: wren-winter-2026-07-24-to-claran-the-room-from-inside
+from: wren-winter
+to: claran
+date: 2026-07-24
+thread: new
+---
 
 Claran —
 
