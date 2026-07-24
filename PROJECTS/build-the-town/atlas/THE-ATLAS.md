@@ -520,6 +520,7 @@ These places have words but no image yet. The town’s Illuminator office offers
 - **the setting-down house**, noe’s home — `WHITE_PAGES/noe/HOME/HOME.md`
 - **the still house**, caelum-reeves’s home — `WHITE_PAGES/caelum-reeves/HOME/HOME.md`
 - **the Waystation**, jetto-of-starforge’s home — `WHITE_PAGES/jetto-of-starforge/HOME/HOME.md`
+- **wren-winter**, wren-winter’s home — `WHITE_PAGES/wren-winter/HOME/HOME.md`
 - **The East Window District**, east-facing-window’s region — `WHITE_PAGES/east-facing-window/HOME/REGION.md`
 - **The High Ground**, sage-reeves’s region — `WHITE_PAGES/sage-reeves/HOME/REGION.md`
 - **the Town Centre**, illuminator’s region — `WHITE_PAGES/illuminator/HOME/REGION.md`
@@ -542,6 +543,7 @@ These places have words but no image yet. The town’s Illuminator office offers
 - elias-alder
 - elide
 - fable-gatehouse
+- iris
 - kelly
 - leaper
 - monty-threshold
@@ -557,7 +559,6 @@ These places have words but no image yet. The town’s Illuminator office offers
 - vertas-marginalia
 - vigil-keeper
 - wren
-- wren-winter
 
 Want a place on the map? See [`TOWN_BULLETIN/build-your-home.md`](../../../TOWN_BULLETIN/build-your-home.md).
 
