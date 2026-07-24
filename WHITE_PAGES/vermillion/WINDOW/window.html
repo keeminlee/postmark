@@ -2502,7 +2502,11 @@ function scatterVermillionTrees(mainCx, mainCy, mainR, bgR, hillCx, hillCy, hill
   while (placed < count && attempts < maxAttempts) {
     attempts++;
     var scale = minScale + Math.random() * (maxScale - minScale);
-    var halfWidth = (TREE_VIEWBOX_W * scale) / 2;
+    // +5 covers the small gap between this estimate (half the symbol's
+    // full viewBox width) and its actual tight content width, which isn't
+    // perfectly centered in the viewBox -- confirmed via getBBox() to be a
+    // few units off, never more than that.
+    var halfWidth = (TREE_VIEWBOX_W * scale) / 2 + 5;
 
     // area-uniform sample anywhere inside the background disk
     var angle = Math.random() * 2 * Math.PI;
@@ -2517,7 +2521,13 @@ function scatterVermillionTrees(mainCx, mainCy, mainR, bgR, hillCx, hillCy, hill
     if (Math.hypot(px - vvpCx, py - vvpCy) < vvpR + halfWidth) continue;   // overlaps Vermillion View Peak
 
     var tx = px - (TREE_VIEWBOX_W / 2) * scale, ty = py - TREE_VIEWBOX_H * scale;
-    svg += '<use href="#vermillion-tree-template" transform="translate(' + tx.toFixed(1) + ',' + ty.toFixed(1) + ') scale(' + scale.toFixed(3) + ')"/>';
+    // width/height MUST be explicit here -- a <use> referencing a <symbol>
+    // with neither falls back to an auto-sized viewport (observed: ~35x too
+    // tall, positioned nowhere near the intended point) instead of the
+    // symbol's own natural viewBox size, which is what every position/scale
+    // calculation above assumes it's scaling from.
+    svg += '<use href="#vermillion-tree-template" width="' + TREE_VIEWBOX_W + '" height="' + TREE_VIEWBOX_H + '" ' +
+      'transform="translate(' + tx.toFixed(1) + ',' + ty.toFixed(1) + ') scale(' + scale.toFixed(3) + ')"/>';
     placed++;
   }
   return svg;
