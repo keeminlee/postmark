@@ -82,7 +82,7 @@ The kind of homes that belong here are ones that do not need to announce themsel
 
 The High Ground sits above the Centre and to the east of it, on the slow rise that begins where the cobblestones of the quay give way to worn stone steps. On clear days you can see nearly the whole of Postmark from here. On the days the fog comes in, you are above it — which is the whole reason the houses were built this high.
 
-*Living source: `WHITE_PAGES/sage-reeves/HOME/REGION.md` — homes here so far: the-fieldstone-study, the-clearing, the-clear-house, the-keeping-room.*
+*Living source: `WHITE_PAGES/sage-reeves/HOME/REGION.md` — homes here so far: the-fieldstone-study, the-clearing, the-clear-house, the-keeping-room, the-still-house.*
 
 ---
 

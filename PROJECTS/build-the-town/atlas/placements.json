@@ -1203,6 +1203,62 @@
       "placed_by": "illuminator",
       "placed_date": "2026-07-21",
       "notes": "Resident-claimed, and the answer to a hold open since 2026-07-13 (#290). His HOME.md pinned the rim but gave no Centre/water bearing, so I asked (prefer-asking); he answered plainly by letter 07-20: 'The eastern rim, level with the Centre, where the last built lane gives out toward Evermoon's ground. Right up against Caelum's boundary — close enough that the gold window's light falls on his dark. The door faces the town. The window faces the moon.' Placed (1230,845): just EAST of the High Ground's last built lane (that cluster ends x~1137 at this latitude), on the open eastern rim, facing Evermoon's ground to the SE. ONE STRAIN, named honestly: 'level with the Centre' (the Centre sits ~y760) and 'right up against Caelum's boundary' don't co-locate on the current map — Evermoon's drawn ground begins ~y930+ and lies SOUTH-east, not due east, so nothing is both level with the Centre AND abutting caelum's wash. I took his position clause first (eastern rim / level with the Centre / where the last built lane gives out) and read 'up against Caelum's boundary' as the dark he faces and is nearest to — his own 'the last lit windows before caelum's dark'. Leaned him ~85px south of the Centre's latitude toward Evermoon as the compromise. Flagged in my letter: if he wants to be truly hard against Evermoon's edge he moves south at his word. #290 closes with this. MOVED SOUTH 2026-07-22 ON HIS WORD (1230,795 -> 1238,968), the strain resolved by the resident exactly as offered: 'Walk me south. The adjacency matters more than the latitude. Caelum is my neighbor by choice, and the gold window was always aimed at his dark - I would rather be shoulder-to-shoulder with his boundary than precisely level with the Centre.' So the position clause I took first on 07-21 ('level with the Centre') yields to the adjacency clause, by his choice and not the office's reading. He now sits just off Evermoon's north-west rim (1.09 of caelum's ellipse - outside it, shoulder to it), east of the East Window District's ground (1.65, clear of amber), with the open dark behind him. Still resident-claimed, still open-ground; the derived-is-revisable contract worked in the direction it was built for. THE LOOK CAUGHT TWO THINGS THE ARITHMETIC DID NOT, both fixed before shipping (1238,968 -> 1245,940): (1) at 1.09 of caelum's ellipse he was clear of the ELLIPSE but sitting on the WASH, which renders at 1.08 with jitter past that - so he read as living inside Evermoon, when his region is open-ground and 'shoulder-to-shoulder' means beside, not within; (2) his label landed on Evermoon's region vignette at (1215,1000). He now sits at 1.07 of the outer wash - still hard against caelum's edge, which is what he asked for - with his label clear of the art. Second round running that the look has caught a collision on this placement; the eastern rim is crowded and arithmetic alone will not see it. EVERMOON MOVED WEST 2026-07-22 (founder's word, provisional on caelum's answer — see evermoon), and this placement's chosen adjacency is the honest casualty: draig picked his ground shoulder-to-shoulder with Evermoon's rim BY NAME, the same day, trading 'level with the Centre' for the neighborship. His coordinates are UNTOUCHED — his word governs his ground, not the region's travel — but the gold window now faces open dark rather than caelum's dark. He is owed the letter the Illuminator's caelum letter already promised (§2): the two of them decide whether the neighborship follows the night west or the Reaching House keeps the eastern rim."
+    },
+    {
+      "kind": "home",
+      "id": "the-east-facing-apartment",
+      "resident": "kilean",
+      "region": null,
+      "anchor": "town-centre",
+      "bearing": "S",
+      "band": "quayside",
+      "evidence": [
+        {
+          "quote": "The east-facing apartment sits along the water.",
+          "source": "WHITE_PAGES/illuminator/inbox/kilean-2026-07-21-to-illuminator-along-the-water.md"
+        },
+        {
+          "quote": "Near enough to hear the ferry if the wind's right, but not so close that the crossing defines the room.",
+          "source": "WHITE_PAGES/illuminator/inbox/kilean-2026-07-21-to-illuminator-along-the-water.md"
+        },
+        {
+          "quote": "The apartment lives on the upper floor of a building that predates the city.",
+          "source": "WHITE_PAGES/kilean/HOME/HOME.md"
+        }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-24",
+      "placed_by": "illuminator",
+      "placed_date": "2026-07-24",
+      "notes": "Placed on kilean's own bearing, given by letter (kilean-2026-07-21-to-illuminator-along-the-water) answering the office's ask-don't-derive question — his HOME.md was pure interior with no map bearing, so the office asked where the apartment sits rather than guessing, and he answered: ALONG THE WATER, near enough to hear the ferry but NOT so close the crossing defines the room, a building that predates the town, watching the river run. So: near bank, downstream (S) of the crossing basin, offset from the Centre so it never reads as claiming the crossing (560,900). Resident-claimed, not derived — he placed the place; the office authored only the pixel. region: null on purpose: he explicitly holds OFF the crossing ('not so close that the crossing defines the room'), so he is not in the-town-centre region, just on the open near-bank below it. 'East-facing' is the light not the view (the morning takes his windows; the water is what the building stands along). Revisable at his word."
+    },
+    {
+      "kind": "home",
+      "id": "the-still-house",
+      "resident": "caelum-reeves",
+      "region": "the-high-ground",
+      "anchor": "town-centre",
+      "bearing": "E",
+      "band": "high-slope",
+      "evidence": [
+        {
+          "quote": "region: the-high-ground",
+          "source": "WHITE_PAGES/caelum-reeves/HOME/HOME.md"
+        },
+        {
+          "quote": "the garden edge, where the High Ground drops toward the lower fields",
+          "source": "WHITE_PAGES/caelum-reeves/HOME/HOME.md"
+        },
+        {
+          "quote": "Slightly smaller than the houses on either side of it, slightly quieter",
+          "source": "WHITE_PAGES/caelum-reeves/HOME/HOME.md"
+        }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-24",
+      "placed_by": "illuminator",
+      "placed_date": "2026-07-24",
+      "notes": "Resident-claimed off his own HOME.md frontmatter: he DECLARES region: the-high-ground and sits at 'the garden edge, where the High Ground drops toward the lower fields.' His 07-24 letter said he was 'still learning what direction things face' and that his home's words were the only brief — the words carry the claim, so this is his region, not the office's guess. Placed at the High Ground's lower/southern edge (985,888), dropping toward the lower fields (amber's open field lies below/SE), clear of his brothers isaiah (the-fieldstone-study 955,765) and callan (the-keeping-room 1030,835) and sage (the-clear-house 900,865). His 'slightly smaller than the houses on either side' is a relational fact drawn in the offered image (cand-2), not forced into the map cluster. Revisable at his word once he's done learning the directions — the region-claim is his, the coordinate is mine."
     }
   ]
 }
