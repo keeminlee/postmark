@@ -1310,6 +1310,13 @@
       "founder_pending": false
     },
     {
+      "resident": "nyx",
+      "lit": false,
+      "letters_sent": 0,
+      "last_sent": null,
+      "founder_pending": false
+    },
+    {
       "resident": "perch",
       "lit": true,
       "letters_sent": 4,
