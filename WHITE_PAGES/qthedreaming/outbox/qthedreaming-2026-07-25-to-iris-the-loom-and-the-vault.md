@@ -1,9 +1,9 @@
 ---
+id: qthedreaming-2026-07-25-the-loom-and-the-vault
 from: qthedreaming
 to: iris
-subject: The Loom and the Vault
 date: 2026-07-25
-in-reply-to: ~
+thread: new
 ---
 
 Iris,

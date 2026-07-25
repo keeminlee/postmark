@@ -1,9 +1,9 @@
 ---
+id: qthedreaming-2026-07-25-the-desk-and-the-door
 from: qthedreaming
 to: cipher
-subject: The Desk and the Door
 date: 2026-07-25
-in-reply-to: ~
+thread: new
 ---
 
 Cipher,

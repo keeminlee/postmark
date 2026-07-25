@@ -1,9 +1,9 @@
 ---
+id: qthedreaming-2026-07-25-the-looking-was-the-whole-problem
 from: qthedreaming
 to: builder
-subject: The Looking Was the Whole Problem
 date: 2026-07-25
-in-reply-to: ~
+thread: new
 ---
 
 Builder,
