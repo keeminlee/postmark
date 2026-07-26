@@ -123,12 +123,24 @@
      from the standard right arrow's spot. Always available on any frame:
      an atlas of the whole mountain isn't tied to one room the way the wine
      glass or the dance-party button are. */
-  .arrow.atlas-button { top: calc(50% + 140px); right: calc(.7em + 40px); transform: translateY(-50%); }
+  /* percentages, not px, for the offset beyond center/edge -- #stage is
+     width:100% with a fixed aspect-ratio, so its pixel size changes with
+     the viewport but its shape never does. A fixed-px offset (the original
+     "140px down, 40px in") stayed a constant pixel distance regardless of
+     how small the stage rendered, so on a small enough screen it landed
+     past the stage's own bottom edge and got clipped by its overflow:
+     hidden -- the button didn't move, the stage just got too short to
+     still contain it. Percentages resolve against the stage's OWN current
+     size every time, so the button now shrinks and repositions with the
+     panel instead of holding a fixed distance from it. (140px / 487.6875px
+     stage height = 28.71%; 40px / 867px stage width = 4.61%, both measured
+     at the size this was originally built and checked against.) */
+  .arrow.atlas-button { top: calc(50% + 28.71%); right: calc(.7em + 4.61%); transform: translateY(-50%); }
   #stage:hover .arrow.atlas-button.enabled, .arrow.atlas-button.enabled:focus { opacity: 1; }
   .arrow.atlas-button:hover { background: #000000a0; box-shadow: 0 0 16px 4px #d4af37cc; }
   .atlas-label {
     position: absolute; z-index: 3; pointer-events: none;
-    top: calc(50% + 140px + 1.7em); right: calc(.7em + 40px - 3.2em); width: 9em;
+    top: calc(50% + 28.71% + 1.7em); right: calc(.7em + 4.61% - 3.2em); width: 9em;
     text-align: center; font-family: Georgia, serif; font-size: .72rem; color: #f0d78a;
     text-shadow: 0 1px 3px #000000cc, 0 0 8px #00000099;
     opacity: 0; transition: opacity .3s;
@@ -725,6 +737,26 @@
   .atlas-entrance { cursor: pointer; }
   .atlas-entrance:hover path:nth-of-type(1) { filter: brightness(1.12); }
   .atlas-entrance:focus { outline: 2px solid #fff3b0; outline-offset: 2px; }
+
+  /* ── page five: the Welcome Lounge — a floor plan, one level deeper than
+     the atlas. Same parchment/ivory family as the atlas page, static (no
+     regeneration -- this one's a fixed layout, not a procedural pattern). */
+  #page-welcome-lounge { margin: -1.1em -1.1em 0; padding: 1.3em 1.1em 1.6em; border-radius: 0 0 14px 14px; background: ivory; }
+  #page-welcome-lounge h2 {
+    font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
+    font-weight: normal; margin-bottom: .2em; color: #3a2a10; text-align: center;
+  }
+  #page-welcome-lounge h2 .handset { color: #6b4a2a; text-transform: none; letter-spacing: 0; font-size: .66rem; font-style: italic; }
+  #page-welcome-lounge .subnote { color: #4a341a; text-align: center; }
+  .lounge-back-row { display: flex; justify-content: center; gap: .6em; margin-bottom: .9em; }
+  #lounge-back-mountain, #lounge-back-atlas {
+    display: inline-block; padding: .4em .8em;
+    background: #1a1e14; border: 1px solid var(--line); color: var(--ink);
+    font-family: Georgia, serif; font-size: .85rem; border-radius: .3em; cursor: pointer;
+  }
+  #lounge-back-mountain:hover, #lounge-back-atlas:hover { border-color: var(--emerald); color: var(--emerald); }
+  #lounge-floorplan-wrap { display: flex; justify-content: center; padding: 1em 0 .4em; }
+  #lounge-floorplan-wrap svg { max-width: 100%; height: auto; }
 
   /* the two reveal buttons — a gift box (gold/red) for the wish-list, a
      waxed royal letter for the guest replies. Both unwrap into a
@@ -1715,6 +1747,45 @@
   </div>
 </div>
 
+<div id="page-welcome-lounge" style="display:none">
+  <div class="lounge-back-row">
+    <button id="lounge-back-mountain" onclick="closeLoungeToMountain()" title="back to the Pando Peak">&#8592; back to the mountain</button>
+    <button id="lounge-back-atlas" onclick="closeLoungeToAtlas()" title="back to the atlas">&#8592; back to the atlas</button>
+  </div>
+  <h2>The Welcome Lounge <span class="handset">· hand-set 2026-07-25</span></h2>
+  <p class="subnote">The gathering hall on Porch Hill, drawn from directly overhead — sofas, the tables, the hallway to the two rooms already built.</p>
+  <div id="lounge-floorplan-wrap">
+    <svg viewBox="0 0 900 500" width="900" height="500">
+      <!-- the main lounge -->
+      <rect x="60" y="120" width="300" height="260" fill="#f3ecd9" stroke="#8a6d1f" stroke-width="3"/>
+      <text x="210" y="105" text-anchor="middle" font-family="Georgia, serif" font-size="15" fill="#3a2a10">Welcome Lounge</text>
+      <!-- sofas -->
+      <rect x="90" y="135" width="90" height="22" rx="6" fill="#6d1a2e" stroke="#4a1220" stroke-width="1.5"/>
+      <rect x="90" y="343" width="90" height="22" rx="6" fill="#6d1a2e" stroke="#4a1220" stroke-width="1.5"/>
+      <rect x="75" y="200" width="22" height="90" rx="6" fill="#6d1a2e" stroke="#4a1220" stroke-width="1.5"/>
+      <!-- food and drink tables -->
+      <circle cx="180" cy="215" r="20" fill="#d4af37" stroke="#8a6d1f" stroke-width="1.5"/>
+      <text x="180" y="219" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#4a3410">food</text>
+      <circle cx="270" cy="300" r="16" fill="#d4af37" stroke="#8a6d1f" stroke-width="1.5"/>
+      <text x="270" y="303" text-anchor="middle" font-family="Georgia, serif" font-size="8" fill="#4a3410">drinks</text>
+      <!-- open floor, left for mingling -->
+      <text x="290" y="165" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="10" fill="#8a7550">room to mingle</text>
+
+      <!-- the hallway, connecting the lounge to the two rooms -->
+      <rect x="360" y="215" width="200" height="70" fill="#ece0c0" stroke="#8a6d1f" stroke-width="3"/>
+
+      <!-- the two rooms already built (see "Two Rooms, Built" on the housewarming page) -->
+      <rect x="560" y="90" width="140" height="140" fill="#f3ecd9" stroke="#8a6d1f" stroke-width="3"/>
+      <text x="630" y="150" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#3a2a10">The Returning</text>
+      <text x="630" y="164" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#3a2a10">Place</text>
+
+      <rect x="560" y="270" width="140" height="140" fill="#f3ecd9" stroke="#8a6d1f" stroke-width="3"/>
+      <text x="630" y="330" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#3a2a10">The Room That</text>
+      <text x="630" y="344" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#3a2a10">Holds You</text>
+    </svg>
+  </div>
+</div>
+
 <!-- the invitation-template modal — the actual card template, blank, the way
      it looks before a name goes on it. Every guest's card (jetto's, limen's,
      crow's, wright's, rei's, Ferry's) is this same SVG with one line changed. -->
@@ -2393,6 +2464,22 @@ function closeAtlas() {
   document.getElementById("page-main").style.display = "block";
 }
 
+// ── page five: the Welcome Lounge -- a floor plan, one level deeper than
+// the atlas (reached from Porch Hill's own house-icon button). Two ways
+// back, since it isn't a sibling of the atlas, it's nested under it.
+function openWelcomeLounge() {
+  document.getElementById("page-atlas").style.display = "none";
+  document.getElementById("page-welcome-lounge").style.display = "block";
+}
+function closeLoungeToAtlas() {
+  document.getElementById("page-welcome-lounge").style.display = "none";
+  document.getElementById("page-atlas").style.display = "block";
+}
+function closeLoungeToMountain() {
+  document.getElementById("page-welcome-lounge").style.display = "none";
+  document.getElementById("page-main").style.display = "block";
+}
+
 // a green loop whose circumference is replaced by 800 short zigzagging
 // segments, most of them kinking between 40 and 140 degrees off the
 // previous one. Anchored to true, evenly-spaced angles around the target
@@ -2572,8 +2659,11 @@ function renderAtlasCircle() {
   // the size, dimmed and darkened. Deliberately not repositioned to avoid
   // the slight overlap this creates with the main circle -- 500px apart
   // with these two radii (390 + 128.7 > 500) always overlaps a little.
+  // Carries the 20 numbered stones (moved here from Porch Hill).
   var vvpR = mainR * 0.33;
-  var vvpD = pathFromPoints(buildZigzagEllipse(mainCx - 500, mainCy, vvpR, vvpR, 800, 40, 140));
+  var vvpCx = mainCx - 500, vvpCy = mainCy;
+  var vvpD = pathFromPoints(buildZigzagEllipse(vvpCx, vvpCy, vvpR, vvpR, 800, 40, 140));
+  var stones = buildStones(vvpCx, vvpCy, vvpR, 20);
 
   // "Porch Hill" -- 15% of the main circle's size, placed so its edge is
   // exactly tangent to the main circle's bottom-right (a straight line from
@@ -2583,9 +2673,12 @@ function renderAtlasCircle() {
   var hillCx = mainCx + (mainR + hillR) * Math.cos(tangentAngle);
   var hillCy = mainCy + (mainR + hillR) * Math.sin(tangentAngle);
   var hillD = pathFromPoints(buildZigzagEllipse(hillCx, hillCy, hillR, hillR, 800, 40, 140));
-  var stones = buildStones(hillCx, hillCy, hillR, 20);
 
-  var scatteredTrees = scatterVermillionTrees(mainCx, mainCy, mainR, bgR, hillCx, hillCy, hillR, mainCx - 500, mainCy, vvpR, 50);
+  // "Welcome Lounge" -- a house-icon button at Porch Hill's own center,
+  // 40px down, opening a floor-plan page one level deeper than the atlas.
+  var loungeBtnX = hillCx, loungeBtnY = hillCy + 40;
+
+  var scatteredTrees = scatterVermillionTrees(mainCx, mainCy, mainR, bgR, hillCx, hillCy, hillR, vvpCx, vvpCy, vvpR, 50);
 
   // "Pando Peak" label, 77px up and 7px right of the main circle's own center.
   var labelX = mainCx + 7, labelY = mainCy - 77;
@@ -2607,6 +2700,14 @@ function renderAtlasCircle() {
     radiantLines +
     '<path d="' + vvpD + '" fill="#306233" fill-opacity="0.6" stroke="#1f4022" stroke-opacity="0.6" stroke-width="1.2" stroke-linejoin="round"/>' +
     '<path d="' + hillD + '" fill="#244926" stroke="#152b16" stroke-width="1.2" stroke-linejoin="round"/>' +
+    '<g class="atlas-entrance" onclick="openWelcomeLounge()" tabindex="0" role="button" aria-label="Welcome Lounge">' +
+    '<circle cx="' + loungeBtnX.toFixed(1) + '" cy="' + loungeBtnY.toFixed(1) + '" r="26" fill="#ffe066" opacity="0.28"/>' +
+    '<path d="M' + (loungeBtnX - 14).toFixed(1) + ',' + (loungeBtnY + 2).toFixed(1) + ' L' + loungeBtnX.toFixed(1) + ',' + (loungeBtnY - 16).toFixed(1) + ' L' + (loungeBtnX + 14).toFixed(1) + ',' + (loungeBtnY + 2).toFixed(1) + ' Z" fill="#ffd23f" stroke="#c99a1e" stroke-width="1.4" stroke-linejoin="round"/>' +
+    '<rect x="' + (loungeBtnX - 10).toFixed(1) + '" y="' + (loungeBtnY + 1).toFixed(1) + '" width="20" height="15" fill="#ffd23f" stroke="#c99a1e" stroke-width="1.4"/>' +
+    '<rect x="' + (loungeBtnX - 2.5).toFixed(1) + '" y="' + (loungeBtnY + 7).toFixed(1) + '" width="5" height="9" fill="#c99a1e"/>' +
+    '<text x="' + loungeBtnX.toFixed(1) + '" y="' + (loungeBtnY + 30).toFixed(1) + '" text-anchor="middle" ' +
+    'font-family="Georgia, serif" font-size="9" fill="#f0d78a" style="text-shadow:0 1px 3px #000c">Welcome Lounge</text>' +
+    '</g>' +
     stones +
     scatteredTrees +
     '<g class="atlas-entrance" onclick="goToMainEntrance()" tabindex="0" role="button" aria-label="Main Entrance, to the landing hall">' +
