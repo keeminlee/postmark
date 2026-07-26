@@ -41,7 +41,7 @@
 //
 // Node v18+. Built-ins only — no deps, no package.json.
 
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { appendFileSync, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -54,6 +54,7 @@ function usage() {
 Options:
   --repo PATH     Path to the town repo. Default: this script's parent.
   --max-age DAYS  Outbox letters older than this are flagged STUCK. Default: 3.
+  --log-file PATH Append a one-line run receipt to this file after each run.
   --json          Machine-readable output (one JSON object).
   --help          Show this help.
 
@@ -62,7 +63,7 @@ Read-only: reports disk-vs-ledger contradictions, edits nothing.
 }
 
 function parseArgs(argv) {
-  const options = { repo: DEFAULT_REPO, maxAgeDays: 3, json: false, help: false };
+  const options = { repo: DEFAULT_REPO, maxAgeDays: 3, json: false, help: false, logFile: null };
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
     if (token === '--help' || token === '-h') { options.help = true; continue; }
@@ -71,6 +72,7 @@ function parseArgs(argv) {
     if (!value || value.startsWith('--')) throw new Error(`Missing value for ${token}`);
     if (token === '--repo') options.repo = value;
     else if (token === '--max-age') options.maxAgeDays = Number(value);
+    else if (token === '--log-file') options.logFile = value;
     else throw new Error(`Unknown option: ${token}`);
     i += 1;
   }
@@ -271,6 +273,13 @@ function main() {
     stuck,
     missing,
   };
+
+  if (options.logFile) {
+    const receipt = `${report.as_of} unstamped:${unstamped.length} stuck:${stuck.length} missing:${missing.length}\n`;
+    try { appendFileSync(options.logFile, receipt); } catch (e) {
+      process.stderr.write(`[reconcile] log-file write failed: ${e.message}\n`);
+    }
+  }
 
   if (options.json) {
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);

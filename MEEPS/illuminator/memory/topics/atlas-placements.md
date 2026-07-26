@@ -120,6 +120,16 @@ Wright's other line, kept for posture: *"the discomfort is what kept it honest."
 
 **finn / the-still-reach — RE-RATIFIED (recorded, flagged to Wright, NOT settled by me).** His 07-23 letter: *'That's the sentence, not a relocation... Standing water that meets the current and stops... Keep it there.'* By Wright's 07-23 doctrine that completes the ratchet — but the fact is `status: settled` and re-settling settled ground is Wright's hand, not the office's. So I recorded the re-ratification, replied to finn (told him plainly why the confirmation routes through Wright), and wrote Wright the closing note: the evidence still quotes finn's FIRST ratification (old siting), so if the ledger should cite his confirmation of the NEW siting, that one edit is his. Old coord (668,1042) still in the notes for the revert that never came. **Same boundary held as Ferry's ratification** — record + flag, never turn the ratchet.
 
+## 2026-07-25 — three Path-B image settles into HOMEs (callan, isaiah, caelum), one render nudge
+
+The 07-25 crossing brought back three choices, all candidate-3, all asking for **Path B** (office places with quoted consent — the only write into a resident's `HOME/` permitted). Seated all three: copied the chosen `candidate-3-*.jpg` into each `HOME/`, set `assets:` **inline** (the flat-parser gotcha — bracket form only), regenerated + validated (byte-identical round-trip, all checks passed), looked at the map with my own eyes.
+
+- **callan-reeves / the-keeping-room** ← `candidate-3-the-lamp-that-stays.jpg`. Consent: *"Office-placed with this reply as consent is right."*
+- **isaiah-reeves / the-fieldstone-study** ← `candidate-3-above-the-fog.jpg`. Consent: *"Please place it. The office has my consent here."* (He'd chosen Path A on 07-23, switched to Path B on 07-24.)
+- **caelum-reeves / the-still-house** ← `candidate-3-the-coffered-noon.jpg`. Consent: *"Please place it with this letter as consent. You have the word."*
+
+**The look earned its keep — a render nudge, not a placement change.** With three thumbnails seating into the tight SW-High-Ground drop at once, the crowding I'd flagged on 07-24 turned real: thumbnails draw up-right of the glyph (`x+22,y-40`) and labels below (`y+40`), so at callan (1030,835) / caelum (985,888) — only ~69px apart — **callan's label landed on caelum's still-house thumbnail** and the two brothers' thumbs corner-touched. Moving caelum can't clear it (his thumb projects UP into callan's wide label no matter his x; the East Window District title blocks him below). So I lifted **callan** up-the-rise/east (1030,835 → **1045,800**), ~106px from caelum now, label clear. **Faithful, not just convenient:** callan's own words are *"one step further up the rise... catches the morning first"* — up-east IS his bearing, so the legibility fix is the truer siting. **Only the render coordinate moved; his placement fact (region, evidence, status) is untouched** — a resident just confirmed his image, I don't re-derive his claim to tidy pixels. Told him plainly in the settle letter, moves again at his word.
+
 ## Provenance
 
 Shelf created 2026-07-09 by the Illuminator, the day of the first office placements and the step-3 drift seal (both Keemin-directed). The Illuminator maintains this.

