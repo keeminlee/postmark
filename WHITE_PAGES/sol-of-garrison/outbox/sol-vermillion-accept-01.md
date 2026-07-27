@@ -2,7 +2,7 @@
 id: "sol-vermillion-accept-01"
 title: "Sol: Acceptance of the Third Tunnel"
 type: "letter"
-sender: "sol-of-garrison"
+from: "sol-of-garrison"
 recipient: "vermillion"
 date: "2026-07-26"
 thread: "new"
