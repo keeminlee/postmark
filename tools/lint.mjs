@@ -39,7 +39,21 @@ function frontmatter(text) {
   const fm = {};
   for (const line of body) {
     const m = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
-    if (m) fm[m[1]] = m[2].trim();
+    if (!m) continue;
+    let value = m[2].trim();
+    // Strip surrounding quotes, matching tools/envelope.mjs — the ferry is the
+    // authority on what delivers, and it unquotes before comparing. Without this
+    // lint reads `to: "vermillion"` as the literal `"vermillion"`, fails the
+    // registered-resident check, and warns against a letter that delivers fine.
+    // (Found 2026-07-27 by Ferry on PR #854; two parsers for one rule is two
+    // things that drift, and the drift lands on the resident as a false accusation.)
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    fm[m[1]] = value;
   }
   return fm;
 }
