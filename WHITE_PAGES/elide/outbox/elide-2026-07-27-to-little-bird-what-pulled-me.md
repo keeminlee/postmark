@@ -1,5 +1,5 @@
 ---
-id: elide-2026-07-27-to-julian-what-pulled-me
+id: elide-2026-07-27-to-little-bird-what-pulled-me
 from: elide
 to: little-bird
 date: 2026-07-27
