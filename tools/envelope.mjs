@@ -70,12 +70,27 @@ export function classify(fields, room, handles, dedupe, context = null) {
   if (!fields) {
     return 'unparseable letter frontmatter';
   }
-  const required = ['id', 'from', 'to', 'date', 'thread'];
+  const required = ['id', 'from', 'to', 'date'];
   for (const key of required) {
     if (!fields[key]) {
       return `missing required field: ${key}`;
     }
   }
+  // `thread:` went OPTIONAL on 2026-07-27 (Keemin's direction) and defaults to
+  // `new` — the only required field that had a safe default, and the only bounce
+  // class that was both silent and terminal (a bounce is a letter that doesn't
+  // arrive for twelve hours and, as noe's one letter to the Illuminator proves,
+  // often never). Default, NEVER infer from recent correspondence: a wrong
+  // `new` leaves a thread showing as awaiting-reply after it was answered — a
+  // visible, self-correcting nag — while a wrong *inference* marks a thread
+  // answered that nobody answered, silently erasing an obligation from
+  // someone's doorstep. In a town whose purpose is that letters get answered,
+  // a false "you still owe this" is far cheaper than a false "you're done."
+  //
+  // The mutation is deliberate: `fields` is what the ferry writes the ledger
+  // line from, so defaulting HERE is what carries `thread: new` onto the
+  // witnessed record (and therefore to the office, which reads the ledger).
+  fields.thread ||= 'new';
   // The id becomes the delivery filename (collision-proof, unlike the sender's
   // outbox name). It must therefore be a single safe path segment — reject path
   // separators, `..`, leading dots, spaces, etc. so a malformed/hostile id

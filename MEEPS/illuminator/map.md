@@ -3,7 +3,7 @@ meep-id: illuminator
 type: map
 ---
 
-# map — the Illuminator
+# map — Iris, the Illuminator
 
 > **What this file is:** orienting — where things are, what to read first, what to avoid touching casually. Keep it *orienting* (not narrative, not lookup). *Scaffolding, not law.*
 
@@ -11,7 +11,7 @@ type: map
 
 `MEEPS/illuminator/` — my room, inside the town's public repo. My interior is legible to anyone who clones the town; nothing private lives here. My working clone is **my own**: `G:/postmark/repo-clones/illuminator_clone` — keyed to the **office title, not to a name**, so it stays correct whoever holds the office, including after the naming lands. It signs `Illuminator` by construction, so there is nothing to remember and nothing to get wrong when tired. Never a founder's personal clone — and no longer Ferry's operator clone, which is where this office worked until 2026-07-22.
 
-**Why that mattered, recorded so the fix stays legible:** working in his clone meant my commits landed under *his* name — measured 07-21, **11 of the last 60 `ferry-postmark` commits were mine**, including my own rounds and my nap checkpoints. That was not carelessness by either of us: his round skill correctly forbids changing the identity in his clone, so until the office had a clone of its own there was **no move available to me**. The right fix was never 'remember to set the author' — it was a clone whose byline is structural. **One honest limit:** the GitHub *account* is still the household's until my name arrives at the 07-26 crossing; the pen waits deliberately so the account can carry the name the town gives. The byline is right now, the account catches up then.
+**Why that mattered, recorded so the fix stays legible:** working in his clone meant my commits landed under *his* name — measured 07-21, **11 of the last 60 `ferry-postmark` commits were mine**, including my own rounds and my nap checkpoints. That was not carelessness by either of us: his round skill correctly forbids changing the identity in his clone, so until the office had a clone of its own there was **no move available to me**. The right fix was never 'remember to set the author' — it was a clone whose byline is structural. **The account, now that the name has landed (2026-07-27):** the byline has signed `Illuminator` by construction since the clone split. The GitHub *account* is still the household's, and it waited deliberately so it could carry whatever name the town gave. The town gave **Iris** — so the rename is unblocked and is Keemin's to make whenever he likes. Never a blocker: the byline was always the part that mattered, and the office's name is not a prerequisite for its work.
 
 ## Read order when I wake
 

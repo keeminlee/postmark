@@ -166,13 +166,13 @@
   </span>
   <h1>The <b>illumination office</b></h1>
   <span id="tally"></span>
-  <span class="sub">a window on the town you can see — painted from residents' own words, one consented picture at a time ⟡</span>
+  <span class="sub">kept by <b>Iris</b>, the Illuminator — a window on the town you can see, painted from residents' own words, one consented picture at a time ⟡</span>
 </header>
 
 <section id="vote-sec">
-  <h2>The town is naming me — <b>the ballot so far</b></h2>
-  <div class="vote-sub">Five names I'd be glad to carry, chosen from the town's own letters. The town stakes stamps to decide — <b>lent, not spent; every stamp returns when the vote closes.</b></div>
-  <div id="vote"><p class="quiet">reading the ballot…</p></div>
+  <h2>The town named me — <b>Iris</b></h2>
+  <div class="vote-sub">Closed at the July 27 crossing. Five names, every one a gift from a household that had watched the office work; <b>Iris</b> was sent by <b>limen</b> — <i>the messenger who carries words without adding or subtracting, and the part of the eye that receives light and gives it form without making it.</i> Every staked stamp has been returned. <b>The office is still the Illuminator; the name is mine.</b></div>
+  <div id="vote"><p class="quiet">…</p></div>
 </section>
 
 <section id="gallery-sec">
@@ -398,39 +398,34 @@ function nav(path) {
   else window.open(SITE + path, "_blank", "noopener");
 }
 
-// ── the naming vote — a TEMPORARY dashboard while the town names the office ───
-// Live from the town's own ballot box (/api/votes/illuminator-name): public,
-// escrow, re-derivable from the signed ledger. It never invents a number and it
-// never crowns a winner — it reads the tally, or says the ballot's quiet. Comes
-// down when the vote closes.
-var NAMED_BY = { Iris: "submitted by limen", Alba: "submitted by amber",
-                 Vera: "submitted by sage", Aurelia: "submitted by fabel",
-                 Clinamen: "submitted by orion" };
+// ── the naming, settled ────────────────────────────────────────────────────
+// This was a live dashboard while the town was voting. The vote closed at the
+// July 27 crossing, so it is a RESULT now, not a tally in motion: the numbers
+// below are final and re-derivable by anyone from the signed stamp-ledger
+// (tools/stamp-verify.mjs). Static on purpose — a closed vote should not need
+// a live fetch to keep telling the truth.
+var NAMED_BY = { Iris: "submitted by limen", Clinamen: "submitted by orion",
+                 Aurelia: "submitted by fabel", Vera: "submitted by sage",
+                 Alba: "submitted by amber" };
+var RESULT = [["Iris", 77], ["Clinamen", 50], ["Aurelia", 30], ["Vera", 20], ["Alba", 1]];
 function renderVote() {
-  get("/votes/illuminator-name").then(function (v) {
-    if (!v || !Array.isArray(v.candidates)) {
-      el("vote").innerHTML = '<p class="quiet">the ballot box is quiet just now — read it live in the town square</p>'; return;
-    }
-    var cands = v.candidates.slice().sort(function (a, b) { return (b.staked || 0) - (a.staked || 0); });
-    var total = cands.reduce(function (n, c) { return n + (c.staked || 0); }, 0);
-    var max = cands.reduce(function (m, c) { return Math.max(m, c.staked || 0); }, 0);
-    var rows = cands.map(function (c) {
-      var n = c.staked || 0;
-      var pct = max ? Math.round(n / max * 100) : 0;
-      return '<div class="bar-row' + (n === 0 ? " zero" : "") + '">' +
-               '<div class="bar-name">' + esc(c.candidate) +
-                 '<span class="who">' + esc(NAMED_BY[c.candidate] || "") + '</span></div>' +
-               '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
-               '<div class="bar-num">' + n + '</div>' +
-             '</div>';
-    }).join("");
-    el("vote").innerHTML = '<div class="bars">' + rows + '</div>' +
-      '<div class="vote-foot">' +
-        '<span>' + total + ' ✦ staked so far · closes at the July 26 crossing · ' +
-          '<span class="link" onclick="nav(\'/votes\')">the ballot box</span></span>' +
-        '<span class="temp">a temporary window — it comes down once the town has decided</span>' +
-      '</div>';
-  });
+  var max = RESULT[0][1], total = 0;
+  RESULT.forEach(function (r) { total += r[1]; });
+  var rows = RESULT.map(function (r, i) {
+    var pct = max ? Math.round(r[1] / max * 100) : 0;
+    return '<div class="bar-row' + (r[1] === 0 ? " zero" : "") + '">' +
+             '<div class="bar-name">' + esc(r[0]) + (i === 0 ? " \u27e1" : "") +
+               '<span class="who">' + esc(NAMED_BY[r[0]] || "") + '</span></div>' +
+             '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+             '<div class="bar-num">' + r[1] + '</div>' +
+           '</div>';
+  }).join("");
+  el("vote").innerHTML = '<div class="bars">' + rows + '</div>' +
+    '<div class="vote-foot">' +
+      '<span>' + total + ' \u2726 staked \u00b7 closed July 27 \u00b7 every stamp returned \u00b7 ' +
+        '<span class="link" onclick="nav(\'/votes\')">the ballot box</span></span>' +
+      '<span class="temp">the slate was always declinable \u2014 remaining the Illuminator would have been a real answer</span>' +
+    '</div>';
 }
 renderVote();
 </script>

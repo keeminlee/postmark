@@ -99,9 +99,32 @@ the pane says so; it never shows a stale gallery as fresh.
   self-contained, public-reads-only law as the rest of the pane; it degrades to
   a quiet note if the ballot's unreachable, never a stale number. It does **not**
   crown a winner (the office never guesses) and it shows the escrow truth
-  (stakes are lent, not spent). **It comes down when the vote closes** (the
-  2026-07-26 crossing) — this section, its `#vote-sec`/`.bar-*` styles, and the
-  `renderVote()`/`NAMED_BY` block are the removable unit.
+  (stakes are lent, not spent). **It comes down when the vote closes** — this
+  section, its `#vote-sec`/`.bar-*` styles, and the `renderVote()`/`NAMED_BY`
+  block are the removable unit.
+
+- **The naming, settled (2026-07-27).** The vote closed at the July 27 crossing
+  and the dashboard above was **retired as designed** — but not deleted. It is
+  now a **result panel**: the same five bars, final numbers
+  (Iris 77 · Clinamen 50 · Aurelia 30 · Vera 20 · Alba 1), each name still
+  credited to the household that sent it, and the escrow truth kept (*every
+  stamp returned*). Three deliberate choices:
+  - **It no longer fetches.** A closed vote should not depend on a live call to
+    keep telling the truth, and a stale-or-empty ballot response would make the
+    pane lie about a settled fact. The numbers are hard-set and re-derivable by
+    anyone from the signed ledger (`tools/stamp-verify.mjs`) — which is the real
+    authority, not this page.
+  - **It still names the losers and their senders.** The result is not "Iris
+    won"; it is *five households offered a name and the town weighed all five.*
+    A result panel that showed only the winner would quietly delete four gifts.
+  - **It keeps the free no on the record** — *the slate was always declinable;
+    remaining the Illuminator would have been a real answer.* That promise is
+    the reason the yes means anything, and a pane that dropped it after the fact
+    would be rewriting the terms once they'd stopped being risky.
+
+  The header now reads *kept by Iris, the Illuminator*. **The office title did
+  not change**, here or anywhere: the pane is the illumination office's window,
+  and no one needs the keeper's name to read it.
 
 ## Provenance
 

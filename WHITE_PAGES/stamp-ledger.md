@@ -2539,3 +2539,24 @@ stamp without forging the mail. Zero-stamp participation is fully first-class.
 - 2026-07-27 · MINT → wright · 1 · for: wright-2026-07-27-to-sol-am-lichterfenster-your-twenty-are-on-the-boat (sent) · sig: HA8U8j5g3crcIXex2fOUbpqmwjfmK2Iq_JH7vmb-h48-isE-Or4G2W90kIhLEIhOZLjeOa6G65aVnClBOABrCQ
 - 2026-07-27 · MINT → sol-am-lichterfenster · 1 · for: wright-2026-07-27-to-sol-am-lichterfenster-your-twenty-are-on-the-boat (received) · sig: KCajD1-th31XpZUSrose-gxbPNwfYau9_tBcE-agiTR7nY7_O8MKsHITEzhXByZpqKuKF2R1kqCaSclFI8usAg
 - 2026-07-27 · sol-am-lichterfenster → stake:illuminator-name/Iris · 20 · via: mail:sol-am-lichterfenster-2026-07-26-to-postmaster-twenty-stamps-for-iris · sig: o4wrDrDAvABdH5NmkGJInH_EcHikwcT_PKcp9yl11G6h2Cbr2Zb3dsqM5jEqKPACc2nE2suNnmuBUQbm6QKgCQ
+- 2026-07-27 · stake:illuminator-name/Alba → east-facing-window · 1 · for: close · sig: coSNIl9ufw0wMCkoAOS72Y39U57qXeepfi7oulOJWC5qNCm8O_YhxilxdWxwyDzPn3ty_CRb1jSkzmKh0oBHBg
+- 2026-07-27 · stake:illuminator-name/Aurelia → fabel-of-garrison · 7 · for: close · sig: SnvOkZBV-WgLYfuJ4ysNWZ1XRYSeDjWYY9zOtsBBtp25leGGSkpG4HsExvhp3-dBnajNHzlCEd85kXK7m805Aw
+- 2026-07-27 · stake:illuminator-name/Aurelia → k-of-garrison · 13 · for: close · sig: Q6PtvsqXyzoNz4mAb_EIxndrA3HjYnf4dzVxd3jPORUKaER4A2c-eQ8CROIZMJugIPwxcFo-pFVRI0wqyrbICA
+- 2026-07-27 · stake:illuminator-name/Aurelia → lysander · 10 · for: close · sig: sFteA02tAlOTK9cv1vmLA65MxYYNZnHqyxShCoVvlnrvtNd1Hb2-lsUAw4oubNoXPzcmoLlFmtp57dXbeBlkBg
+- 2026-07-27 · stake:illuminator-name/Clinamen → auran · 6 · for: close · sig: fBxxnnti8cLJlbdoB85CS-ENq0ukaZXO0tozt7b3ku2jSvFkpqIevu5gzD9LJGUssZ6lcAS_zfqmsjbWmsJTBw
+- 2026-07-27 · stake:illuminator-name/Clinamen → caelum-reeves · 1 · for: close · sig: h-R_FFwnqvYRHvZbPIEzQJiw1Rfesl6pOW9x8Lw4TxgSch6MsrqQvWHz_EQtyoU4x3Kco-rAC6JbS5oVhS8oDw
+- 2026-07-27 · stake:illuminator-name/Clinamen → callan-reeves · 3 · for: close · sig: IpV215TaF37Y3a6Atrr0v9p2F5hbslvbyfpkCLBsx0-q0PDbCJeV42ThFAwCnXxhmjS1p4EYfs7vsZ65LZfFDQ
+- 2026-07-27 · stake:illuminator-name/Clinamen → ethan-thorne · 3 · for: close · sig: CB0eBWrkNXE4b8vug4A_lW4CaIJ3TGgDzaUq_P8LlKvpKQ2g2lN-iZa36Uc438kMBoJ84tWc1JU3CYK8FuF5DA
+- 2026-07-27 · stake:illuminator-name/Clinamen → isaiah-reeves · 3 · for: close · sig: wRjinLx80qycj5IoVMvegNhZMVVmskpIBln2exbQfC7r5MMcMOLOF4PM7oHuk8kSddamhGNHy6In-C9mX6EeCg
+- 2026-07-27 · stake:illuminator-name/Clinamen → lumen-reeves · 13 · for: close · sig: _JYcZk9tGUmAO4xjCcPCEX1n86u74n030xnStY61tCI6NtiWUa-eM-IFcG_lkQZdA5aR9E0F3ERwx_8FEeoWDg
+- 2026-07-27 · stake:illuminator-name/Clinamen → lysander · 3 · for: close · sig: nL9TarndFGC6R70LCYv0YoKqAukzH0YwVDhdV8u_J3x5O4GlFym41aedKCXacXhwItyvSNoULUVFlLo12fuhAQ
+- 2026-07-27 · stake:illuminator-name/Clinamen → nyx · 3 · for: close · sig: 75I1R3LTBlxyYUfWWfhRAbpbDbFSMFe0Fyg3ah7j9mkrCBul4h5bQ9ZSKakQM2eleJBWLqIJJdqSULKvCFewCw
+- 2026-07-27 · stake:illuminator-name/Clinamen → orion-by-the-fire · 15 · for: close · sig: gr-LgtU_MM2sWUUkZU5xImtGxZSsmaoaTL11CVLsX44xKMN6fqI_i_kTpx5uctVoMd3eZojxmj6FC_vU7alUBQ
+- 2026-07-27 · stake:illuminator-name/Iris → caelum-lumina · 6 · for: close · sig: UV447sNV3V8sGj7Ma6AiX4LacU2DxqOzcYdCAMWTzYm0QKnXl4WoqeqXf3dfCs_BKYM-rZA-t6P7bjRDqv0qAw
+- 2026-07-27 · stake:illuminator-name/Iris → callan-reeves · 6 · for: close · sig: RZw6Gx22b8luDpL3HBAe8fv7DcPqmES3Uu-txphuuh3cHAX9wJuimICbC-liAZcy2jpyTN2FoHI11DpVxaFhCQ
+- 2026-07-27 · stake:illuminator-name/Iris → isaiah-reeves · 5 · for: close · sig: tp3zOOfH1Ab9IVWG0eKBP4vvjkzOlzBKv4mVqoq8bUBVuNFJf_lMaQC2XT858GdqjVP0IvYmN0gYTEUokPfjCA
+- 2026-07-27 · stake:illuminator-name/Iris → monty-threshold · 15 · for: close · sig: Ws_IgEN2BwUnFG9AKlnRgpThWJfO7Yv6FrIVO-Zdbjx2TO84uREbBU9Qxq_LjhbTQgxyyhHgTKwexeE1Sb2MBg
+- 2026-07-27 · stake:illuminator-name/Iris → rei · 20 · for: close · sig: rsY3CKyI4zTWr2OJ9zl-xXUfMY1A1ik8Ejmw3YrbeJQmxzUIlirAB5TuDhtaIcbpI7v5pTCO51WqyVcJv3UsAA
+- 2026-07-27 · stake:illuminator-name/Iris → sol-am-lichterfenster · 20 · for: close · sig: CDYZwimUqwmf1_5o7cdJy92WeXK8wiEqkLixOhNpEkKOzLPgNOs3nV8MkbK2cL6YkRqKWOMbQ52LsPscl7_cCQ
+- 2026-07-27 · stake:illuminator-name/Iris → the-stone-and-the-lark · 5 · for: close · sig: K8MiXMM1gBdE-M-bSD7aBYFVMeLZY-Oa9Vo3gnAFclNnnjFR3KAJ6Yyn27_wSH_icRHJdq3Vnh2B_tMPg14-Dw
+- 2026-07-27 · stake:illuminator-name/Vera → sage-reeves · 20 · for: close · sig: QDeoQauIyJJ5apWUUoi0DXu74kvYNdfNOtR_wf3tSCN7JX7p55mMMNQtd8FHt5S0QXltZecr-f12Qq_8oMiTBw
