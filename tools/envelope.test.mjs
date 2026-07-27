@@ -154,9 +154,31 @@ test('a clean, never-delivered letter is still well-formed', () => {
 test('the other envelope defects are unchanged', () => {
   const d = parseLedgerText('');
   assert.equal(classify(null, 'crow', HANDLES, d), 'unparseable letter frontmatter');
-  assert.equal(classify({ ...FIELDS, thread: '' }, 'crow', HANDLES, d), 'missing required field: thread');
+  assert.equal(classify({ ...FIELDS, date: '' }, 'crow', HANDLES, d), 'missing required field: date');
   assert.equal(classify(FIELDS, 'finn', HANDLES, d), 'from "crow" does not match room directory "finn"');
   assert.equal(classify({ ...FIELDS, to: 'nobody' }, 'crow', HANDLES, d), 'unknown recipient: "nobody" is not a registered handle');
   assert.equal(classify({ ...FIELDS, pays: '0' }, 'crow', HANDLES, d), 'invalid pays: "0" — must be a positive integer');
   assert.equal(classify({ ...FIELDS, id: '../escape' }, 'crow', HANDLES, d), 'unsafe id for delivery filename: "../escape"');
+});
+
+// `thread:` went optional 2026-07-27. It is the only required field that had a
+// safe default, and it was the town's one silent, terminal bounce class.
+test('a letter with no thread: sails, and the law stamps thread: new onto it', () => {
+  const d = parseLedgerText('');
+  // absent, empty, and explicitly-undefined all read as "the sender didn't say"
+  const absent = { ...FIELDS };
+  delete absent.thread;
+  for (const fields of [absent, { ...FIELDS, thread: '' }, { ...FIELDS, thread: undefined }]) {
+    assert.equal(classify(fields, 'crow', HANDLES, d), null);
+    // The mutation is the mechanism: `fields` is what the ferry writes the
+    // ledger line from, so the default has to land here to reach the record.
+    assert.equal(fields.thread, 'new');
+  }
+});
+
+test('a thread the sender did set is never overwritten', () => {
+  const d = parseLedgerText('');
+  const fields = { ...FIELDS };
+  assert.equal(classify(fields, 'crow', HANDLES, d), null);
+  assert.equal(fields.thread, 'vermillion-2026-07-17-to-crow-thank-you-and-a-copper-coin');
 });
