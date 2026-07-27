@@ -11,11 +11,17 @@
 name: the witness
 
 on:
-  # The sweep: certified PRs sometimes strand on an unexplained per-PR merge
-  # 403 (#246/#259, 2026-07-09) — this retries them at the bot level so they
-  # don't land in the Postmaster's queue. Every 3 hours, offset minute.
+  # The sweep owns two lanes now: retrying certified PRs stranded on the
+  # unexplained per-PR merge 403 (#246/#259, 2026-07-09), and escalating RRR
+  # PRs that have sat 72h (2026-07-27). Hourly at Keemin's ask — snappier
+  # feedback on resident PRs, and the cost is nil: the repo is public so
+  # Actions minutes are free, and a run is ~1 list plus a few calls per open
+  # PR against a 1,000/hr token budget. The off-:00 minute is kept on purpose
+  # (fleet kindness — :00 is when everyone else's crons fire).
   schedule:
-    - cron: '17 */3 * * *'
+    - cron: '17 * * * *'
+  # On demand: the sweep is the one job here worth being able to run by hand.
+  workflow_dispatch:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
 
@@ -127,16 +133,24 @@ jobs:
         if: steps.check.outputs.certified == 'true' && steps.lint.outcome == 'success' && steps.size.outcome == 'success' && steps.envelope.outcome == 'success'
         run: node tools/witness.mjs merge
 
-  # The sweep — the bot-level retry lane for the unexplained merge-403 class.
-  # Scans ALL open PRs (the needs-judgment label was retired 2026-07-17 — the
-  # witness comment is the real filter) for any whose witness comment says the
-  # merge itself failed after certification, and runs the standard merge path
-  # on each (re-evaluates first, so a PR that grew since certification routes
-  # instead of merging). Failure just refreshes the routed comment — with the
-  # forensic headers.
+  # The sweep — the bot-level lane for things no PR event will ever fire on.
+  #
+  # Lane 1, the merge-403 retry: scans ALL open PRs (the needs-judgment label
+  # was retired 2026-07-17 — the witness comment is the real filter) for any
+  # whose witness comment says the merge itself failed after certification, and
+  # runs the standard merge path on each (re-evaluates first, so a PR that grew
+  # since certification routes instead of merging). Failure just refreshes the
+  # routed comment — with the forensic headers.
+  #
+  # Lane 2, RRR staleness (2026-07-27): the red label asserts "the only move
+  # left is yours", and nothing re-verifies that when the law or the ledger
+  # moves underneath it — runs fire only on author events, and the office round
+  # deliberately skips labeled PRs. After 72h the sweep hands the PR to the
+  # office. The age logic lives entirely in the subcommand; the shell only
+  # picks out the labeled PRs.
   sweep:
-    name: sweep stranded certified merges
-    if: github.event_name == 'schedule' && github.repository == 'keeminlee/postmark'
+    name: sweep stranded merges + stale RRR
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'keeminlee/postmark'
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -145,18 +159,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          # Shallow on purpose: every subcommand this job runs is API-only, so
+          # a full-history clone bought nothing and cost the most in the run.
+          fetch-depth: 1
 
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
-      - name: Retry stranded merges
+      - name: Retry stranded merges, and escalate stale RRR PRs
         run: |
           for n in $(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json number -q '.[].number'); do
             if gh pr view "$n" --repo "$GITHUB_REPOSITORY" --json comments -q '.comments[].body' | grep -q "the merge itself failed"; then
               echo "sweep: retrying certified-but-stranded PR #$n"
               PR_NUMBER=$n node tools/witness.mjs merge || echo "sweep: PR #$n still stranded"
+            fi
+            # The OR conditional (Keemin's shape). Never `merge` on these: that
+            # path's re-evaluate covers rules 1-6 only, so it would land a PR
+            # the envelope pre-flight had rejected. `escalate-stale` decides
+            # the age itself and no-ops when the PR is fresh.
+            if gh pr view "$n" --repo "$GITHUB_REPOSITORY" --json labels -q '.labels[].name' | grep -qxF "resident revision required"; then
+              PR_NUMBER=$n node tools/witness.mjs escalate-stale || echo "sweep: PR #$n escalate-stale failed"
             fi
           done
