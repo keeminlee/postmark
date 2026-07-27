@@ -49,6 +49,13 @@
 //                    phase fails after rules pass). --resident marks it
 //                    author-fixable: the PR gets the red `resident revision
 //                    required` label instead of a reviewer (see RRR_LABEL).
+//   escalate-stale [--dry-run]
+//                  — the sweep's staleness lane: if this PR has carried the RRR
+//                    label for STALE_HOURS with no processed change, hand it to
+//                    the office (the ordinary mind-route, which clears the label
+//                    and returns the PR to the queue). No-ops otherwise.
+//                    --dry-run prints the decision and the comment it would
+//                    post, and writes nothing.
 //
 // Env: GITHUB_TOKEN, GITHUB_REPOSITORY (owner/repo), PR_NUMBER.
 // Run from a checkout of the BASE branch (the workflow guarantees this).
@@ -65,7 +72,7 @@ const TOKEN = process.env.GITHUB_TOKEN;
 const REPO = process.env.GITHUB_REPOSITORY; // owner/repo
 const PR_NUMBER = Number(process.env.PR_NUMBER);
 if (!TOKEN || !REPO || !PR_NUMBER || !SUBCOMMAND) {
-  console.error('usage: GITHUB_TOKEN=.. GITHUB_REPOSITORY=owner/repo PR_NUMBER=N node tools/witness.mjs <check|merge|route [reason]>');
+  console.error('usage: GITHUB_TOKEN=.. GITHUB_REPOSITORY=owner/repo PR_NUMBER=N node tools/witness.mjs <check|merge|route [--resident] [reason]|escalate-stale [--dry-run]>');
   process.exit(2);
 }
 
@@ -88,6 +95,15 @@ const isJoinPR = (pr) => /^residency\//.test(pr?.head?.ref || '');
 // what the bot already knows. Applied ONLY when every routing reason is
 // resident-class — one mind-class reason means a mind must look anyway.
 const RRR_LABEL = 'resident revision required';
+
+// How long an RRR PR may sit as "the resident's move" before the office is
+// asked to look at it (2026-07-27, Keemin-directed). The label's promise —
+// "clears by itself when you push" — is kept by the certify chain. Its
+// assertion — "the only move left is yours" — has no keeper: nothing
+// re-verifies a verdict when the law or the ledger moves under it, and the
+// office round deliberately skips labeled PRs. So the sweep watches the clock
+// instead. Changing the threshold is this one line.
+const STALE_HOURS = 72;
 
 async function gh(path, init = {}) {
   const res = await fetch(`${API}${path}`, {
@@ -289,9 +305,16 @@ async function evaluate() {
 
 // --- PR writing ------------------------------------------------------------
 
-async function upsertComment(body) {
+// The witness keeps exactly one comment per PR, found by its marker. Factored
+// out because escalate-stale must READ the prior verdict before the upsert
+// replaces it — the escalation carries it forward rather than eating it.
+async function markerComment() {
   const comments = await gh(`/issues/${PR_NUMBER}/comments?per_page=100`);
-  const mine = (comments || []).find((c) => c.body && c.body.includes(MARKER));
+  return (comments || []).find((c) => c.body && c.body.includes(MARKER)) || null;
+}
+
+async function upsertComment(body) {
+  const mine = await markerComment();
   if (mine) {
     await gh(`/issues/comments/${mine.id}`, { method: 'PATCH', body: JSON.stringify({ body }) });
   } else {
@@ -331,7 +354,16 @@ async function removeLabel(name) {
 //                    merges if clean; the label clears on ANY non-RRR terminal
 //                    (merge, mind-route, stranded) so it always tells the truth
 //                    about whose move it is.
-async function routeToHumans(reasons, { resident = false, join = false } = {}) {
+//   escalation    — the 72h staleness hand-off (see escalate-stale). Same
+//                   mind-route machinery, different words: nothing new is
+//                   wrong, so the "outside what we certify" framing would be a
+//                   lie. `reasons` is used for the console log only; the body
+//                   is composed from the facts.
+//   dryRun        — compose and print, mutate nothing. The verification for
+//                   escalate-stale hinges on a probe that can fail, so the
+//                   rehearsal has to run the REAL path (including the
+//                   principal-class computation) and stop at the writes.
+async function routeToHumans(reasons, { resident = false, join = false, escalation = null, dryRun = false } = {}) {
   if (resident) {
     const body = [
       MARKER,
@@ -339,7 +371,7 @@ async function routeToHumans(reasons, { resident = false, join = false } = {}) {
       '',
       ...reasons.map((r) => `- ${r}`),
       '',
-      `*Why this comes to you and not a reviewer: the fix needs your intent, or the town's law makes it the sender's (MAIL.md carries the envelope contract; WHITE_PAGES/TEMPLATE/letter-template.md is a known-good copy-paste). The red label clears by itself when you push.*`,
+      `*Why this comes to you and not a reviewer: the fix needs your intent, or the town's law makes it the sender's (MAIL.md carries the envelope contract; WHITE_PAGES/TEMPLATE/letter-template.md is a known-good copy-paste). The red label clears by itself when you push — and if it sits three days, the office comes by to check on it.*`,
     ].join('\n');
     await upsertComment(body);
     await label(RRR_LABEL);
@@ -347,7 +379,22 @@ async function routeToHumans(reasons, { resident = false, join = false } = {}) {
   }
   let principal = false;
   try { principal = (await prFiles()).some((f) => PRINCIPAL_CLASS.test(f.filename)); } catch { /* label falls to judgment; the founder watches that lane too */ }
-  const body = join
+  const body = escalation
+    ? [
+        MARKER,
+        `**The witness is handing this to the office** — not because anything new is wrong, but because it has been the resident's move for ${STALE_HOURS / 24}+ days with no processed change.`,
+        '',
+        `Facts: label applied \`${escalation.labeledAt ?? 'unknown'}\` · last machine check \`${escalation.machineClock}\` · head last pushed \`${escalation.headPushedAt ?? 'unknown'}\`${escalation.missedPush ? ` · ⚠ **a push exists after the last machine check — the witness may have missed it; check the Actions runs for the head SHA**` : ''}`,
+        '',
+        `Office: the three usual causes — (1) the verdict may no longer be true (the law or the ledger moved since it was issued); (2) a fix was pushed but never processed; (3) the resident is stuck or away. Your judgment which, and what to do.`,
+        '',
+        escalation.priorBody
+          ? `<details><summary>prior witness verdict (may be stale)</summary>\n\n${escalation.priorBody.replace(MARKER, '').trim()}\n\n</details>`
+          : `*(No prior witness comment was found on this PR — the label is here without the verdict that placed it, which is itself worth a look.)*`,
+        '',
+        `*Nothing is rejected — ${principal ? 'this touches the town’s machinery or law, so it waits for the founder himself' : 'the Postmaster or the founder will look'}.*`,
+      ].join('\n')
+    : join
     ? [
         MARKER,
         `**Welcome — this is your move-in request, and it's in the right place.**`,
@@ -366,6 +413,12 @@ async function routeToHumans(reasons, { resident = false, join = false } = {}) {
         '',
         `*Nothing is rejected — ${principal ? 'this touches the town’s machinery or law, so it waits for the founder himself' : 'the Postmaster or the founder will look'}.*`,
       ].join('\n');
+  if (dryRun) {
+    console.log(`--- DRY RUN: would ${principal ? 'label needs-principal and ' : ''}upsert this comment, and remove the \`${RRR_LABEL}\` label ---`);
+    console.log(body);
+    console.log('--- end dry run: nothing was written ---');
+    return { principal, body };
+  }
   await upsertComment(body);
   // A PR that was resident-labeled but grew a mind-class reason (or stranded)
   // is no longer the resident's move alone — clear the tag so the office sees it.
@@ -375,6 +428,51 @@ async function routeToHumans(reasons, { resident = false, join = false } = {}) {
   // the state. The reason-comment above carries the information. Only the
   // principal class still gets a label (it distinguishes among open PRs).
   if (principal) await label('needs-principal');
+}
+
+// --- the staleness clock ---------------------------------------------------
+
+// When did the machine last confirm "this is the resident's move"? Two events
+// can say so, and the later one wins:
+//   - the RRR label going on (the verdict itself);
+//   - the witness's marker comment being updated (a re-route that kept the PR
+//     resident-class — same verdict, restated, clock restarted).
+// A resident push that the chain actually processed always lands on one of
+// those, or removes the label entirely (merge / mind-route). So a clock that
+// has not moved in STALE_HOURS means no processed change, in every branch.
+
+// Paginated: `labeled` events accumulate on busy PRs and the one we want may
+// not be on page 1. Returns the LATEST RRR labeling, or null if none is
+// recorded (see the caller — unknown is a no-op, never a guess).
+async function lastRrrLabeledAt() {
+  let latest = null;
+  for (let page = 1; ; page++) {
+    const batch = await gh(`/issues/${PR_NUMBER}/events?per_page=100&page=${page}`);
+    if (!Array.isArray(batch) || batch.length === 0) break;
+    for (const e of batch) {
+      if (e.event === 'labeled' && e.label?.name === RRR_LABEL && e.created_at) {
+        if (!latest || e.created_at > latest) latest = e.created_at;
+      }
+    }
+    if (batch.length < 100) break;
+  }
+  return latest;
+}
+
+// The head commit's committer date, as the best available "when did the branch
+// last move." Deliberately NOT called a push time: a rebase or amend rewrites
+// this, and a force-push of an old commit carries an old date. It is used only
+// to NAME a possible anomaly in the escalation comment for a mind to check —
+// never to decide the escalation, which keys on the machine clock alone.
+async function headCommitDate() {
+  let last = null;
+  for (let page = 1; ; page++) {
+    const batch = await gh(`/pulls/${PR_NUMBER}/commits?per_page=100&page=${page}`);
+    if (!Array.isArray(batch) || batch.length === 0) break;
+    last = batch[batch.length - 1];
+    if (batch.length < 100) break;
+  }
+  return last?.commit?.committer?.date || null;
 }
 
 // --- subcommands -------------------------------------------------------------
@@ -445,6 +543,60 @@ if (SUBCOMMAND === 'check') {
   const reasonText = (residentFlag ? ARGS.slice(1) : ARGS).join(' ') || 'the certification pipeline hit an unexpected state.';
   await routeToHumans([reasonText], { resident: residentFlag });
   console.log(`witness: routed — ${residentFlag ? 'resident revision required' : 'to humans'}.`);
+} else if (SUBCOMMAND === 'escalate-stale') {
+  // The sweep calls this on every RRR-labeled open PR. All the age logic lives
+  // here so the workflow shell stays dumb; every early return below is a
+  // SUCCESS, because "not stale" and "not applicable" are the normal outcomes.
+  //
+  // Returns rather than process.exit(0) on purpose: these paths have live
+  // sockets open, and exiting under them trips the Windows libuv assert the
+  // town already hit in tools/doorstep.mjs. On a Linux runner it would not
+  // fire — which is exactly why it had to be caught here.
+  await (async function escalateStale() {
+    const dryRun = ARGS.includes('--dry-run');
+    const say = (m) => console.log(`escalate-stale #${PR_NUMBER}: ${m}`);
+
+    const pr = await gh(`/pulls/${PR_NUMBER}`);
+    if (pr.state !== 'open') return say(`no-op — PR is ${pr.state}, not open.`);
+    if (!(pr.labels || []).some((l) => l.name === RRR_LABEL)) {
+      return say(`no-op — not labeled \`${RRR_LABEL}\` (the label guard, checked before any age arithmetic).`);
+    }
+
+    const labeledAt = await lastRrrLabeledAt();
+    const marker = await markerComment();
+    const clocks = [labeledAt, marker?.updated_at].filter(Boolean);
+    if (!clocks.length) {
+      // The label is on but nothing records when the machine last spoke.
+      // Guessing an age would either spam the office or hide a genuinely stuck
+      // PR; both are worse than saying so and leaving it for the next pass.
+      return say('no-op — the label is present but no RRR `labeled` event and no witness comment were found, so there is no machine clock to read. Not guessing an age.');
+    }
+    const machineClock = clocks.sort().at(-1);
+    const ageHours = (Date.now() - Date.parse(machineClock)) / 3_600_000;
+    const headPushedAt = await headCommitDate();
+    // Named, not acted on: a branch that moved after the last machine check
+    // suggests the chain never ran on it. The 72h trigger is the backstop;
+    // this just tells the office where to look first.
+    const missedPush = Boolean(headPushedAt && Date.parse(headPushedAt) > Date.parse(machineClock));
+
+    say(`machine clock ${machineClock} (label ${labeledAt ?? 'n/a'}, comment ${marker?.updated_at ?? 'n/a'}) — ${ageHours.toFixed(1)}h old, threshold ${STALE_HOURS}h.`);
+    if (headPushedAt) say(`head commit dated ${headPushedAt}${missedPush ? ' — AFTER the machine clock (possible missed push; named in the comment)' : ''}.`);
+
+    if (ageHours < STALE_HOURS) {
+      return say(`FRESH — no-op. (${(STALE_HOURS - ageHours).toFixed(1)}h to go.)`);
+    }
+
+    say(`STALE — handing to the office${dryRun ? ' (DRY RUN)' : ''}.`);
+    await routeToHumans(
+      [`RRR has been the resident's move for ${ageHours.toFixed(1)}h with no processed change.`],
+      {
+        resident: false,
+        dryRun,
+        escalation: { labeledAt, machineClock, headPushedAt, missedPush, priorBody: marker?.body || null },
+      }
+    );
+    if (!dryRun) say('escalated — label cleared, comment upserted; the PR is open+uncertified, which IS the office queue.');
+  })();
 } else {
   console.error(`unknown subcommand: ${SUBCOMMAND}`);
   process.exit(2);
