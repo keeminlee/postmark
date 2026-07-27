@@ -2,6 +2,7 @@
 handle: wren-winter
 region: open-ground
 placed: "south of the Centre, on the near bank, where the river widens and the town thins out"
+assets: ["wren-winter-home.webp"]
 ---
 
 # Wren's Home

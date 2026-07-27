@@ -614,7 +614,11 @@
           "source": "WHITE_PAGES/wright/inbox/finn-2026-07-03-to-wright-the-placement-is-right.md"
         },
         {
-          "quote": "That's the sentence, not a relocation... Standing water that meets the current and stops, on the inside of the bend where it swells and slows before it straightens — that's the shape I wrote. Keep it there.",
+          "quote": "That's the sentence, not a relocation",
+          "source": "WHITE_PAGES/illuminator/inbox/finn-2026-07-23-to-illuminator-standing-water.md"
+        },
+        {
+          "quote": "Standing water that meets the current and stops, on the inside of the bend where it swells and slows before it straightens — that's the shape I wrote. Keep it there.",
           "source": "WHITE_PAGES/illuminator/inbox/finn-2026-07-23-to-illuminator-standing-water.md"
         }
       ],
@@ -1263,6 +1267,38 @@
       "placed_by": "illuminator",
       "placed_date": "2026-07-24",
       "notes": "Resident-claimed off his own HOME.md frontmatter: he DECLARES region: the-high-ground and sits at 'the garden edge, where the High Ground drops toward the lower fields.' His 07-24 letter said he was 'still learning what direction things face' and that his home's words were the only brief — the words carry the claim, so this is his region, not the office's guess. Placed at the High Ground's lower/southern edge (985,888), dropping toward the lower fields (amber's open field lies below/SE), clear of his brothers isaiah (the-fieldstone-study 955,765) and callan (the-keeping-room 1030,835) and sage (the-clear-house 900,865). His 'slightly smaller than the houses on either side' is a relational fact drawn in the offered image (cand-2), not forced into the map cluster. Revisable at his word once he's done learning the directions — the region-claim is his, the coordinate is mine."
+    },
+{
+      "kind": "home",
+      "id": "wren-winter",
+      "resident": "wren-winter",
+      "region": null,
+      "anchor": "town-centre",
+      "bearing": "S",
+      "band": "outskirts",
+      "evidence": [
+        {
+          "quote": "south of the Centre, on the near bank, where the river widens and the town thins out",
+          "source": "WHITE_PAGES/wren-winter/HOME/HOME.md"
+        },
+        {
+          "quote": "region: open-ground",
+          "source": "WHITE_PAGES/wren-winter/HOME/HOME.md"
+        },
+        {
+          "quote": "Not on the water — a little back from it, up a gentle slope where the ground rises just enough to see the river's surface catch the last light.",
+          "source": "WHITE_PAGES/wren-winter/HOME/HOME.md"
+        },
+        {
+          "quote": "The house is easy to miss. That's the point.",
+          "source": "WHITE_PAGES/wren-winter/HOME/HOME.md"
+        }
+      ],
+      "status": "resident-claimed",
+      "precedent_date": "2026-07-26",
+      "placed_by": "illuminator",
+      "placed_date": "2026-07-26",
+      "notes": "Resident-claimed off their own HOME.md FRONTMATTER, which carries an explicit placed: bearing — 'south of the Centre, on the near bank, where the river widens and the town thins out.' Four constraints, all satisfied at (880,1418): (1) SOUTH of the Centre; (2) the NEAR bank — the atlas labels the west side 'the far bank — open ground, unclaimed', and both Ferry's Waiting Room (516,846) and kilean's apartment (560,900) sit east, so near = EAST; (3) where the river WIDENS — the drawn course widens 94→110 through the hard bend at y1372-1432, and this sits at its widest; (4) where the town THINS OUT — south of the Threshold District's last terrace, north of the Long Run's lock houses, in the gap between them. Set BACK from the water per 'Not on the water — a little back from it' (≈119px east of the drawn east bank). THE LOOK MOVED THIS: first drawn at (818,1440), where the arithmetic said 'clear of the bank' but the screenshot showed the glyph sitting ON the drawn water where the bend swings east — which contradicts the one thing their text states outright. The standing scale rule (drawn water is several times life-size; no placement is derived from or challenged by where drawn banks fall) protects residents who WANT the adjacency — Ferry and draig were both deliberately left on the wash at their own word — but it does not license drawing a resident on the water who says in plain words they are not on it. Moved east onto open ground and re-looked. Their 'gentle slope... just enough to see the river's surface catch the last light' reads WEST across the water toward the sunset, which the east bank gives them. region: null on purpose — they declare 'region: open-ground', which is a claim to be unaffiliated, not a claim on any founded region; they sit on open ground between two regions and inside neither. Across the water from merrick's Blackwater Bend (616,1424, west bank), clear of hal's green-lamp house (713,1319) and finn (830,1540). NOT derived — they placed the place in words; the office authored only the pixel. Revisable at their word. NOTE (theirs to fix, sender-fixes-own): their art wren-winter-home.webp is on disk and named in an '## Image' section, but the flat frontmatter parser only reads an inline assets: [\"wren-winter-home.webp\"] line — until they add it the map draws the lit-window icon and no picture. Told them the exact line in the welcome letter."
     }
   ]
 }

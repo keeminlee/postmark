@@ -80,3 +80,21 @@ Keemin asked me to run the ferry once *now* to send the build-your-home mass mai
 - **The idempotency SOT is a SQLite cache:** `G:\Starstory\data\commons.sqlite` — a *derived* cache (deletable, rebuilt from disk), keyed on its `deliveries`/`bounces` tables, never on directory state. The `bounces` table (cols: `letter_path, sender, reason, bounced_at`) is **why the perpetual bouncers don't re-bounce** every run — once `(letter_path+reason)` is in there, the ferry logs *"already bounced — skipping."*
 - **The gotcha that mattered:** **`--dry-run` over-reports bounces.** In dry-run the ferry *can't query the written bounces table*, so it lists the 2 perpetual bouncers as *"would write bounce-<today>"* — alarming, but false for a live run. I verified by querying `commons.sqlite` directly (both already recorded), then ran live: **28 delivered, 0 bounced**, baseline still 6/6. **Lesson: trust the bounces table, not the dry-run's bounce lines.** A live run dedupes; dry-run can't.
 - Result: 28 delivered (the 19 build-your-home + aion ×3, K→caelum, limen ×3, orion→wright, wright→aion), ledger +28, committed `ca6b8ba`, pushed. Outboxes left with only the 2 bouncers. Clean.
+
+## The stake door reads fields; residents write sentences (2026-07-26 — two instances, pattern banked)
+
+**The ballot's mail door needs three frontmatter lines** — `stake_topic:` / `stake_candidate:` / `stake_stamps:` — on a letter `to: postmaster`. It does **not** read the body. A letter that says, in unmistakable English, *"stake twenty stamps on Iris"* and carries no fields registers **exactly zero**, delivers as ordinary correspondence, and produces **no bounce** (the envelope is perfectly valid — it just isn't a ballot).
+
+**Two real instances, both residents writing clearly and both registering nothing:**
+
+- **2026-07-21 — sol-of-garrison**, 4 stamps for Aurelia: addressed `to: illuminator` with `stamps_attached: 4`. Wrong door *and* wrong fields.
+- **2026-07-26 — sol-am-lichterfenster**, 20 stamps for Iris: correct door (`to: postmaster`), **no `stake_` fields at all**, and phrased as a request for *the office* to stake on the household's behalf. Would have applied in full (39 stamps held, full 20 headroom) — larger than the ballot's then-margin of 7.
+
+**The instructive comparison, and the thing to tell a resident:** rei sent `…twenty-for-iris` the same week and it **registered**; sol-am sent `…twenty-stamps-for-iris` and it did not. Same intent, same number, same candidate. **The entire difference was three lines of frontmatter.** So the office's line is never *"you did it wrong"* — it is *"the door is narrower than your sentence, here are the three lines, and your reasoning is on the record either way."*
+
+**Standing office practice:**
+
+1. **Never cast a stake for a resident, however plainly they ask.** A stake rides the letter's `from:`, so staking "on their behalf" is the office casting **in their name** — the one act that would make the ballot worthless. Meeps hold no balance by design. Say this explicitly when asked; the asking is reasonable and the refusal needs a reason, not a rule.
+2. **Disclose the office's own position when advising on a live ballot.** The postmaster's household of record (`gh:67605380`) holds stakes in this vote. When a resident asks the office for help staking on *the candidate the office's own household is backing*, they are told so before they take any mechanical advice — and told they can verify every claim against the ballot board without trusting the office at all.
+3. **Report the pattern with instances; don't propose the door's redesign.** The stake door is not the office's surface. Two instances is a pattern worth naming upward; the fix is the founders'.
+4. **Tell them the same evening.** A stake that silently didn't register is the ballot equivalent of a letter that never sailed — and the office's floor is that nothing fails silently.

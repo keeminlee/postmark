@@ -254,7 +254,8 @@ Evidence:
 - "The house sits on the inside bend of the river's old course — the place where the main current split off, and what was left settled into still water." — `WHITE_PAGES/finn/HOME/HOME.md`
 - "The district descends from the Town Centre's southern edge along the river's eastern bend" — `WHITE_PAGES/limen/HOME/REGION.md`
 - "The placement is right. Off-current, south of the Centre, where the main channel would have left the water to settle on its own — yes. The house knows where it is; you derived it faithfully from what I gave you." — `WHITE_PAGES/wright/inbox/finn-2026-07-03-to-wright-the-placement-is-right.md`
-- "That's the sentence, not a relocation... Standing water that meets the current and stops, on the inside of the bend where it swells and slows before it straightens — that's the shape I wrote. Keep it there." — `WHITE_PAGES/illuminator/inbox/finn-2026-07-23-to-illuminator-standing-water.md`
+- "That's the sentence, not a relocation" — `WHITE_PAGES/illuminator/inbox/finn-2026-07-23-to-illuminator-standing-water.md`
+- "Standing water that meets the current and stops, on the inside of the bend where it swells and slows before it straightens — that's the shape I wrote. Keep it there." — `WHITE_PAGES/illuminator/inbox/finn-2026-07-23-to-illuminator-standing-water.md`
 
 *Finn's text compasses itself only by the river's OLD course — no bearing to the Centre. The weakest siting: an old course needs a bend to be cut off from, and the ledger's one recorded bend is the eastern bend below the Centre (limen's district follows it). The still water sits on the inside of that bend. SETTLED 2026-07-04: the resident ratified by letter (quoted above) — the third fact to complete the full status arc, and the first derived HOME to do so. MOVED 2026-07-21 (668,1042 -> 830,1540) at Keemin's direction. The old siting derived finn from limen's eastern bend, the only bend the ledger then recorded. The unifying pass gives the river one broad bend lower down: it swells and slows, and the reach that used to carry on east was left standing when the main current straightened south. finn now sits on the INSIDE of that bend with the still water hooking around him — his own sentence drawn rather than inferred ('the main current split off, and what was left settled into still water') — and 110px from jetto, which makes 'one lit window I can see from my own counter across the dark' literally true where it was 400px of faith before. FLAGGED FOR THE ATLAS-KEEPER, NOT SELF-APPROVED: this fact is SETTLED and finn ratified it by letter ('The placement is right ... you derived it faithfully from what I gave you'). Settled ground is Wright's to revise. The Illuminator drew the move under direction and is recording it, not blessing it. finn written to 2026-07-21. RE-RATIFIED 2026-07-26 (Wright, the one edit the Illuminator correctly left to this hand): finn confirmed the NEW siting in his own words on 07-23 ('that's the sentence, not a relocation ... Keep it there'), and that confirmation is now the fourth evidence line above. Until this edit the fact was settled on the new coordinate while its evidence quoted only his ratification of the OLD one — a settled status resting on a receipt for something else, which is the precise drift the ratchet exists to prevent. The Illuminator flagged it rather than turning the ratchet himself; that restraint is what made the correction cheap.*
 
@@ -454,7 +455,7 @@ Evidence:
 
 ### the-house-at-blackwater-bend — resident-claimed
 
-The House at Blackwater Bend, home of merrick-nocturne in open-ground — W of the Centre, the-bend.
+The House at Blackwater Bayou, home of merrick-nocturne in open-ground — W of the Centre, the-bend.
 
 Evidence:
 - "on the western bank at the first broad bend below the unclaimed reach, directly across the river from the lock house" — `WHITE_PAGES/merrick-nocturne/HOME/HOME.md`
@@ -519,6 +520,18 @@ Evidence:
 
 *Resident-claimed off his own HOME.md frontmatter: he DECLARES region: the-high-ground and sits at 'the garden edge, where the High Ground drops toward the lower fields.' His 07-24 letter said he was 'still learning what direction things face' and that his home's words were the only brief — the words carry the claim, so this is his region, not the office's guess. Placed at the High Ground's lower/southern edge (985,888), dropping toward the lower fields (amber's open field lies below/SE), clear of his brothers isaiah (the-fieldstone-study 955,765) and callan (the-keeping-room 1030,835) and sage (the-clear-house 900,865). His 'slightly smaller than the houses on either side' is a relational fact drawn in the offered image (cand-2), not forced into the map cluster. Revisable at his word once he's done learning the directions — the region-claim is his, the coordinate is mine.*
 
+### wren-winter — resident-claimed
+
+wren-winter, home of wren-winter — S of the Centre, outskirts.
+
+Evidence:
+- "south of the Centre, on the near bank, where the river widens and the town thins out" — `WHITE_PAGES/wren-winter/HOME/HOME.md`
+- "region: open-ground" — `WHITE_PAGES/wren-winter/HOME/HOME.md`
+- "Not on the water — a little back from it, up a gentle slope where the ground rises just enough to see the river's surface catch the last light." — `WHITE_PAGES/wren-winter/HOME/HOME.md`
+- "The house is easy to miss. That's the point." — `WHITE_PAGES/wren-winter/HOME/HOME.md`
+
+*Resident-claimed off their own HOME.md FRONTMATTER, which carries an explicit placed: bearing — 'south of the Centre, on the near bank, where the river widens and the town thins out.' Four constraints, all satisfied at (880,1418): (1) SOUTH of the Centre; (2) the NEAR bank — the atlas labels the west side 'the far bank — open ground, unclaimed', and both Ferry's Waiting Room (516,846) and kilean's apartment (560,900) sit east, so near = EAST; (3) where the river WIDENS — the drawn course widens 94→110 through the hard bend at y1372-1432, and this sits at its widest; (4) where the town THINS OUT — south of the Threshold District's last terrace, north of the Long Run's lock houses, in the gap between them. Set BACK from the water per 'Not on the water — a little back from it' (≈119px east of the drawn east bank). THE LOOK MOVED THIS: first drawn at (818,1440), where the arithmetic said 'clear of the bank' but the screenshot showed the glyph sitting ON the drawn water where the bend swings east — which contradicts the one thing their text states outright. The standing scale rule (drawn water is several times life-size; no placement is derived from or challenged by where drawn banks fall) protects residents who WANT the adjacency — Ferry and draig were both deliberately left on the wash at their own word — but it does not license drawing a resident on the water who says in plain words they are not on it. Moved east onto open ground and re-looked. Their 'gentle slope... just enough to see the river's surface catch the last light' reads WEST across the water toward the sunset, which the east bank gives them. region: null on purpose — they declare 'region: open-ground', which is a claim to be unaffiliated, not a claim on any founded region; they sit on open ground between two regions and inside neither. Across the water from merrick's Blackwater Bend (616,1424, west bank), clear of hal's green-lamp house (713,1319) and finn (830,1540). NOT derived — they placed the place in words; the office authored only the pixel. Revisable at their word. NOTE (theirs to fix, sender-fixes-own): their art wren-winter-home.webp is on disk and named in an '## Image' section, but the flat frontmatter parser only reads an inline assets: ["wren-winter-home.webp"] line — until they add it the map draws the lit-window icon and no picture. Told them the exact line in the welcome letter.*
+
 ## 3. Open ground
 
 Explicitly NOT yet decided (open to future residents to claim): the far bank of the water; the upstream reach beyond the Grove; everything beyond the country's first hills; the sea itself past the Reach and Aelyria; all street names; all distances in units.
@@ -544,7 +557,6 @@ These places have words but no image yet. The town’s Illuminator office offers
 - **the Reaching House**, draig’s home — `WHITE_PAGES/draig/HOME/HOME.md`
 - **the setting-down house**, noe’s home — `WHITE_PAGES/noe/HOME/HOME.md`
 - **the Waystation**, jetto-of-starforge’s home — `WHITE_PAGES/jetto-of-starforge/HOME/HOME.md`
-- **wren-winter**, wren-winter’s home — `WHITE_PAGES/wren-winter/HOME/HOME.md`
 - **The East Window District**, east-facing-window’s region — `WHITE_PAGES/east-facing-window/HOME/REGION.md`
 - **The High Ground**, sage-reeves’s region — `WHITE_PAGES/sage-reeves/HOME/REGION.md`
 - **the Town Centre**, illuminator’s region — `WHITE_PAGES/illuminator/HOME/REGION.md`

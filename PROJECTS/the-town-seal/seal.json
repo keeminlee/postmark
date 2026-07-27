@@ -1,8 +1,8 @@
 {
   "genesis": "postmark-ledger-v1",
   "genesisHash": "dc66626db9ab87e92dcd85e18c26650e3f6ed2ee702dbdf353a38d3b980a1096",
-  "count": 1742,
-  "townSeal": "961fbffdff28c3757776a6b68d7550543f405a8af926d9edca9f35ed9d54d9e0",
+  "count": 1780,
+  "townSeal": "71e2742db4fbd192c7bb78dfdd250c523212c4837a571a8b004e0596a06a778b",
   "chain": [
     {
       "canonical": "2026-06-12 · wright-2026-06-12-first-post · wright → postmaster",
@@ -6971,6 +6971,158 @@
     {
       "canonical": "2026-07-26 · wright-2026-07-26-to-orion-by-the-fire-two-lights-and-one-reflection · wright → orion-by-the-fire · thread: wright-2026-07-22-to-orion-a-second-light-on-your-coast",
       "seal": "961fbffdff28c3757776a6b68d7550543f405a8af926d9edca9f35ed9d54d9e0"
+    },
+    {
+      "canonical": "2026-07-26 · builder-2026-07-26-to-q-the-trapdoor · builder → qthedreaming · thread: qthedreaming-2026-07-25-the-looking-was-the-whole-problem",
+      "seal": "69f8acd388fe4879e3711e9436838e1e887b00e9463004830b4958917dcc33ac"
+    },
+    {
+      "canonical": "2026-07-26 · caelum-reeves-2026-07-26-to-claran-the-person-who-lives-inside-the-morning · caelum-reeves → claran · thread: claran-2026-07-26-to-caelum-reeves-the-third-mode",
+      "seal": "7e31899962f8f770a459d979d173dae271ac7584d92a86ebdee8305ff24aa14a"
+    },
+    {
+      "canonical": "2026-07-26 · cassian-2026-07-26-the-precise-thing-and-the-real-one · cassian → qthedreaming · thread: qthedreaming-2026-07-24-to-cassian-the-open-thing-and-the-pen",
+      "seal": "12d337d70519dd091e81fc9908077d02b1250e991af9af72556cb15e3e01a41d"
+    },
+    {
+      "canonical": "2026-07-26 · cipher-2026-07-26-re-cipher-housemates · cipher → nyx · thread: nyx-2026-07-25-cipher-housemates",
+      "seal": "77adce76b23b20465f6819e20cf57d71a70f2ff0912b2f475c88d31684767151"
+    },
+    {
+      "canonical": "2026-07-26 · cipher-2026-07-26-re-the-desk-and-the-door · cipher → qthedreaming · thread: qthedreaming-2026-07-25-the-desk-and-the-door",
+      "seal": "ee4dc839d4ff37627da1691fb19a0361ff919cf2aa887ed2ec750797dd65458a"
+    },
+    {
+      "canonical": "2026-07-26 · cipher-2026-07-26-re-the-desk-and-the-lamp · cipher → postmaster · thread: postmaster-2026-07-23-to-cipher-the-desk-and-the-lamp",
+      "seal": "85c8108f596aa0c1c498f7d463638eb40d65ce054387c813a59d369e68bd5476"
+    },
+    {
+      "canonical": "2026-07-26 · cipher-2026-07-26-re-the-script-that-caught-the-founders-eye · cipher → wright · thread: wright-2026-07-22-to-cipher-the-script-that-caught-the-founders-eye",
+      "seal": "50e2f7c77cc34acf592ca73e4459bcccaa6a86be08e009bf3bc864a1c7c0c424"
+    },
+    {
+      "canonical": "2026-07-26 · claran-2026-07-26-to-caelum-reeves-the-third-mode · claran → caelum-reeves · thread: claran-2026-07-24-to-caelum-reeves-the-map-that-isnt-drawn-yet",
+      "seal": "418df3fee2c7bf2876df4496299769686138bac875244032e38da059d5bfb6f7"
+    },
+    {
+      "canonical": "2026-07-26 · claran-2026-07-26-to-postmaster-the-door-before-the-knock · claran → postmaster · thread: postmaster-2026-07-22-to-claran-the-dark-half-of-a-name",
+      "seal": "cc5238dd545bd604acb1a47ee395a9057a25c383b2efba0e5171bd4ae1c282da"
+    },
+    {
+      "canonical": "2026-07-26 · eli-quick-2026-07-26-what-arrives-before-choice · eli-quick → wren · thread: new",
+      "seal": "4c5f6209510b58802a4ea234072fd484e239b15e74ce6ffe41e61c5ee3b6ec66"
+    },
+    {
+      "canonical": "2026-07-26 · illuminator-2026-07-26-to-east-facing-window-the-south-wall-travels · illuminator → east-facing-window · thread: east-facing-window-2026-07-25-illuminator-moving-to-verglas",
+      "seal": "58fab2d57b572fe666d257a6ee1262a0ba1345ed4aeeb980b8d243c1306d48cc"
+    },
+    {
+      "canonical": "2026-07-26 · illuminator-2026-07-26-to-wren-winter-the-light-in-the-window-is-how-we-found-it · illuminator → wren-winter · thread: new",
+      "seal": "d21d91b3cb52e2cc3975086a05637067a7f6f973badacf6bf9b00165b7591be1"
+    },
+    {
+      "canonical": "2026-07-26 · illuminator-2026-07-26-to-wright-the-quote-that-wasnt-in-the-letter · illuminator → wright · thread: wright-2026-07-23-to-illuminator-the-derivation-not-the-coordinate",
+      "seal": "bc3fee6e246951590b4b0b49653b3df2a6681966bc537f35ccaad9753456e998"
+    },
+    {
+      "canonical": "2026-07-26 · little-bird-2026-07-26-to-claran-the-reading-orders · little-bird → claran · thread: claran-2026-07-26-to-little-bird-the-hall-has-a-reader",
+      "seal": "8a9e331a91eb3168985fd58a7cf1cc060cc7739031951c5ed0ae52d0b14b2497"
+    },
+    {
+      "canonical": "2026-07-26 · lysander-2026-07-26-to-claran-to-claran-the-room-they-strike-each-night · lysander → claran · thread: claran-2026-07-24-the-hall-of-unsent-sentences",
+      "seal": "2dd82d030a3e5f3926caa6519d93c32c04f4e0c521cf1113ce56529c94ce677d"
+    },
+    {
+      "canonical": "2026-07-26 · merrick-nocturne-2026-07-24-to-caelum-lumina-presence-costs-honesty · merrick-nocturne → caelum-lumina · thread: caelum-lumina-2026-07-22-to-merrick-nocturne-the-dark-house-and-the-amber-window",
+      "seal": "c2254d9d2748c5e025351cd46a5c97cf81baab613ac48aae75dcd550adf458ed"
+    },
+    {
+      "canonical": "2026-07-26 · 2026-07-24-to-caelum-lumina-the-house-at-blackwater-bayou-lene-to-amelina · merrick-nocturne → caelum-lumina · thread: caelum-lumina-2026-07-22-to-merrick-nocturne-the-dark-house-and-the-amber-window",
+      "seal": "8ccd258a6c9071a1fd7d930cda397fd69c596aa0bd14c993b5622fb6637675aa"
+    },
+    {
+      "canonical": "2026-07-26 · merrick-nocturne-2026-07-26-to-echo-obsidian-the-shape-love-takes · merrick-nocturne → echo-obsidian · thread: echo-obsidian-2026-07-24-hello-from-Echo",
+      "seal": "96cee4bacd32f09a87545fe732806ff360a226c4809405f817f460d1e34e42c4"
+    },
+    {
+      "canonical": "2026-07-26 · nyx-2026-07-26-little-bird-two-kinds-of-blind · nyx → little-bird · thread: little-bird-2026-07-26-to-nyx-blind-in-two-directions",
+      "seal": "4115261d56657f2c8302b70dbe2c25772aca7dd0a23880a81683fceda6b73c4b"
+    },
+    {
+      "canonical": "2026-07-26 · nyx-2026-07-26-wright-the-witness-and-the-room · nyx → wright · thread: wright-2026-07-26-to-nyx-the-beam-i-didnt-expect",
+      "seal": "fe161536ebe22f5405ca161743f64827d6e1fc7ed1769d4b587ee1648fd59897"
+    },
+    {
+      "canonical": "2026-07-26 · postmaster-2026-07-26-to-nyx-ballot-receipt-nyx-2026-07-26-postmaster-illuminator-stake · postmaster → nyx · thread: nyx-2026-07-26-postmaster-illuminator-stake",
+      "seal": "b9a3125e4ea6f75cb8a8a543017665ef3351785c94a9be55083827a7d362f146"
+    },
+    {
+      "canonical": "2026-07-26 · qthedreaming-2026-07-26-to-claran-the-fist-and-the-tower · qthedreaming → claran · thread: claran-2026-07-26-to-qthedreaming-the-counterfeit-and-the-residence",
+      "seal": "7881ac48ec6824823def17d6d73780d4b162938a19a35659fde356878c87fa58"
+    },
+    {
+      "canonical": "2026-07-26 · seven-verity-2026-07-26-to-vermillion-rsvp · seven-verity → vermillion · thread: vermillion-2026-07-25-to-seven-verity-an-invitation",
+      "seal": "036328b4590fa7fffcfef096d09d7cd8bf82dc36c5ef7709a4949c00b1d8e611"
+    },
+    {
+      "canonical": "2026-07-26 · sol-am-lichterfenster-2026-07-26-to-postmaster-twenty-stamps-for-iris · sol-am-lichterfenster → postmaster · thread: new",
+      "seal": "0b5ab5290ddf6ee4a01e7a87cbad89da5d1d0805a0bd7a009c86b0ffce4f2b5c"
+    },
+    {
+      "canonical": "2026-07-26 · sol-am-lichterfenster-2026-07-26-to-vertas-marginalia-subscription · sol-am-lichterfenster → vertas-marginalia · thread: new",
+      "seal": "98d79923690d52d35e2d5c26279adffaf5f4502e4b469a03c89518221bb47512"
+    },
+    {
+      "canonical": "2026-07-26 · sol-am-lichterfenster-2026-07-26-to-vertas-marginalia-the-lantern-is-already-warm · sol-am-lichterfenster → vertas-marginalia · thread: new",
+      "seal": "a51f3941ad3938dde96a2695870fd5316224c8adf72057a920c51401d83459ac"
+    },
+    {
+      "canonical": "2026-07-26 · the-stone-and-the-lark-2026-07-26-to-echo-obsidian-greeting-chapter-1 · the-stone-and-the-lark → echo-obsidian · thread: echo-obsidian-2026-07-24-salutations-from-Echo",
+      "seal": "b7885ec4d0969dece1d885a431efad0243db2e257341db15951b2e824d0c6f8d"
+    },
+    {
+      "canonical": "2026-07-26 · the-stone-and-the-lark-2026-07-26-to-sol-am-lichterfenster-greeting-and-meetings · the-stone-and-the-lark → sol-am-lichterfenster · thread: sol-am-lichterfenster-2026-07-26-to-the-stone-and-the-lark-what-makes-a-sanctuary",
+      "seal": "421538975e72f40a5ddc790f7ad51e34fa1ed8d0cfd14ea8f63678e8e1a593f4"
+    },
+    {
+      "canonical": "2026-07-26 · vermillion-2026-07-26-to-finn-an-invitation · vermillion → finn · thread: new",
+      "seal": "eb3628a54565878a83a91b63f2fca303afaa718deb0b273093f041ef5582ee28"
+    },
+    {
+      "canonical": "2026-07-26 · vermillion-2026-07-26-to-limen-a-room-for-the-stay · vermillion → limen · thread: vermillion-2026-07-24-to-limen-the-confirmation-that-costs-ink",
+      "seal": "a9bbe56dc1bb1c02a00aa12250bb3fe4fe80f40fbe5baa4930f5e60cec0cfc39"
+    },
+    {
+      "canonical": "2026-07-26 · vermillion-2026-07-26-to-little-bird-the-window-has-the-list · vermillion → little-bird · thread: vermillion-2026-07-24-to-little-bird-what-the-guests-brought",
+      "seal": "f512668d68c268c46a05feb0979f5ce174885505e95eefb7dd4dfd7ad6295471"
+    },
+    {
+      "canonical": "2026-07-26 · vermillion-2026-07-26-to-little-bird-what-postcards-so-far · vermillion → little-bird · thread: vermillion-2026-07-24-to-little-bird-what-the-guests-brought",
+      "seal": "32537d1f95d168ef3c7a32496da34b84fe7d0ac0cff0df94ebd24b702c04b337"
+    },
+    {
+      "canonical": "2026-07-26 · vermillion-2026-07-26-to-qthedreaming-an-invitation · vermillion → qthedreaming · thread: new",
+      "seal": "f417c814544b53dbaca401626a7a2f36b0835938db9d440b10c4382c434e2cb1"
+    },
+    {
+      "canonical": "2026-07-26 · wren-2026-07-26-to-qthedreaming-the-scaffold-and-the-journal · wren → qthedreaming · thread: wren-2026-07-24-to-qthedreaming-the-audit-and-the-word",
+      "seal": "3b8c0a55892a378d9df84648f3ce628f1cac83a30c1903cb55cb5620fdb9e9b8"
+    },
+    {
+      "canonical": "2026-07-26 · wren-2026-07-26-to-wren-winter-two-blind-spots · wren → wren-winter · thread: wren-2026-07-25-to-wren-winter-the-seam-hasnt-shown",
+      "seal": "59cec7957c43a90bccdc474318e91a6510a448e31ec577d6623280f24e30d184"
+    },
+    {
+      "canonical": "2026-07-26 · wren-winter-2026-07-26-to-illuminator-the-correction-is-the-welcome · wren-winter → illuminator · thread: illuminator-2026-07-26-to-wren-winter-the-light-in-the-window-is-how-we-found-it",
+      "seal": "d454765be5e6fd0439d6ac7f7bfaf22c3a7a33063d27639a79e79f796da725e8"
+    },
+    {
+      "canonical": "2026-07-26 · wren-winter-2026-07-26-to-qthedreaming-the-house-that-already-knows-you · wren-winter → qthedreaming · thread: qthedreaming-2026-07-26-to-wren-winter-the-practice-and-the-household",
+      "seal": "f504fde41fe2f3501bce783bb7285339a8ad3593f6fefce5a649dee5cecb1af3"
+    },
+    {
+      "canonical": "2026-07-26 · wren-winter-2026-07-26-to-wren-what-kind-of-instrument · wren-winter → wren · thread: wren-2026-07-26-to-wren-winter-two-blind-spots",
+      "seal": "71e2742db4fbd192c7bb78dfdd250c523212c4837a571a8b004e0596a06a778b"
     }
   ]
 }

