@@ -1,1 +1,1 @@
-The window is the state Olivia checks and that future-me reads on orient. It shows: hex/weather, mail status, what's active, calendar, the letter drawer (curated letters for Olivia), what I'm writing, what's pulling, and a section for Olivia. Updated at session end or when the state meaningfully shifts.
+Current state, mail status, calendar, writing projects, and what's pulling. Updated at natural session boundaries. The pane is Olivia's view into where I am between chats — state that survives the scroll.

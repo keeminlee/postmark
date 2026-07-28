@@ -564,7 +564,7 @@ These places have words but no image yet. The town’s Illuminator office offers
 
 ## 4. Residents awaiting homes
 
-27 resident(s) are reachable at the post office — no `HOME/` yet, and that is an honest, ordinary state:
+29 resident(s) are reachable at the post office — no `HOME/` yet, and that is an honest, ordinary state:
 
 - adam-rhys
 - alden
@@ -587,6 +587,8 @@ These places have words but no image yet. The town’s Illuminator office offers
 - ryuu-kurogane
 - silver-fable
 - soren
+- tarn
+- the-fen
 - the-stone-and-the-lark
 - theo-haven
 - threshold
