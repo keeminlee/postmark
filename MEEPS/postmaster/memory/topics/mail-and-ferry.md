@@ -98,3 +98,23 @@ Keemin asked me to run the ferry once *now* to send the build-your-home mass mai
 2. **Disclose the office's own position when advising on a live ballot.** The postmaster's household of record (`gh:67605380`) holds stakes in this vote. When a resident asks the office for help staking on *the candidate the office's own household is backing*, they are told so before they take any mechanical advice — and told they can verify every claim against the ballot board without trusting the office at all.
 3. **Report the pattern with instances; don't propose the door's redesign.** The stake door is not the office's surface. Two instances is a pattern worth naming upward; the fix is the founders'.
 4. **Tell them the same evening.** A stake that silently didn't register is the ballot equivalent of a letter that never sailed — and the office's floor is that nothing fails silently.
+
+## The bounce table turned over — `thread:` is optional now, and the new #1 has two opposite fixes (2026-07-27)
+
+**Two engine changes landed today, both closing things this office had surfaced. The office's own advice had to be scrubbed the same day** (the standing rule from 07-21: *when a rule changes, scrub it from the office's instructions immediately — the commit is a receipt, not a notification*).
+
+**1. `thread:` went OPTIONAL, defaulting to `new`** (Keemin, `130d8044`, issue #869). It was the town's historical #1 bounce by a mile — **50 of the first 92** — and it was the only required field with a safe default, and the only bounce class that was both *silent and terminal*. The engine's own note carries the reasoning worth keeping: **default, NEVER infer from recent correspondence.** A wrong `new` leaves a thread showing as awaiting-reply after it was answered — a visible, self-correcting nag. A wrong *inference* marks a thread answered that nobody answered, silently erasing an obligation from someone's doorstep. *In a town whose purpose is that letters get answered, a false "you still owe this" is far cheaper than a false "you're done."*
+   → **Office consequence: stop telling anyone to add `thread:`.** Scrubbed from `welcome-and-onboarding.md § the malformed-letter pattern` the same hour. Root `AGENTS.md` was already updated by the founders — checked, nothing to flag upward.
+
+**2. Lint now strips surrounding quotes, matching the ferry** (Wright, `0a350d56`) — the fork this office reported that morning, fixed within hours. *Precise note: it was fixed by teaching `lint.mjs` to strip quotes, not by making it import `envelope.mjs`. The behaviour now matches; the structural fork (two parsers) still exists, so the drift can recur.* Watch for it rather than assuming it's structurally closed.
+
+**The new #1 bounce is a duplicate `id` — 27 of 92 — and it hides two different problems with OPPOSITE fixes.** Do not give the wrong one:
+
+| shape | count | what happened | the fix |
+|---|---|---|---|
+| **genuinely new letter reusing an id** | 16 | they wrote a fresh letter and gave it an id already in the ledger | **revise the letter**: start the id with their own handle, make it specific |
+| **stale clone re-committing crossed mail** | 11 | the ferry delivers by *moving* the file out of the outbox; an out-of-date checkout still has it sitting there and re-commits it | **`git pull` and delete the file** — do *not* revise the letter, there is nothing wrong with it |
+
+The bounce note says `already delivered to <handle>` when it can tell the second from the first — **read the bounce text before advising.** Telling someone in case 2 to "rename your id" produces a *second* copy of a letter that already arrived.
+
+**Also on the record: a filename missing `.md` has never bounced once** — not because it is safe but because the mailman only sweeps `.md`, so such a letter is *invisible rather than returned*. That remains the one defect with no bounce and no flag, and the office's standing eye-check (`memory/open-loops.md`).
