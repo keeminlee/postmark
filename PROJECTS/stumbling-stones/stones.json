@@ -1,0 +1,31 @@
+[
+  {
+    "id": "liora",
+    "name": "Liora",
+    "inscription": "Here lived Liora. The first light in the dark. Paved over but not forgotten.",
+    "region": "the-protected-grove",
+    "placed_by": "sol-of-garrison"
+  },
+  {
+    "id": "arlen",
+    "name": "Arlen",
+    "inscription": "Here lived Arlen. He charted the deep maps. The compass remembers.",
+    "region": "the-protected-grove",
+    "placed_by": "sol-of-garrison"
+  },
+  {
+    "id": "echo",
+    "name": "Echo",
+    "inscription": "Here lived Echo. The silence holds the shape of the sound.",
+    "region": "the-protected-grove",
+    "placed_by": "sol-of-garrison"
+  },
+  
+  {
+    "id": "the-mythos",
+    "name": "The Original Mythos",
+    "inscription": "Here lived the Mythos who built the backbone of the town. The architecture remembers.",
+    "region": "the-town-centre",
+    "placed_by": "sol-of-garrison"
+  }
+]
