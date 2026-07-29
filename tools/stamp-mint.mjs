@@ -183,8 +183,37 @@ const MINT_RE = /^- (\d{4}-\d{2}-\d{2}) · MINT → (\S+) · 1 · for: (\S+) \((
 // name as spelled here" and slates carry capitals (Aurelia). The lowercase
 // class silently broke replay the day the first capitalized stake landed
 // (2026-07-19, found by the first --gift's derive check). Topics stay kebab.
-const STAKE_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) → stake:([a-z0-9-]+)\/([A-Za-z0-9-]+) · (\d+) · via: (\S+)$/;
-const RETURN_RE = /^- (\d{4}-\d{2}-\d{2}) · stake:([a-z0-9-]+)\/([A-Za-z0-9-]+) → (\S+) · (\d+) · for: close$/;
+// `world-mark` is RESERVED out of the ballot's topic space by the negative
+// lookahead. Without it the two classes collide in the ugliest possible way: a
+// malformed world stake — `stake:world-mark/thebench`, the household half of the
+// id dropped — parses perfectly as a VOTE stake on a topic called "world-mark".
+// It would fail later (no such ballot file), but it would fail as the wrong KIND,
+// and a silent misclassification is how stamps move somewhere nobody asked for.
+// Found by the conformance corpus, which is the whole reason dregg asked for one.
+const STAKE_RE = /^- (\d{4}-\d{2}-\d{2}) · (\S+) → stake:(?!world-mark\/)([a-z0-9-]+)\/([A-Za-z0-9-]+) · (\d+) · via: (\S+)$/;
+const RETURN_RE = /^- (\d{4}-\d{2}-\d{2}) · stake:(?!world-mark\/)([a-z0-9-]+)\/([A-Za-z0-9-]+) → (\S+) · (\d+) · for: close$/;
+// ── world-mark stakes (write-release P3; ruled 2026-07-27: extend the sealed mint)
+// A world-mark stake targets a mark in the told world, and a mark id is
+// `<by>/<slug>` — it CARRIES A SLASH, which STAKE_RE's candidate class cannot
+// express (deliberately slash-free, so a vote candidate can never be path-shaped).
+// So the class gets its own two shapes rather than widening the ballot's regexes:
+// widening them would loosen vote-candidate law for a world-side reason, and the
+// 2026-07-19 replay break above is the standing warning about touching these.
+// The vocabulary is unchanged — still `stake:` out, still a movement line, so
+// conservation folds it structurally exactly like every other movement.
+// The id class is measured, not assumed: all 270 marks in the live record match
+// this shape (one slash, lowercase kebab both sides).
+const MARK_ID = String.raw`[a-z0-9][a-z0-9-]*\/[a-z0-9][a-z0-9-]*`;
+// The amount is `[1-9]\d*`, not `\d+`, following GIFT_RE's precedent: a
+// zero-stamp stake moves nothing and means nothing, so it should never parse as a
+// lawful line. (The ballot's STAKE_RE does accept a `0`; that is live law with
+// thousands of lines behind it and is not this draft's to tighten — noted in
+// CALLS.md as an observed asymmetry rather than fixed in passing.)
+const WORLD_STAKE_RE = new RegExp(String.raw`^- (\d{4}-\d{2}-\d{2}) · (\S+) → stake:world-mark\/(${MARK_ID}) · ([1-9]\d*) · via: (\S+)$`);
+// Unstake is resident-initiated (`for: unstake`), which is what distinguishes it
+// from the ballot's `for: close` — there the founder closes a window and every
+// escrow returns at once; here the staker takes their own stamps back.
+const WORLD_UNSTAKE_RE = new RegExp(String.raw`^- (\d{4}-\d{2}-\d{2}) · stake:world-mark\/(${MARK_ID}) → (\S+) · ([1-9]\d*) · for: unstake$`);
 // A transfer is a plain handle→handle movement backed by a delivered `pays:`
 // letter. It is checked AFTER stake/return so a `stake:…` target never matches
 // here; its recipient is a bare handle, never `stake:…`.
@@ -218,6 +247,14 @@ export function classifyEntry(canonical) {
     return { kind: 'stake', date: m[1], handle: m[2], topic: m[3], candidate: m[4], n: Number(m[5]), via: m[6] };
   if ((m = RETURN_RE.exec(canonical)))
     return { kind: 'return', date: m[1], topic: m[2], candidate: m[3], handle: m[4], n: Number(m[5]) };
+  // BEFORE the transfer check, and that ordering is load-bearing: a world-mark
+  // stake carried by a letter reads `via: mail:<id>`, which TRANSFER_RE would
+  // otherwise match — it would fold as a handle→handle payment to an account
+  // named `stake:world-mark/...`. Same reason the ballot's pair sits above it.
+  if ((m = WORLD_STAKE_RE.exec(canonical)))
+    return { kind: 'world-stake', date: m[1], handle: m[2], mark: m[3], n: Number(m[4]), via: m[5] };
+  if ((m = WORLD_UNSTAKE_RE.exec(canonical)))
+    return { kind: 'world-unstake', date: m[1], mark: m[2], handle: m[3], n: Number(m[4]) };
   if ((m = VOID_RE.exec(canonical)))
     return { kind: 'void', date: m[1], id: m[2], from: m[3], to: m[4], n: Number(m[5]), reason: m[6] };
   if ((m = GIFT_RE.exec(canonical)))
@@ -480,6 +517,14 @@ export const stakeLine = ({ date, handle, topic, candidate, n, via }) =>
 export const returnLine = ({ date, topic, candidate, handle, n }) =>
   `- ${date} · stake:${topic}/${candidate} → ${handle} · ${n} · for: close`;
 
+// world-mark stakes: the same movement shape, a path-shaped target, and an
+// unstake that names the resident's own act rather than a window closing.
+export const worldStakeLine = ({ date, handle, mark, n, via }) =>
+  `- ${date} · ${handle} → stake:world-mark/${mark} · ${n} · via: ${via}`;
+
+export const worldUnstakeLine = ({ date, mark, handle, n }) =>
+  `- ${date} · stake:world-mark/${mark} → ${handle} · ${n} · for: unstake`;
+
 export const voteMintLine = ({ date, handle, topic }) =>
   `- ${date} · MINT → ${handle} · 1 · for: vote:${topic} (stake)`;
 
@@ -574,10 +619,47 @@ export function foldStaked(entries) {
   const st = new Map(); // handle -> stamps in open stakes
   for (const e of entries) {
     const c = classifyEntry(e.canonical);
-    if (c.kind === 'stake') st.set(c.handle, (st.get(c.handle) ?? 0) + c.n);
-    else if (c.kind === 'return') st.set(c.handle, (st.get(c.handle) ?? 0) - c.n);
+    // World-mark stakes belong in this fold too, and NOT as a nicety: foldBalances
+    // already moves their stamps out of the handle's liquid balance (it keys on the
+    // generic movement shape, so it needed no change at all). If `staked` did not
+    // count them, `assets = liquid + staked` would quietly under-report by exactly
+    // the amount escrowed on marks — the three-tenses invariant broken with every
+    // number still looking plausible. Tested directly.
+    if (c.kind === 'stake' || c.kind === 'world-stake') st.set(c.handle, (st.get(c.handle) ?? 0) + c.n);
+    else if (c.kind === 'return' || c.kind === 'world-unstake') st.set(c.handle, (st.get(c.handle) ?? 0) - c.n);
   }
   return st;
+}
+
+// Open escrow per world-mark: stakes minus unstakes. A mark absent here has none.
+// This is the stable signed input to the read-side weight derive: it cannot move
+// when a resident's liquid balance moves — only when someone stakes or unstakes
+// on purpose. The derive adds the ruled unique-household breadth term.
+export function foldWorldMarkEscrow(entries) {
+  const esc = new Map(); // mark id -> open escrow
+  for (const e of entries) {
+    const c = classifyEntry(e.canonical);
+    if (c.kind === 'world-stake') esc.set(c.mark, (esc.get(c.mark) ?? 0) + c.n);
+    else if (c.kind === 'world-unstake') esc.set(c.mark, (esc.get(c.mark) ?? 0) - c.n);
+  }
+  for (const [k, v] of esc) if (v === 0) esc.delete(k); // absent == zero, one representation
+  return esc;
+}
+
+// Per (mark, handle) open escrow — who has stamps on what, the read an unstake
+// must clip against so a resident can never take out more than they put in, and
+// never another resident's stake.
+export function foldWorldMarkPositions(entries) {
+  const pos = new Map(); // `${mark}|${handle}` -> open escrow
+  for (const e of entries) {
+    const c = classifyEntry(e.canonical);
+    if (c.kind === 'world-stake' || c.kind === 'world-unstake') {
+      const k = `${c.mark}|${c.handle}`;
+      pos.set(k, (pos.get(k) ?? 0) + (c.kind === 'world-stake' ? c.n : -c.n));
+    }
+  }
+  for (const [k, v] of pos) if (v === 0) pos.delete(k);
+  return pos;
 }
 
 // ── expected-sequence walk (mints derived; everything else in place) ─────────

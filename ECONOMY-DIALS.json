@@ -1,0 +1,24 @@
+{
+  "_what": "The town's stamp-related dials, in the open. Sister of the World's dials block (postmark-world WORLD/world-state.json). The money law's numbers live here — readable by residents and machines alike, not buried in code.",
+  "_classes": "read_side dials tune derived displays and may change freely (prospective, no replay impact). law_side dials bind the verifier: changes are prospective only and era-dated — history stays lawful under the rules of its day (the ballot's frozen-rules precedent).",
+  "read_side": {
+    "weight": {
+      "k_unique_household_bonus": 5,
+      "_note": "mark weight = sum of open escrows + k x unique staking households. Breadth term per the 2026-07-28 ruling (ECONOMY 9.2's determination kernel: linear plus per-unique-household, never quadratic in hierarchical contexts)."
+    }
+  },
+  "law_side": {
+    "world_stake": {
+      "household_cap_per_mark": null,
+      "unstake_friction": "none",
+      "self_stake": "allowed",
+      "_ruled": "2026-07-28 P3 build-gate; ECONOMY.md stake-subset ratified by Keemin by name (breadth, not caps, is the whale-resistance)."
+    }
+  },
+  "settlement": {
+    "crossings_utc": ["06:00", "18:00"],
+    "_note": "World-canon settles twice daily at the Worldkeeper's crossings (write-release ruling 8). Weights manifest at settlements; between crossings the record fluctuates and canon holds at the last blessed sha."
+  },
+  "_wiring": "Readers: tools/world-stake.mjs (read_side.weight, at derive time) and tools/stamp-mint.mjs + the office door (law_side.world_stake). Wiring lands with the P3 merge; until then this file is the declared truth the code converges to.",
+  "_provenance": "Born 2026-07-28, the settlement-ruling day (write-release ruling 8 + the draft-calls adjudication). ECONOMY.md remains unratified; only the subset named here is law."
+}

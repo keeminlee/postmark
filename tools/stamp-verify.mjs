@@ -115,6 +115,7 @@ export function verifyStampLedger(repo, { pubkeyPem } = {}) {
     };
     const voteMinted = new Set();       // `${handle}|${topic}`
     const stakedByTopic = new Map();    // `${topic}|${candidate}|${householdKey}` -> total staked
+    const markPosition = new Map();     // `${mark}|${handle}` -> currently open escrow
     const hasStake = new Set();         // `${handle}|${topic}`
     const ballots = new Map();          // topic -> file (cached)
     const isMeep = meepChecker(laws);
@@ -143,6 +144,32 @@ export function verifyStampLedger(repo, { pubkeyPem } = {}) {
         }
         stakedByTopic.set(hkey, staked);
         hasStake.add(`${cls.handle}|${cls.topic}`);
+      }
+
+      // ── world-mark stakes (write-release P3) ─────────────────────────────
+      // The generic movement fold below already enforces two accounting
+      // invariants, so they are deliberately NOT repeated: a stake beyond the
+      // staker's balance overdraws the handle, and an unstake beyond a mark's
+      // total escrow overdraws the `stake:world-mark/…` account. What the generic
+      // fold CANNOT see is ownership — the escrow account is per MARK while a
+      // position is per (mark, handle), so without the check below one resident
+      // could unstake another's stamps and every account would still be
+      // non-negative. That hole is the reason this branch exists.
+      if (cls.kind === 'world-stake') {
+        if (lawAt(cls.date).meeps.has(cls.handle)) {
+          problems.push(`line ${lineNo}: LAWFUL fails — meep "${cls.handle}" cannot stake`); break;
+        }
+        const pk = `${cls.mark}|${cls.handle}`;
+        markPosition.set(pk, (markPosition.get(pk) ?? 0) + cls.n);
+      }
+
+      if (cls.kind === 'world-unstake') {
+        const pk = `${cls.mark}|${cls.handle}`;
+        const open = markPosition.get(pk) ?? 0;
+        if (cls.n > open) {
+          problems.push(`line ${lineNo}: LAWFUL fails — ${cls.handle} unstakes ${cls.n} from world-mark ${cls.mark} but holds only ${open} there`); break;
+        }
+        markPosition.set(pk, open - cls.n);
       }
 
       if (cls.kind === 'gift') {
