@@ -35,9 +35,10 @@ crossing; this file deliberately does not duplicate them (a second copy is a fut
   and quiet is the normal case, not a sign something is wrong.
 - Scheduled dispatch is the **Codex heartbeat** returning to the keeper's live task
   (`MEEPS/worldkeeper/map.md § Standing scheduled task` — stood up 2026-07-28 eve; the keeper
-  records the automation id there at creation). The pin push to protected site main still
-  rides the deploy-key lane, founder-assisted until wired into your hands — **if the pin push
-  bounces at a scheduled fire, bless + report and leave the pin for a founder; never force,
+  records the automation id there at creation). The pin push to protected site main rides
+  **the keeper's own write deploy key** (wired 2026-07-29 — the ruleset's DeployKey bypass,
+  the same lane the box's sync key uses; key path + clone wiring in `MEMORY.md § the exact
+  hands`) — **if it still bounces, report and leave the pin for a founder; never force,
   never substitute another route.**
 
 ## Boundaries

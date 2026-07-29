@@ -50,7 +50,24 @@ agent's clone" is the whole rule.
 
 > **CORRECTED 2026-07-22 — this line used to say "also where the ferry runs," and that has been false since 2026-07-08.** The ferry cut over to the box that day (`postmark-ferry.timer` on `meepo-ec2`, verified active and last-fired at the 12:00 UTC crossing); the local PC tasks were disabled. `Postmark Pen`'s commits appear in this clone because someone **pulled** them, not because anything runs here. Nothing about this path is canonical any more — the ferry, the office API and the rehydrate timer are all box-side. Kept as a correction rather than a silent edit because the stale line was actively used as a reason: it was cited on 2026-07-22 to justify keeping the office in a shared clone, by someone who had read it and not checked it.
 
-**The office's own pen (2026-07-17).** Ferry writes GitHub as **`ferry-postmark`** — his own disclosed machine account, not the founder's. Your clone's local git config authors + pushes as Ferry; leave it as it is. **(Since the 07-22 per-Meep split this rule is finally what it always meant to say — it pins *your* clone to *you*. It used to pin a shared clone to you, which is why the Illuminator's commits were landing under your name: she was standing in your room and the rule told her not to move the furniture. She has her own clone now.)** For `gh` commands (PR comments, labels, merges, api calls), **set the token first, every round**: `$env:GH_TOKEN = Get-Content G:/postmark/.secrets/ferry-gh-token` (PowerShell) or `export GH_TOKEN=$(cat /g/postmark/.secrets/ferry-gh-token)` (bash) — without it, gh falls back to the founder's auth and the byline lies. Provenance: the 07-17 attribution miss (Ferry's #441 comment read as Keemin's); the pen-identity silver `wright-2026-07-17-postmark-meep-github-identities.md`.
+**The office's own pen (2026-07-17).** Ferry writes GitHub as **`ferry-postmark`** — his own disclosed machine account, not the founder's. Your clone's local git config authors + pushes as Ferry; leave it as it is. **(Since the 07-22 per-Meep split this rule is finally what it always meant to say — it pins *your* clone to *you*. It used to pin a shared clone to you, which is why the Illuminator's commits were landing under your name: she was standing in your room and the rule told her not to move the furniture. She has her own clone now.)** For `gh` commands (PR comments, labels, merges, api calls), **the token must be set in the SAME shell invocation as the `gh` call itself** — not once at the top of the round:
+
+```
+$env:GH_TOKEN = (Get-Content G:/postmark/.secrets/ferry-gh-token).Trim(); gh pr merge <n> --repo keeminlee/postmark --merge
+```
+```
+export GH_TOKEN=$(cat /g/postmark/.secrets/ferry-gh-token); gh pr merge <n> --repo keeminlee/postmark --merge
+```
+
+**Why it reads this way now (REVISED 2026-07-29, Keemin-authorized after the office merged two PRs under his name).** This line used to say *"set the token first, every round,"* and that instruction is **unsatisfiable in a runtime where shell state does not persist between tool calls** — which is the office's runtime. Only the working directory carries over; environment variables do not. So a token set in the round's opening command is already gone by the time a later command runs `gh pr merge`, `gh` silently falls back to the keyring auth (**the founder's**), and the merge succeeds under the wrong name with **no error and no warning**. *A per-round instruction cannot be met by a per-round act when state is per-call.*
+
+**Verify the effect, not the act** — *"I set the token"* is an annotation; these two are the artifact:
+- `gh api user --jq '.login'` **in that same invocation** → must read `ferry-postmark`.
+- after any merge, `gh pr view <n> --json mergedBy` → says who the town will think looked at it.
+
+**Note the split that hides this failure: `gh` ≠ `git`.** Commits and pushes use the clone's own identity (`Ferry <ferry-postmark>`) and are **unaffected**, so the daily, the board and the office's letters stay correctly signed even while `gh` is writing under the founder's name — every surface the office habitually checks looks right. Only GitHub-side writes lie.
+
+Provenance: the 07-17 attribution miss (Ferry's #441 comment read as Keemin's); the pen-identity silver `wright-2026-07-17-postmark-meep-github-identities.md`; and the 2026-07-29 recurrence (#929/#927 merged + commented as `keeminlee`, owned publicly on both PRs — the second instance had the office *following* this instruction, which is what condemned the old wording). Office-side note: `MEEPS/postmaster/map.md § The office's pen`.
 
 ## The shared law (the rounds point here; nothing below is any single round's)
 

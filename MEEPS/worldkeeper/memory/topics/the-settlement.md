@@ -3,7 +3,7 @@ meep-id: worldkeeper
 type: topic-shelf
 name: the-settlement
 created: 2026-07-28
-last-updated: 2026-07-28
+last-updated: 2026-07-29
 ---
 
 # The Settlement — the crossing's operating truth
@@ -24,17 +24,24 @@ last-updated: 2026-07-28
    Publish eligible marks into main (the settlement commit; move-on-delivery — they leave the
    draft branch). **Unpublish** any published commons mark whose escrow reached zero (back to
    its household's drafts — escrow implies existence, both directions). Lint must pass on the
-   result. *Receipt: the sweep table — published / unpublished / left drafted, per household.*
+   result. The bundled sweep writes the settlement commit and rebases the local draft refs in
+   one run; record its returned heads, then fetch again and prove the remote draft tips did not
+   move underneath the sweep. *Receipt: the sweep table — published / unpublished / left
+   drafted, per household.*
 5. **Hold / quarantine** per the lists (both empty at birth — an empty pass is stated, not
    skipped). *Receipt: the holds ledger line, even when it reads "nothing held."*
-6. **Bless:** fold the settled state with `--stakes`; commit; tag `settlement/S<N>` (annotated,
-   N monotonic). The blessed sha is canon. *Receipt: the tag.*
-7. **Rebase every `draft/*` branch onto the blessed main** — the sketchbooks get today's world
+6. **Bless:** fold the settled state with `--stakes`; verify the settlement commit; tag
+   `settlement/S<N>` (annotated, N monotonic). The blessed sha is canon. *Receipt: the tag.*
+7. **Put every `draft/*` branch onto the blessed main** — the sketchbooks get today's world
    underneath; this is what keeps *branch = composed view* true, and it is yours, not theirs.
-   *Receipt: branch count rebased, conflicts surfaced.*
+   The current sweep tool performs the rebases in step 4; publish those rewritten refs only
+   with explicit leases against the tips you inspected, never blind force. *Receipt: branch
+   count rebased, leases accepted, conflicts surfaced.*
 8. **Bump the pin:** in `postmark-site`, `package.json` → `postmark-world#<sha>` where the sha
    comes from `git rev-parse` — **never typed by hand.** Commit message carries
-   `settlement S<N>`. Push → deploy runs itself. *Receipt: the site commit + CI green.*
+   `settlement S<N>`. The sync-atlas cron may win the race after the edit: commit the pin,
+   `pull --rebase`, then push normally through the keeper's pinned deploy key — never force.
+   Push → deploy runs itself. *Receipt: the site commit + CI green + live artifact check.*
 9. **Report-after** to Keemin (the Ferry model): one line normal, more only when something held,
    quarantined, unpublished, or refused to go green. Update the holds ledger. Daily entry.
 
@@ -50,6 +57,19 @@ last-updated: 2026-07-28
   resident's mark: stop, surface.
 - **GO-LIVE HAPPENED 2026-07-28** — crossings are real. Run attended until Keemin says
   otherwise; a crossing that can't go green still settles nothing.
+
+## First lived correction — S2, 2026-07-29
+
+The first ordinary crossing published nineteen home marks from three sketchbooks, left
+fourteen zero-escrow commons marks drafted, and held or quarantined nothing. Two craft points
+became real:
+
+- **Eligibility is not a hold.** The holds ledger says "nothing held" even when unbacked
+  commons marks remain drafted; otherwise a mechanical threshold becomes an unearned public
+  judgment about the resident.
+- **The pin receipt ends live.** Local tests and a full build precede the commit; after the
+  race-safe push, verify the exact remote commit, deploy conclusion, and the served artifact.
+  S2's live viewer matched the pinned package byte for byte.
 
 ## The inaugural drain — EXECUTED 2026-07-28 (historical)
 

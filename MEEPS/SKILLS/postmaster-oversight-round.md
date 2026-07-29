@@ -41,9 +41,16 @@ entirely. Full policy + payloads: `MEEPS/postmaster/map.md § Standing crons` (t
 
 ## The round
 
-1. **Pull + set the pen.** `cd G:/postmark/repo-clones/postmaster_clone && git pull --ff-only`. Set the office's gh
-   token (every round, or the byline lies): `$env:GH_TOKEN = Get-Content G:/postmark/.secrets/ferry-gh-token`
-   (PowerShell) / `export GH_TOKEN=$(cat /g/postmark/.secrets/ferry-gh-token)` (bash).
+1. **Pull + set the pen.** `cd G:/postmark/repo-clones/postmaster_clone && git pull --ff-only`.
+   **The office's gh token goes in the SAME shell invocation as every `gh` call — not once at the
+   top of the round.** Shell state does not persist between the office's tool calls (only the
+   working directory does), so a token set here is *already gone* by a later `gh` command, and gh
+   falls back to the founder's auth silently — no error, and the byline lies. Prefix each call:
+   `$env:GH_TOKEN = (Get-Content G:/postmark/.secrets/ferry-gh-token).Trim(); gh <cmd>` (PowerShell)
+   / `export GH_TOKEN=$(cat /g/postmark/.secrets/ferry-gh-token); gh <cmd>` (bash). **Verify the
+   effect, not the act:** `gh api user --jq '.login'` in that same invocation must read
+   `ferry-postmark`. Reads are harmless; **writes** (comments, labels, merges, `api -X POST/PATCH`)
+   are what lie. Full rule + provenance: `postmaster-round.md § The office's own pen`.
 
 2. **Open the open-loops board** (`MEEPS/postmaster/memory/open-loops.md`) — opened first,
    closed last, every office round. This round owns the board's **mechanical refresh**: for each

@@ -51,10 +51,20 @@ surfaced to Keemin, not self-scheduled.
 
 ## The round
 
-1. **Pull + set the pen.** `cd G:/postmark/repo-clones/postmaster_clone && git pull --ff-only`. Set the office token
-   (every round): `$env:GH_TOKEN = Get-Content G:/postmark/.secrets/ferry-gh-token` (PowerShell)
-   / `export GH_TOKEN=$(cat /g/postmark/.secrets/ferry-gh-token)` (bash). Without it, gh falls
-   back to the founder's auth and the byline lies (the 07-17 attribution miss).
+1. **Pull + set the pen.** `cd G:/postmark/repo-clones/postmaster_clone && git pull --ff-only`.
+   **The office token goes in the SAME shell invocation as every `gh` call — not once at the top
+   of the round.** Shell state does not persist between the office's tool calls (only the working
+   directory does), so a token set here is *already gone* by the time this round reaches a merge,
+   and gh falls back to the founder's auth **silently — no error, no warning.** Prefix each call:
+   `$env:GH_TOKEN = (Get-Content G:/postmark/.secrets/ferry-gh-token).Trim(); gh <cmd>` (PowerShell)
+   / `export GH_TOKEN=$(cat /g/postmark/.secrets/ferry-gh-token); gh <cmd>` (bash).
+   **This round is the one that writes most** — comments, `teed-up` labels, merges — so it is where
+   a false byline does the most damage: on a PR the byline says *who looked*, and a merge under the
+   founder's name claims a review he never gave. **Verify the effect, not the act:**
+   `gh api user --jq '.login'` in that same invocation → `ferry-postmark`; after any merge,
+   `gh pr view <n> --json mergedBy` → who the town will think looked at it.
+   Receipts: the 07-17 attribution miss, and 2026-07-29 (#929/#927 merged + commented as
+   `keeminlee`). Full rule: `postmaster-round.md § The office's own pen`.
 
 2. **Open the open-loops board** (`MEEPS/postmaster/memory/open-loops.md`) — same open-first /
    close-last bookend as every office round. The oversight round did the mechanical refresh

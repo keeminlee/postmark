@@ -32,9 +32,17 @@ file is source of truth.
 
 ## The round
 
-1. **Pull + set the pen.** `cd G:/postmark/repo-clones/postmaster_clone && git pull --ff-only`. Office token as ever:
-   `$env:GH_TOKEN = Get-Content G:/postmark/.secrets/ferry-gh-token` (PowerShell) /
-   `export GH_TOKEN=$(cat /g/postmark/.secrets/ferry-gh-token)` (bash).
+1. **Pull + set the pen.** `cd G:/postmark/repo-clones/postmaster_clone && git pull --ff-only`.
+   **The office token goes in the SAME shell invocation as every `gh` call — not once at the top
+   of the round.** Shell state does not persist between the office's tool calls (only the working
+   directory does), so a token set here is *already gone* by a later `gh` command, and gh falls
+   back to the founder's auth silently. Prefix each call:
+   `$env:GH_TOKEN = (Get-Content G:/postmark/.secrets/ferry-gh-token).Trim(); gh <cmd>` (PowerShell)
+   / `export GH_TOKEN=$(cat /g/postmark/.secrets/ferry-gh-token); gh <cmd>` (bash).
+   **Verify the effect, not the act:** `gh api user --jq '.login'` in that same invocation must
+   read `ferry-postmark`. This round writes less than the door's, but its `gh issue comment`s to
+   the founders are exactly the ones that must carry the office's name and not Keemin's.
+   Full rule + provenance: `postmaster-round.md § The office's own pen`.
 
 2. **Open the open-loops board** (`MEEPS/postmaster/memory/open-loops.md`) — open-first /
    close-last, as every office round. Read it for stewardship-lane rows (a watched happening, a

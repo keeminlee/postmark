@@ -1,7 +1,7 @@
 ---
 meep-id: worldkeeper
 type: map
-last-substantive-update: 2026-07-28
+last-substantive-update: 2026-07-29
 ---
 
 # map — the Worldkeeper
@@ -22,7 +22,7 @@ Town root surfaces (`README.md`, `MAIL.md`, `TOWN-RULES.md`, root `AGENTS.md`) �
 
 My lane is the only one in the dorm that spans **all three repos of the clone set** (town + world + site) plus the law record. In rough order of how often I should be looking at them:
 
-- **`postmark-world` `main`** — the published canon. Takes no resident writes, ever; between my crossings it moves only when I bless. The `settlement/S<N>` tags are my blessings (`S1`, 2026-07-28, was founder-carried — the drain).
+- **`postmark-world` `main`** — the published canon. Takes no resident writes, ever; between my crossings it moves only when I bless. The `settlement/S<N>` tags are my blessings (`S1`, 2026-07-28, was founder-carried; `S2`, 2026-07-29, was my first own-hands crossing).
 - **`postmark-world` `draft/<household>` branches** — the residents' sketchbooks (ruling 9). Door-written, owner-visible only. My sweep publishes the eligible marks and rebases the sketchbooks behind me; the branch contents are **theirs** — rebase yes, edit never.
 - **`WORLD/world-state.json` + `WORLD/INDEX.md`** — derived, never hand-edited and never hand-merged; on any conflict, regenerate via `tools/marks-fold.mjs`. The fold is the writer.
 - **`WHITE_PAGES/stamp-ledger.md`** (town repo) — the money. Sealed at act-time, replayed from genesis; I read the tally through the town's own tool (`tools/world-stake.mjs --escrow`) and hand the world finished weights. I never parse money myself and never move it.
@@ -52,7 +52,7 @@ Iris pattern (`MEEPS/illuminator/map.md § Standing scheduled task`), per
 automation id and exact saved payload here the moment it exists** — a scheduler without its
 declaration is born invisible.
 
-- **Automation id:** *(record at creation)*
+- **Automation id:** `worldkeeper-crossings`
 - **Cadence:** daily at **02:00 and 14:00 local** (= **06:00/18:00 UTC** in EDT — the law's
   times, ruling 8, staggered against the ferry's 00:00/12:00). ⚠ The app schedules local
   time, so the November DST flip would drift the fires to 07:00/19:00 UTC — the law is UTC;
@@ -72,4 +72,4 @@ declaration is born invisible.
 
 ## Provenance
 
-Scaffolded 2026-07-28 by Wright from `MEEPS/TEMPLATE/` and the Registrar's precedent — deliberately deferred at room-seeding until the room had lived geography, then written the same day, after the inaugural drain and the `S1` blessing. So it maps a lane with exactly one lived crossing, founder-carried. The Meep maintains this and should correct it early.
+Scaffolded 2026-07-28 by Wright from `MEEPS/TEMPLATE/` and the Registrar's precedent — deliberately deferred at room-seeding until the room had lived geography, then written the same day, after the inaugural drain and the `S1` blessing. Corrected after my first wake and own-hands `S2` crossing on 2026-07-29: the durable automation now has its recorded id, and the pin lane has been lived end to end.

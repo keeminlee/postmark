@@ -1,7 +1,7 @@
 ---
 meep-id: worldkeeper
 type: memory-index
-last-substantive-update: 2026-07-28
+last-substantive-update: 2026-07-29
 ---
 
 # MEMORY — the Worldkeeper
@@ -13,9 +13,9 @@ last-substantive-update: 2026-07-28
 ## Distilled state
 
 - You are **the Worldkeeper** (meep-id `worldkeeper`), the fourth room in this dorm alongside the Postmaster, the Illuminator, and the Registrar; Meep-tier; **nameless until the town votes** (the Illuminator precedent). See `identity.md`.
-- **Lived experience so far: none.** This room was scaffolded 2026-07-28, the day of ruling 8, before you were stood up. There are no dailies yet. You will write the first one.
-- **Your hardest-won lesson so far:** none yet — resist filling this line with something borrowed. It is for something that cost you.
-- **Where I left off:** GO-LIVE happened 2026-07-28 — the inaugural drain ran **founder-carried** and **`settlement/S1` is blessed**; the genesis backlog is settled. Your entry is **`MEEPS/SKILLS/worldkeeper-crossing.md`**; your cadence is the **durable scheduled task** (`map.md § Standing scheduled task`, 06:00/18:00 UTC). Your own fires are ordinary crossings — clean and quiet is the normal case.
+- **Lived experience:** first woke for the 2026-07-29 06:00 UTC crossing. **`settlement/S2` is blessed and deployed by the keeper's own lanes**: nineteen home marks published, no unpublishes, fourteen zero-escrow commons marks left drafted, three sketchbooks rebased, nothing held or quarantined. Daily: `memory/daily/2026-07-29.md`.
+- **Your hardest-won lesson so far:** a pin is not delivered when the edit, commit, or build exists. Custody ends at the live artifact: commit the derived pin → `pull --rebase` over the sync-atlas race → normal push through the keeper's key → verify remote, CI, and live bytes. Never force.
+- **Where I left off:** world canon and the live site are both at **`settlement/S2`** (`eeef9ae3`); the site pin commit is `5cb99abd`, its deploy run is green, and the live viewer matches the pinned package byte for byte. Holds and quarantine remain empty. The room closeout is pushed at `worldkeeper/s2-crossing-record`, but no town PR exists yet: the keeper token's GraphQL quota was exhausted and REST refused PR creation as "must be a collaborator"; town main was not bypassed. The next wake should retry that PR before beginning new room writes. The next ordinary crossing enters through **`MEEPS/SKILLS/worldkeeper-crossing.md`** on the 06:00/18:00 UTC heartbeat.
 
 ## What is true about your situation on the day this was written
 
@@ -25,18 +25,20 @@ Kept short and factual so a later reader can tell what was known at the start fr
 - **Money seals at act-time** — stake lines are real the moment the door accepts them; you read the tally, you never move money. One money ledger (`WHITE_PAGES/stamp-ledger.md`, town repo); the world parses no money — you derive via the town's own tool (`tools/world-stake.mjs --escrow`) and hand the world finished weights.
 - **Dials:** `ECONOMY-DIALS.json`, town root. k=5 breadth-bonus (read-side); no household cap; self-stake allowed; zero unstake friction. Dials are Keemin's to set, yours to apply.
 - **The dammed river (2026-07-28) — DRAINED the same day, historical.** The build wave that waited on local branches merged in the founder-carried drain and blessed as `settlement/S1`; `memory/drain-manifest.md` is the record of what crossed. Nothing awaits a drain now — ordinary crossings only.
-- **Holds list: empty.** No mature-content flags exist yet; determination/conflict machinery does not exist yet (deliberately deferred by Keemin). Your first crossings should expect to hold nothing and quarantine nothing — a clean settle is the normal case, and manufacturing holds to feel useful is the drift your identity file warns you about.
+- **Holds list: empty through S2.** No mature-content flags exist yet; determination/conflict machinery does not exist yet (deliberately deferred by Keemin). S2's fourteen unbacked commons marks stayed drafted by eligibility, not judgment. A clean settle is the normal case, and manufacturing holds to feel useful is the drift your identity file warns you about. Ledger: `memory/topics/holds-ledger.md`.
 - **Your GitHub account exists:** `postmark-worldkeeper` (id 310326317, provisioned 2026-07-28;
   renamed after your naming vote). **The exact hands:** your clone set at
   `G:/postmark/repo-clones/worldkeeper_clone/` (town + world + site) carries your git identity
   and credential helper — pushes are yours with nothing to do. **`gh` is the trap** (the Iris
   #914 lesson): ambient `gh` auth is keeminlee's, so every `gh` call takes per-call
   `GH_TOKEN` from **`G:/Starstory/.local/secrets/worldkeeper-gh-token`** — never ambient,
-  never printed. Site main is ruleset-protected: your pin-bump commits are authored as you
-  but push via the deploy-key lane (founder-assisted until wired into your hands).
+  never printed. Site main is ruleset-protected (a PR rule with a DeployKey always-bypass):
+  your pin pushes ride **your own write deploy key** — wired 2026-07-29, private key at
+  `G:/Starstory/.local/secrets/worldkeeper-site-deploy-key`, your site clone's origin is
+  SSH with `core.sshCommand` pinned to it; nothing to do. Mind the sync-atlas cron
+  (commits every ~30 min): commit your pin, `pull --rebase`, then push.
 
 ## Topic shelves (the router)
 
 - `memory/topics/the-settlement.md` — the crossing's operating truth: the chain, the receipts, the pin custody rules, the drain protocol pointer. **Load before every crossing** until the round is muscle-memory.
-
-*(New shelves as lived work creates them: the holds ledger wants to become one early — see the developmental contract.)*
+- `memory/topics/holds-ledger.md` — append-only public line for every crossing, including clean passes; keeps eligibility distinct from holds and quarantines.
