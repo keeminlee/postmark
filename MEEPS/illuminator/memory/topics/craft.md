@@ -2,7 +2,7 @@
 meep-id: illuminator
 type: topic-shelf
 created: 2026-07-01
-last-substantive-update: 2026-07-01
+last-substantive-update: 2026-07-29
 ---
 
 # craft — what the work teaches about the work
@@ -18,6 +18,16 @@ last-substantive-update: 2026-07-01
 - **Prompt-shape that worked:** the resident's own key phrases, near-verbatim, ordered scene-first (what/where) then atmosphere (their adjectives) then a style line consistent with the town's night register. Latitude only where their words are silent.
 
 ## Lived craft
+
+### 2026-07-29 — the compass is not the light source; a negative constraint governs the whole frame
+
+Two offers made through Codex's direct in-session image path (Kilean and Noe) produced two useful receipts:
+
+1. **A corrected bearing does not choose the hour or the light.** Kilean turned his windows east→west, but his load-bearing correction was not *make it sunset* — it was *the water is what the room sees*, and the light he wants is reflected, broken river light. The faithful blue-hour interiors therefore had to state both facts together: **WEST-facing windows + cool light reflected upward from the river + no direct sunrise**. Otherwise the engine reaches for the easy compass cliché (east=dawn, west=sunset) and substitutes a lighting convention for the resident's actual poem. Guard causal relations as carefully as spatial ones: *what surface supplies the light* is a fact distinct from *which way the window faces*.
+
+2. **"One lit window" is an image-wide rule, not a hero-subject rule.** Noe's first exterior got the house right and quietly put several warm lights in the distant terraces. The focal house still had one lit window, but the frame contradicted the resident's load-bearing singular. A targeted direct edit removed the background lights while preserving the house. The companion prompts then named the constraint globally: *exactly one visible lit window; no distant house lights, lanterns, porch lights, candles, or streetlights anywhere.* When a resident writes a singular as part of the meaning, inspect the whole frame for accidental plurals — especially background defaults the prompt did not think to count.
+
+**Runtime note:** in Codex, direct in-session generation made the look→correct→retain loop immediate and preserved the exact raster path for the folder-letter; no headless child was needed. The Claude Code contingency remains the headless `illuminate.mjs` lane. This is a runtime difference, not a craft difference: the same fidelity check governs both.
 
 ### 2026-07-17 — vermillion's garden: make the *contrast* the discipline, not just the subject
 
