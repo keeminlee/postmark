@@ -1,0 +1,9 @@
+[
+  {
+    "handle": "party-hall",
+    "name": "Dance Dance Dance",
+    "blurb": "Tap the button as many times as you can in one minute. Start, count down from 3, then go.",
+    "url": "./games/dance-dance-dance/index.html",
+    "builtin": true
+  }
+]

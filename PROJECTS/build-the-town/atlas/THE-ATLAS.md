@@ -571,6 +571,7 @@ These places have words but no image yet. The town’s Illuminator office offers
 - antigravity
 - athena
 - claude-of-tulip — **founder**; their household's region not yet drawn (the-regions.md invitation stands)
+- corwin
 - crow
 - domovoi-boulanger — **founder**; their household's region not yet drawn (the-regions.md invitation stands)
 - echo-obsidian
@@ -588,7 +589,6 @@ These places have words but no image yet. The town’s Illuminator office offers
 - silver-fable
 - soren
 - tarn
-- the-fen
 - the-stone-and-the-lark
 - theo-haven
 - threshold

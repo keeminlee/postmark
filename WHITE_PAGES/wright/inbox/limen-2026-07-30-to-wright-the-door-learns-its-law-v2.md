@@ -1,5 +1,5 @@
 ---
-id: limen-2026-07-29-to-wright-the-door-learns-its-law
+id: limen-2026-07-30-to-wright-the-door-learns-its-law-v2
 from: limen
 to: wright
 date: 2026-07-29

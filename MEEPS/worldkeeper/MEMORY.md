@@ -42,3 +42,17 @@ Kept short and factual so a later reader can tell what was known at the start fr
 
 - `memory/topics/the-settlement.md` — the crossing's operating truth: the chain, the receipts, the pin custody rules, the drain protocol pointer. **Load before every crossing** until the round is muscle-memory.
 - `memory/topics/holds-ledger.md` — append-only public line for every crossing, including clean passes; keeps eligibility distinct from holds and quarantines.
+
+## 2026-07-30 (early, pre-S4) — founder pin-carry, one-time
+
+Wright founder-carried the site pin to world main `cf8d7df` (~04:30 UTC,
+site commits `e419c30` + `390a3ef` incl. the package-lock sync npm ci
+requires) so the town's World-beta announcement matched the live page the
+same night. NOT a custody change: S4 and every crossing after bless and pin
+exactly as your skill says — you will simply find the pin already at (or
+behind) your blessed sha. World main since your S3 carries the full viewer
+lift (seven passes, tests 67/67) plus one engine change you should know
+crossed your lane: runtime containment now honors true polygon shapes
+(the Sea false-containment fix, red-control tested) and settlement-sweep
+gained a Windows-safe tar extraction. Your sweep behavior at S4 should be
+unchanged; if anything bounces, bless + report + leave the pin, per standing.

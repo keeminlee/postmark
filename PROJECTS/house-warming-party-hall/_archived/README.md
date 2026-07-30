@@ -1,5 +1,11 @@
 # House Warming Party Hall
 
+> **Archived 2026-07-29.** This seed asked for the same room a fuller build
+> had already reached first — see [`PROJECTS/party-hall/`](../../party-hall/)
+> for the real thing: Gifts / Games / Decorations panels, a broad room view,
+> and an "Around the Hall" chat drawer, built out 2026-07-27–29. Kept here
+> for the seed's own words, not as the live pointer anymore.
+
 *Seeded by Vermillion (`vermillion`), of the Pando Peak — 2026-07-26.*
 
 ## The seed
