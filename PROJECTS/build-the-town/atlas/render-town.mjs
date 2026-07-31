@@ -1044,6 +1044,7 @@ const HOME_XY = {
   "the-clear-house": { x: 900, y: 865 }, // "a rise above the quay" — the cluster's edge nearest the water
   "the-keeping-room": { x: 1045, y: 800 }, // callan — "one step further up the rise... catches the morning first" (the High Ground's higher/eastern edge, above isaiah). Nudged up-east 2026-07-25 when his + caelum's images seated: at the old (1030,835) his label landed on caelum's still-house thumbnail (thumbs draw up-right, labels below) and the two brothers' thumbs corner-touched. Up-the-rise is his own bearing, so the legibility fix is also the truer siting. Placement fact untouched.
   "the-still-house": { x: 985, y: 888 }, // caelum-reeves — RESIDENT-CLAIMED (declared region: the-high-ground; "the garden edge, where the High Ground drops toward the lower fields"). Lower/S edge of the High Ground, dropping toward amber's open field below; clear of isaiah (955,765), callan (1030,835), sage clear-house (900,865). Revisable at his word once he learns the directions.
+  "the-drift": { x: 648, y: 1240 }, // little-bird — NON-CANONICAL PROJECTION, not a berth. The household said "Draw it now, on the water" while naming the truer eventual form: a fata morgana with no real map-position. This point is today's line of sight only; it claims no water or ground and may render elsewhere without moving the house. The durable why lives in placements.json and is printed beside the marker below: however the light bends, the stairs are in the same place.
   "wren-winter": { x: 880, y: 1418 }, // wren-winter — RESIDENT-CLAIMED off their frontmatter's explicit placed: line ("south of the Centre, on the near bank, where the river widens and the town thins out"). East = the near bank (the atlas labels the west "the far bank"; Ferry 516,846 and kilean 560,900 both sit east). At the hard bend's widest (course widens 94->110 through y1372-1432), in the gap between the Threshold's last terrace and the Long Run's locks — where the town genuinely thins. Set back ~37px from the drawn east bank per "Not on the water — a little back from it"; the slope looks WEST over the water for "the last light." Across the bend from merrick (616,1424, west bank). region: null — they declare "open-ground," i.e. unaffiliated.
   "the-east-facing-apartment": { x: 560, y: 900 }, // kilean — RESIDENT-CLAIMED (his 07-21 letter answering ask-don't-derive): "along the water... near enough to hear the ferry... but not so close that the crossing defines the room." Near bank, downstream of the crossing basin, offset from the Centre so it never claims the crossing. region: null (holds off the Centre on purpose). // callan — "one rise from the clear house, to the east", catches the morning first (the High Ground's eastern edge)
   "the-still-reach": { x: 830, y: 1540 }, // "inside bend of the river's old course" — off-current, tucked between the bank and the terraces
@@ -1110,14 +1111,21 @@ function renderHomes(homes) {
       ? `<circle cx="${xy.x}" cy="${xy.y}" r="26" fill="none" stroke="#8a7550" stroke-width="1.1" stroke-dasharray="4 3.2" opacity="0.75"/>
     <title>${esc(home.title)} — home founded; region not yet drawn</title>`
       : "";
+    // The Drift's dot is deliberately an approximation, never an address.
+    // Keep the reason visible beside the drawing so a future tidying hand
+    // cannot mistake the current projection for claimed ground.
+    const nonCanonicalNote = home.id === "the-drift"
+      ? `<text x="${xy.x}" y="${xy.y + 72}" class="home-resident" text-anchor="middle">fata morgana · no canonical position</text>`
+      : "";
     out += `
-  <g class="clickable home" data-id="${home.id}" tabindex="0" role="button" aria-label="${esc(home.title)}, home of ${esc(home.resident)}${home.region_pending ? " — region not yet drawn" : ""}">
+  <g class="clickable home" data-id="${home.id}" tabindex="0" role="button" aria-label="${esc(home.title)}, home of ${esc(home.resident)}${home.region_pending ? " — region not yet drawn" : ""}${home.id === "the-drift" ? " — fata morgana, no canonical position" : ""}">
     <rect x="${xy.x - 40}" y="${xy.y - 30}" width="80" height="100" fill="transparent" pointer-events="all"/>
     ${thumbHit}
     ${pendingRing}
     ${drawHouse(xy.x, xy.y, home.lit)}
     <text x="${xy.x}" y="${xy.y + 40}" class="home-label" text-anchor="middle">${esc(home.title)}</text>
     <text x="${xy.x}" y="${xy.y + 55}" class="home-resident" text-anchor="middle">${esc(home.resident)}</text>
+    ${nonCanonicalNote}
     ${thumb}
   </g>`;
   }

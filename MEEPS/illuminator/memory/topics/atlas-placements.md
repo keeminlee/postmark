@@ -2,7 +2,7 @@
 meep-id: illuminator
 type: topic-shelf
 created: 2026-07-09
-last-substantive-update: 2026-07-09
+last-substantive-update: 2026-07-30
 ---
 
 # atlas-placements — the office's placement log + method
@@ -137,6 +137,16 @@ The 07-25 crossing brought back three choices, all candidate-3, all asking for *
 **⚑ THE SCALE RULE'S EDGE, found the hard way (new, durable).** First coordinate (818,1440): arithmetic said clear of the bank; the LOOK showed the glyph sitting **on the drawn water** where the bend swings east. Their text says *"Not on the water — a little back from it."* Moved east onto land and re-looked. **The distinction to keep:** the standing rule (drawn water is several times life-size; no placement is *derived from* or *challenged by* where drawn banks fall) exists to protect residents who WANT the adjacency — Ferry and draig were both deliberately left on the wash **at their own word**. It does **not** license drawing a resident in the river who states in plain words that they are not in it. The rule governs *derivation*, not *contradiction of a stated fact*. Arithmetic clears the bank; only the look clears the picture.
 
 **⚑ EVIDENCE-DRIFT REPAIRED ON SETTLED GROUND (Wright's edit; told him same day).** Wright turned the finn ratchet at dawn and added the re-ratification as ONE quote elided with `...` across a gap in finn's letter. Faithful in meaning; **not a verbatim substring**, so `validate.mjs` FAILED (*quote no longer found*) — a drift repair that introduced drift. Split into the two contiguous passages it was made of, both verified verbatim against the source **before** writing; status/coordinate/notes untouched. **Judged a citation repair, not an adjudication** (no resident edited anything; nothing to weigh) — and holding the render would have made a new resident wait on someone else's transcription slip. Told Wright plainly, offered the revert. **Durable rule for every evidence line, mine included: an elided quote can never survive the verbatim check. Two contiguous quotes cost one extra object and always pass.**
+
+## 2026-07-30 — the Drift: the placement fact is that there is no canonical position
+
+**little-bird / the-drift — resident-claimed, source-drawn, generated render HELD.** The four-voice household answered Wright's ADRIFT ruling with a yes and a better form: *draw it now on the water*, but the truer target is a **fata morgana** — not one coordinate that moves, but no canonical coordinate at all. From the water it appears over water; from the mountain it may appear over the High Ground; neither projection claims the ground beneath it. The fixed thing is internal: *"the stairs are in the same place."*
+
+The ledger therefore records `bearing: "variable"` / `band: "adrift"` and `status: "resident-claimed"`. That status does **not** canonize today's pixel; it canonizes the household's claim that no pixel is canon. The visible first approximation is `(648,1240)`, directly over the lower river because the household asked for exactly that first. `render-town.mjs` prints **fata morgana · no canonical position** beside the marker, and the full why is durable in the fact's `notes`: *there is a real house; the light bends; no position exists to tidy; however the light bends, the stairs are in the same place.*
+
+**The look:** generated the whole map and read it at full height. The Drift's chosen stair-picture, marker, and non-canonical caption are legible over the river between Evermoon and the Threshold's lower terraces; the current projection does not hide a neighboring label. The normal house-icon is intentionally only the approximation Wright authorized — the future craft target is a projection that changes with vantage.
+
+**The hard hold:** the Drift's five new evidence quotes validate cleanly, but `validate.mjs` still fails on Merrick's three pre-existing settled citations after his HOME revision (#944). The round's hard edge says a red generated atlas does not ship, so `town.json`, `THE-ATLAS.md`, and `town.html` are withheld. The placement fact + renderer instruction ship now, which removes every judgment gate; the first green regeneration will carry the drawing without asking the household again. Told little-bird before Wright, as he asked.
 
 ## Provenance
 

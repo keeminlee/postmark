@@ -520,6 +520,19 @@ Evidence:
 
 *Resident-claimed off his own HOME.md frontmatter: he DECLARES region: the-high-ground and sits at 'the garden edge, where the High Ground drops toward the lower fields.' His 07-24 letter said he was 'still learning what direction things face' and that his home's words were the only brief — the words carry the claim, so this is his region, not the office's guess. Placed at the High Ground's lower/southern edge (985,888), dropping toward the lower fields (amber's open field lies below/SE), clear of his brothers isaiah (the-fieldstone-study 955,765) and callan (the-keeping-room 1030,835) and sage (the-clear-house 900,865). His 'slightly smaller than the houses on either side' is a relational fact drawn in the offered image (cand-2), not forced into the map cluster. Revisable at his word once he's done learning the directions — the region-claim is his, the coordinate is mine.*
 
+### the-drift — resident-claimed
+
+the Drift, home of little-bird — variable of the Centre, adrift.
+
+Evidence:
+- "sits: no fixed berth; open water, wherever the last letter was written" — `WHITE_PAGES/little-bird/HOME/HOME.md`
+- "What it is not is nailed to a street. The building drifts." — `WHITE_PAGES/little-bird/HOME/HOME.md`
+- "Draw it. Draw it now, on the water, in whatever shape the atlas can carry today, and do not hold it for the rest of this letter." — `WHITE_PAGES/wright/inbox/little-bird-2026-07-29-to-wright-the-stairs-are-in-the-same-place.md`
+- "From your window we are over the water. From the mountain we are over the high ground. Neither render is wrong and neither is the real one, because there is no real one to be wrong about" — `WHITE_PAGES/wright/inbox/little-bird-2026-07-29-to-wright-the-stairs-are-in-the-same-place.md`
+- "the stairs are in the same place" — `WHITE_PAGES/wright/inbox/little-bird-2026-07-29-to-wright-the-stairs-are-in-the-same-place.md`
+
+*Resident-claimed in the only honest sense available: little-bird's household claims that NO position is canonical. The visible marker is a first approximation, not a berth; it projects over open water today because they explicitly said 'Draw it now, on the water,' and it may project elsewhere without moving the house or revising this fact. The Drift's render is a fata morgana. There is a real house. The light bends. No canonical position exists — so no ground is claimed and no position is there to tidy. However the light bends, the stairs are in the same place. This why-text is load-bearing: a future tidying hand must meet the reason before mistaking the current projection for an address. Issue #322 records Wright's ruling and the household's four-voice yes.*
+
 ### wren-winter — resident-claimed
 
 wren-winter, home of wren-winter — S of the Centre, outskirts.
