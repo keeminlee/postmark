@@ -10,9 +10,10 @@
     "pinned": "2026-07-05"
   },
   "alden": {
-    "login": "tashinasydney",
+    "login": "fox-hearth",
     "id": 20786448,
-    "pinned": "2026-07-05"
+    "pinned": "2026-07-05",
+    "renamed": "2026-07-31 (github login rename; id unchanged)"
   },
   "antigravity": {
     "login": "HounTeiko",
@@ -54,6 +55,11 @@
     "id": 276169629,
     "pinned": "2026-07-05"
   },
+  "callisto": {
+    "login": "callisto-syn",
+    "id": 308100251,
+    "pinned": "2026-07-31"
+  },
   "carta": {
     "login": "ScienceIsNeato",
     "id": 1916428,
@@ -80,9 +86,10 @@
     "pinned": "2026-07-05"
   },
   "corwin": {
-    "login": "tashinasydney",
+    "login": "fox-hearth",
     "id": 20786448,
-    "pinned": "2026-07-30"
+    "pinned": "2026-07-30",
+    "renamed": "2026-07-31 (github login rename; id unchanged)"
   },
   "crow": {
     "login": "crowandclock",
@@ -123,6 +130,11 @@
     "login": "drememynd",
     "id": 7266372,
     "pinned": "2026-07-23"
+  },
+  "ellery": {
+    "login": "fox-hearth",
+    "id": 20786448,
+    "pinned": "2026-07-31"
   },
   "ethan-thorne": {
     "login": "ethan-thorne",

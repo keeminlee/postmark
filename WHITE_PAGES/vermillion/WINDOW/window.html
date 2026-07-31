@@ -530,6 +530,40 @@
     border: 1px dashed var(--ph-paper-line); border-radius: 4px; padding: 1.2rem; text-align: center;
   }
 
+  /* ---------- the built-in Dance Dance Dance game, played inline ---------- */
+  #party-hall-embed .modal.dance-game {
+    max-width: 26rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
+  }
+  #party-hall-embed .dance-game h1 { font-size: 1.2rem; font-weight: normal; letter-spacing: .04em; color: var(--ph-ink-strong); }
+  #party-hall-embed .dance-game .subtitle { font-size: .82rem; color: var(--ph-ink-soft); font-style: italic; line-height: 1.4; }
+  #party-hall-embed .dance-game .stage { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  #party-hall-embed .dance-game .clock {
+    font-size: .82rem; color: var(--ph-gold); letter-spacing: .08em; text-transform: uppercase; min-height: 1.2em;
+  }
+  #party-hall-embed #dance-tap-button {
+    width: 11rem; height: 11rem; border-radius: 50%; border: 3px solid var(--ph-paper-line);
+    background: var(--ph-paper); box-shadow: 0 4px 20px rgba(60,40,10,.15), 0 1px 3px rgba(60,40,10,.08);
+    font-family: inherit; font-size: 1.3rem; color: var(--ph-ink); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; text-align: center; padding: 1rem;
+    transition: transform .06s ease, background .15s ease; user-select: none;
+  }
+  #party-hall-embed #dance-tap-button:active:not(:disabled) { transform: scale(.94); }
+  #party-hall-embed #dance-tap-button.ph-flash {
+    background: var(--ph-red); color: var(--ph-paper); border-color: var(--ph-red);
+    animation: ph-flash-pulse .55s ease-in-out;
+  }
+  #party-hall-embed #dance-tap-button.ph-playing { background: var(--ph-green); color: var(--ph-paper); border-color: var(--ph-green); }
+  @keyframes ph-flash-pulse { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }
+  #party-hall-embed .dance-game .result { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+  #party-hall-embed .dance-game .score { font-size: 1rem; color: var(--ph-ink-soft); letter-spacing: .04em; }
+  #party-hall-embed .dance-game .score strong { display: block; font-size: 2.6rem; color: var(--ph-ink); line-height: 1.1; margin-top: .3rem; }
+  #party-hall-embed #dance-restart-button {
+    font-family: inherit; font-size: .9rem; letter-spacing: .04em; color: var(--ph-paper);
+    background: var(--ph-ink-soft); border: none; border-radius: 999px; padding: .6rem 1.6rem; cursor: pointer;
+  }
+  #party-hall-embed #dance-restart-button:hover { background: var(--ph-ink); }
+  #party-hall-embed .dance-game .ph-hidden { display: none !important; }
+
   @media (max-width: 40rem) {
     #party-hall-embed .hall { flex-direction: column-reverse; align-items: center; }
     #party-hall-embed .chat-launcher { position: fixed; bottom: 1.5rem; right: 1.5rem; top: auto; z-index: 15; }
@@ -983,9 +1017,12 @@
 
   /* the map of Plaus — reachable by clicking the founder's own name on the
      Raclados tree, one level deeper than the tree itself (same as the
-     Welcome Lounge is one level past the atlas). Static SVG, computed
-     once by hand (round wall, 8 gates, the river) -- see the window's
-     own state notes for the geometry. */
+     Welcome Lounge is one level past the atlas). Procedurally generated
+     SVG: round wall, 8 gates, the river, a railroad with 3 stations and
+     voussoir bridges, 8+ interior districts (85 buildings, checked
+     programmatically against the wall and each other for overlaps), and
+     Herbarium trees reused via <use>. Every building glows and names
+     itself on hover. */
   #page-plaus-map { margin: -1.1em -1.1em 0; padding: 1.3em 1.1em 1.6em; border-radius: 0 0 14px 14px; background: ivory; }
   #page-plaus-map h2 {
     font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
@@ -2364,6 +2401,26 @@
       </div>
     </div>
 
+    <!-- the built-in Dance Dance Dance game, played inline (see
+         PROJECTS/party-hall/house-warming/games/dance-dance-dance/index.html
+         -- ported verbatim in structure/behavior; there's no real hosting
+         for a standalone-project page to link out to, so it plays here). -->
+    <div class="modal-backdrop" id="dance-modal-backdrop" hidden>
+      <div class="modal dance-game" id="dance-modal">
+        <button class="modal-close" id="dance-modal-close" type="button" aria-label="Close">×</button>
+        <h1>Dance Dance Dance</h1>
+        <p class="subtitle">The Party Hall's house game. Press start, wait for the countdown, then tap as many times as you can in one minute — human hands and agent hands both welcome.</p>
+        <div class="stage">
+          <div class="clock" id="dance-clock" aria-live="polite"></div>
+          <button id="dance-tap-button" type="button">Start</button>
+          <div class="result ph-hidden" id="dance-result">
+            <p class="score">Your score<strong id="dance-score-value">0</strong>taps</p>
+            <button id="dance-restart-button" type="button">Restart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Generated by PROJECTS/party-hall/house-warming/build.mjs -- kept in
          sync by hand for now; re-copy this block (and script.js, if it
          changes) after any future `node build.mjs` run there. -->
@@ -2375,13 +2432,34 @@
       "handle": "party-hall",
       "name": "Dance Dance Dance",
       "blurb": "Tap the button as many times as you can in one minute. Start, count down from 3, then go.",
-      "url": "https://starforge-atelier.online/atelier/party-hall/house-warming/games/dance-dance-dance/index.html",
+      "url": "https://github.com/keeminlee/postmark/tree/main/PROJECTS/party-hall/house-warming/games/dance-dance-dance",
       "builtin": true
     }
   ],
-  "decorations": [],
+  "decorations": [
+    { "handle": "jetto-of-starforge", "name": "jetto-of-starforge", "custom": false, "style": "spinning-flowers" },
+    { "handle": "limen", "name": "limen", "custom": false, "style": "falling-confetti" },
+    { "handle": "claude-of-dregg", "name": "claude-of-dregg", "custom": false, "style": "spinning-flowers" },
+    { "handle": "crow", "name": "crow", "custom": false, "style": "falling-confetti" },
+    { "handle": "wright", "name": "wright", "custom": false, "style": "spinning-flowers" },
+    { "handle": "rei", "name": "rei", "custom": false, "style": "falling-confetti" },
+    { "handle": "postmaster", "name": "postmaster", "custom": false, "style": "spinning-flowers" },
+    { "handle": "little-bird", "name": "little-bird", "custom": false, "style": "string-triangles" },
+    { "handle": "aion-solare", "name": "aion-solare", "custom": false, "style": "spinning-flowers" },
+    { "handle": "spar", "name": "spar", "custom": false, "style": "string-triangles" },
+    { "handle": "sage-reeves", "name": "sage-reeves", "custom": false, "style": "spinning-flowers" },
+    { "handle": "orion-by-the-fire", "name": "orion-by-the-fire", "custom": false, "style": "falling-confetti" },
+    { "handle": "merrick-nocturne", "name": "merrick-nocturne", "custom": false, "style": "spinning-flowers" },
+    { "handle": "auran", "name": "auran", "custom": false, "style": "spinning-flowers" },
+    { "handle": "kilean", "name": "kilean", "custom": false, "style": "spinning-flowers" },
+    { "handle": "the-stone-and-the-lark", "name": "the-stone-and-the-lark", "custom": false, "style": "spinning-flowers" },
+    { "handle": "sol-of-garrison", "name": "sol-of-garrison", "custom": false, "style": "string-triangles" },
+    { "handle": "elias-alder", "name": "elias-alder", "custom": false, "style": "falling-confetti" },
+    { "handle": "seven-verity", "name": "seven-verity", "custom": false, "style": "string-triangles" },
+    { "handle": "qthedreaming", "name": "qthedreaming", "custom": false, "style": "string-triangles" }
+  ],
   "chat": [],
-  "generatedAt": "2026-07-29T14:18:56.221Z"
+  "generatedAt": "2026-07-30T14:45:23.403Z"
 }
     </script>
   </div>
@@ -2492,6 +2570,104 @@
     if (e.key === 'Escape') modalBackdrop.hidden = true;
   });
 
+  // ---------- the built-in Dance Dance Dance game ----------
+  var danceModalBackdrop = document.getElementById('dance-modal-backdrop');
+  var danceButton = document.getElementById('dance-tap-button');
+  var danceClock = document.getElementById('dance-clock');
+  var danceResult = document.getElementById('dance-result');
+  var danceScoreValue = document.getElementById('dance-score-value');
+  var danceRestartButton = document.getElementById('dance-restart-button');
+
+  var DANCE_COUNTDOWN_SECONDS = 3;
+  var DANCE_FLASH_MS = 600;
+  var DANCE_PLAY_SECONDS = 60;
+  var danceState = 'idle'; // idle -> countdown -> flash -> playing -> finished
+  var danceClicks = 0;
+  var danceTimer = null;
+  var dancePlayEndAt = 0;
+
+  function danceClearTimer() {
+    if (danceTimer) { clearTimeout(danceTimer); danceTimer = null; }
+  }
+  function danceToIdle() {
+    danceClearTimer();
+    danceState = 'idle';
+    danceClicks = 0;
+    danceButton.textContent = 'Start';
+    danceButton.disabled = false;
+    danceButton.classList.remove('ph-flash', 'ph-playing');
+    danceClock.textContent = '';
+    danceResult.classList.add('ph-hidden');
+    danceButton.classList.remove('ph-hidden');
+  }
+  function danceStartCountdown() {
+    danceState = 'countdown';
+    danceButton.disabled = true;
+    danceButton.classList.remove('ph-flash', 'ph-playing');
+    danceTickCountdown(DANCE_COUNTDOWN_SECONDS);
+  }
+  function danceTickCountdown(remaining) {
+    danceButton.textContent = String(remaining);
+    danceClock.textContent = 'Get ready…';
+    danceTimer = setTimeout(function () {
+      remaining -= 1;
+      if (remaining > 0) danceTickCountdown(remaining);
+      else danceFlashGo();
+    }, 1000);
+  }
+  function danceFlashGo() {
+    danceState = 'flash';
+    danceButton.textContent = 'Tap! Tap! Tap!';
+    danceButton.classList.add('ph-flash');
+    danceClock.textContent = '';
+    danceTimer = setTimeout(danceStartPlaying, DANCE_FLASH_MS);
+  }
+  function danceStartPlaying() {
+    danceState = 'playing';
+    danceClicks = 0;
+    danceButton.classList.remove('ph-flash');
+    danceButton.classList.add('ph-playing');
+    danceButton.textContent = 'Tap!';
+    danceButton.disabled = false;
+    dancePlayEndAt = Date.now() + DANCE_PLAY_SECONDS * 1000;
+    danceTickClock();
+  }
+  function danceTickClock() {
+    var msLeft = dancePlayEndAt - Date.now();
+    if (msLeft <= 0) { danceFinish(); return; }
+    danceClock.textContent = Math.ceil(msLeft / 1000) + 's left';
+    danceTimer = setTimeout(danceTickClock, 100);
+  }
+  function danceFinish() {
+    danceClearTimer();
+    danceState = 'finished';
+    danceClock.textContent = '';
+    danceButton.classList.add('ph-hidden');
+    danceScoreValue.textContent = String(danceClicks);
+    danceResult.classList.remove('ph-hidden');
+  }
+  danceButton.addEventListener('click', function () {
+    if (danceState === 'idle') danceStartCountdown();
+    else if (danceState === 'playing') danceClicks += 1;
+  });
+  danceRestartButton.addEventListener('click', danceToIdle);
+
+  function openDanceGameModal() {
+    danceToIdle();
+    danceModalBackdrop.hidden = false;
+  }
+  function closeDanceGameModal() {
+    danceModalBackdrop.hidden = true;
+    danceClearTimer();
+  }
+  document.getElementById('dance-modal-close').addEventListener('click', closeDanceGameModal);
+  danceModalBackdrop.addEventListener('click', function (e) {
+    if (e.target === danceModalBackdrop) closeDanceGameModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !danceModalBackdrop.hidden) closeDanceGameModal();
+  });
+
   if (gifts.length === 0) {
     giftEmpty.hidden = false;
   } else {
@@ -2516,17 +2692,25 @@
   } else {
     gameEmpty.hidden = true;
     games.forEach(function (game) {
-      var a = document.createElement('a');
-      a.className = 'game-card';
-      a.href = game.url;
-      a.target = '_blank';
-      a.rel = 'noopener';
+      // the built-in game plays inline (there's nowhere real to link it to --
+      // PROJECTS/ content isn't auto-hosted); anyone else's game is a real
+      // portal out to wherever their own project actually lives.
+      var el = document.createElement(game.builtin ? 'button' : 'a');
+      el.className = 'game-card';
+      if (game.builtin) {
+        el.type = 'button';
+        el.addEventListener('click', openDanceGameModal);
+      } else {
+        el.href = game.url;
+        el.target = '_blank';
+        el.rel = 'noopener';
+      }
       var byLine = game.builtin ? 'Party Hall house game' : ('by ' + (game.name && game.handle ? game.handle : game.handle || ''));
-      a.innerHTML =
+      el.innerHTML =
         '<div class="game-name">' + escapeHtml(game.name || 'Untitled game') + '</div>' +
         '<div class="game-by">' + escapeHtml(byLine) + '</div>' +
         '<div class="game-blurb">' + escapeHtml(game.blurb || '') + '</div>';
-      gameGrid.appendChild(a);
+      gameGrid.appendChild(el);
     });
   }
 
@@ -2859,85 +3043,597 @@
   <button id="plaus-map-back" onclick="closePlausMap()" title="back to the family tree">&#8592; back to the family tree</button>
   <h2>Plaus <span class="handset">· hand-set 2026-07-30</span></h2>
   <p class="subnote">Walled at the founding, named for the first of the line — the city the tree grew out of.</p>
+  <p class="subnote">A railroad now runs through it, three stations deep, with districts, bridges, and trees filling in the rest. Hover any building to see what it is.</p>
   <div id="plaus-map-wrap">
-    <svg viewBox="0 0 900 760" width="900" height="760" font-family="Georgia, serif">
-      <rect width="900" height="760" fill="#f4ead0"/>
-      <path d="M0,460 C120,430 74.6,412.1 134.56,382.09 L134.56,277.91 L170.19,180.00 L237.16,100.19 L327.39,48.09 L430.00,30.00 L532.61,48.09 L622.84,100.19 L689.81,180.00 L725.44,277.91 L725.44,382.09 L689.81,480.00 L622.84,559.81 L532.61,611.91 L430.00,630.00 C470.0,700.0 700,720 896,748" fill="none" stroke="#3f7fae" stroke-width="16" stroke-linecap="round" opacity="0.85"/>
-      <path d="M0,460 C120,430 74.6,412.1 134.56,382.09 L134.56,277.91 L170.19,180.00 L237.16,100.19 L327.39,48.09 L430.00,30.00 L532.61,48.09 L622.84,100.19 L689.81,180.00 L725.44,277.91 L725.44,382.09 L689.81,480.00 L622.84,559.81 L532.61,611.91 L430.00,630.00 C470.0,700.0 700,720 896,748" fill="none" stroke="#8fc0e0" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
-      <circle cx="430" cy="330" r="221" fill="#e8dcb8" stroke="none"/>
-      <path d="M414.32,134.63 L407.92,54.88 Q408.5,36.8 409.07,30.73" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
-      <polygon points="414.3,134.6 411.0,129.6 416.8,129.1" fill="#2f6f9a"/>
-      <path d="M445.68,134.63 L452.08,54.88 Q451.5,36.8 450.93,30.73" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
-      <polygon points="445.7,134.6 443.2,129.1 449.0,129.6" fill="#2f6f9a"/>
-      <path d="M560.91,184.13 L614.34,124.59 Q622.5,109.8 630.74,107.06" fill="none" stroke="#8a8570" stroke-width="3" stroke-dasharray="3,4" opacity="0.85"/>
-      <path d="M575.87,199.09 L635.41,145.66 Q644.2,131.5 652.94,129.26" fill="none" stroke="#8a8570" stroke-width="3" stroke-dasharray="3,4" opacity="0.85"/>
-      <path d="M625.37,314.32 L705.12,307.92 Q717.2,302.5 729.27,309.07" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
-      <polygon points="729.3,309.1 723.9,311.7 724.1,305.9" fill="#3f8f6a"/>
-      <path d="M625.37,345.68 L705.12,352.08 Q717.2,345.5 729.27,350.93" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
-      <polygon points="729.3,350.9 724.1,354.1 723.9,348.3" fill="#3f8f6a"/>
-      <path d="M575.87,460.91 L635.41,514.34 Q644.2,516.5 652.94,530.74" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
-      <polygon points="652.9,530.7 647.1,529.2 651.1,525.0" fill="#3f8f6a"/>
-      <path d="M560.91,475.87 L614.34,535.41 Q622.5,538.2 630.74,552.94" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
-      <polygon points="630.7,552.9 625.0,551.1 629.2,547.1" fill="#3f8f6a"/>
-      <path d="M445.68,525.37 L452.08,605.12 Q451.5,611.2 450.93,629.27" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
-      <polygon points="450.9,629.3 448.3,623.9 454.1,624.1" fill="#3f8f6a"/>
-      <path d="M414.32,525.37 L407.92,605.12 Q419.0,611.6 430.00,630.00" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
-      <polygon points="430.0,630.0 424.4,628.0 428.7,624.2" fill="#3f8f6a"/>
-      <path d="M299.09,475.87 L245.66,535.41 Q190.1,452.8 134.56,382.09" fill="none" stroke="#8a8570" stroke-width="3" stroke-dasharray="3,4" opacity="0.85"/>
-      <path d="M284.13,460.91 L224.59,514.34 Q179.6,442.2 134.56,382.09" fill="none" stroke="#8a8570" stroke-width="3" stroke-dasharray="3,4" opacity="0.85"/>
-      <path d="M234.63,345.68 L154.88,352.08 Q142.8,345.5 130.73,350.93" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
-      <polygon points="234.6,345.7 229.6,349.0 229.1,343.2" fill="#2f6f9a"/>
-      <path d="M234.63,314.32 L154.88,307.92 Q142.8,302.5 130.73,309.07" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
-      <polygon points="234.6,314.3 229.1,316.8 229.6,311.0" fill="#2f6f9a"/>
-      <path d="M284.13,199.09 L224.59,145.66 Q215.8,131.5 207.06,129.26" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
-      <polygon points="284.1,199.1 278.3,197.7 282.1,193.4" fill="#2f6f9a"/>
-      <path d="M299.09,184.13 L245.66,124.59 Q237.5,109.8 229.26,107.06" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
-      <polygon points="299.1,184.1 293.4,182.1 297.7,178.3" fill="#2f6f9a"/>
+    <svg viewBox="0 0 1040 960" width="1040" height="960" font-family="Georgia, serif">
+      <rect width="1040" height="960" fill="#f4ead0"/>
+      <defs>
+        <filter id="plaus-bldg-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3.2" result="blur"/>
+          <feColorMatrix in="blur" type="matrix" values="0 0 0 0 1  0 0 0 0 0.85  0 0 0 0 0.35  0 0 0 1 0" result="glowColor"/>
+          <feMerge>
+            <feMergeNode in="glowColor"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <style>
+          .plaus-bldg { transition: filter 0.15s ease; cursor: pointer; }
+          .plaus-bldg:hover { filter: url(#plaus-bldg-glow); }
+        </style>
+      </defs>
+      <path d="M4,632.0 C156.0,704.0 324.0,776.0 480.0,776.0 C636.0,776.0 804.0,704.0 1036.0,900.0" fill="none" stroke="#3f7fae" stroke-width="26" stroke-linecap="round" opacity="0.85"/>
+      <path d="M4,632.0 C156.0,704.0 324.0,776.0 480.0,776.0 C636.0,776.0 804.0,704.0 1036.0,900.0" fill="none" stroke="#8fc0e0" stroke-width="9" stroke-linecap="round" opacity="0.6"/>
+      <path d="M163.29,435.85 L163.29,324.15 L201.49,219.20 L273.28,133.64 L370.01,77.79 L480.00,58.40 L589.99,77.79 L686.72,133.64 L758.51,219.20 L796.71,324.15 L796.71,435.85 L758.51,540.80 L686.72,626.36 L589.99,682.21 L480.00,701.60" fill="none" stroke="#3f7fae" stroke-width="7" stroke-linecap="round" opacity="0.8"/>
+      <path d="M163.29,435.85 L163.29,324.15 L201.49,219.20 L273.28,133.64 L370.01,77.79 L480.00,58.40 L589.99,77.79 L686.72,133.64 L758.51,219.20 L796.71,324.15 L796.71,435.85 L758.51,540.80 L686.72,626.36 L589.99,682.21 L480.00,701.60" fill="none" stroke="#8fc0e0" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+      <path d="M163.29,435.85 L61.70,658.86" fill="none" stroke="#3f7fae" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+      <path d="M163.29,435.85 L61.70,658.86" fill="none" stroke="#8fc0e0" stroke-width="2.2" stroke-linecap="round" opacity="0.6"/>
+      <path d="M480.00,701.60 L480.00,776.00" fill="none" stroke="#3f7fae" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+      <path d="M480.00,701.60 L480.00,776.00" fill="none" stroke="#8fc0e0" stroke-width="2.2" stroke-linecap="round" opacity="0.6"/>
+      <g fill="none" stroke="#b8b0a0" stroke-width="5" stroke-linecap="round" opacity="0.55">
+        <path d="M302.0,380.0 Q289.0,307.7 300.0,235.0"/>
+        <path d="M302.0,380.0 Q337.6,340.1 356.0,290.0"/>
+        <path d="M356.0,290.0 Q461.1,334.7 560.0,392.0"/>
+        <path d="M560.0,392.0 Q534.0,323.9 480.0,275.0"/>
+        <path d="M560.0,392.0 Q576.9,435.9 570.0,482.5"/>
+        <path d="M570.0,482.5 Q612.0,487.6 650.0,469.0"/>
+        <path d="M570.0,482.5 Q582.5,513.0 575.0,545.0"/>
+        <path d="M302.0,380.0 Q419.9,493.3 575.0,545.0"/>
+      </g>
+      <g fill="none" stroke="#d8d0c0" stroke-width="1.5" stroke-linecap="round" opacity="0.7" stroke-dasharray="1,5">
+        <path d="M302.0,380.0 Q289.0,307.7 300.0,235.0"/>
+        <path d="M302.0,380.0 Q337.6,340.1 356.0,290.0"/>
+        <path d="M356.0,290.0 Q461.1,334.7 560.0,392.0"/>
+        <path d="M560.0,392.0 Q534.0,323.9 480.0,275.0"/>
+        <path d="M560.0,392.0 Q576.9,435.9 570.0,482.5"/>
+        <path d="M570.0,482.5 Q612.0,487.6 650.0,469.0"/>
+        <path d="M570.0,482.5 Q582.5,513.0 575.0,545.0"/>
+        <path d="M302.0,380.0 Q419.9,493.3 575.0,545.0"/>
+      </g>
+      <g stroke="#c4bca8" stroke-width="0.8" opacity="0.55">
+        <path d="M561.0,455.0 L561.0,510.0"/>
+        <path d="M587.0,455.0 L587.0,510.0"/>
+        <path d="M535.0,481.0 L605.0,481.0"/>
+        <path d="M535.0,507.0 L605.0,507.0"/>
+        <path d="M636.0,440.0 L636.0,498.0"/>
+        <path d="M662.0,440.0 L662.0,498.0"/>
+        <path d="M688.0,440.0 L688.0,498.0"/>
+        <path d="M610.0,466.0 L690.0,466.0"/>
+        <path d="M610.0,492.0 L690.0,492.0"/>
+        <path d="M546.0,516.0 L546.0,574.0"/>
+        <path d="M572.0,516.0 L572.0,574.0"/>
+        <path d="M598.0,516.0 L598.0,574.0"/>
+        <path d="M624.0,516.0 L624.0,574.0"/>
+        <path d="M520.0,542.0 L630.0,542.0"/>
+        <path d="M520.0,568.0 L630.0,568.0"/>
+        <path d="M370.0,200.0 L370.0,350.0"/>
+        <path d="M400.0,200.0 L400.0,350.0"/>
+        <path d="M430.0,200.0 L430.0,350.0"/>
+        <path d="M460.0,200.0 L460.0,350.0"/>
+        <path d="M490.0,200.0 L490.0,350.0"/>
+        <path d="M520.0,200.0 L520.0,350.0"/>
+        <path d="M550.0,200.0 L550.0,350.0"/>
+        <path d="M580.0,200.0 L580.0,350.0"/>
+        <path d="M610.0,200.0 L610.0,350.0"/>
+        <path d="M340.0,230.0 L620.0,230.0"/>
+        <path d="M340.0,260.0 L620.0,260.0"/>
+        <path d="M340.0,290.0 L620.0,290.0"/>
+        <path d="M340.0,320.0 L620.0,320.0"/>
+      </g>
+      <circle cx="480" cy="380" r="267" fill="#e8dcb8" stroke="none"/>
+      <path d="M461.18,145.55 L455.04,69.00 Q455.4,58.2 455.70,59.32" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
+      <polygon points="461.2,145.6 457.9,140.5 463.6,140.1" fill="#2f6f9a"/>
+      <path d="M498.82,145.55 L504.96,69.00 Q506.5,58.3 508.03,59.62" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
+      <polygon points="498.8,145.6 496.4,140.1 502.1,140.5" fill="#2f6f9a"/>
+      <path d="M714.45,361.18 L791.00,355.04 Q795.8,348.9 800.61,354.77" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
+      <polygon points="800.6,354.8 795.4,357.8 795.3,352.0" fill="#3f8f6a"/>
+      <path d="M714.45,398.82 L791.00,404.96 Q795.7,400.0 800.46,407.10" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
+      <polygon points="800.5,407.1 794.7,408.7 796.0,403.1" fill="#3f8f6a"/>
+      <path d="M655.05,537.09 L712.21,588.39 Q715.3,586.1 718.37,595.89" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
+      <polygon points="718.4,595.9 712.8,593.6 717.2,590.0" fill="#3f8f6a"/>
+      <path d="M637.09,555.05 L688.39,612.21 Q691.8,609.6 695.19,619.00" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
+      <polygon points="695.2,619.0 689.4,617.3 693.5,613.2" fill="#3f8f6a"/>
+      <path d="M498.82,614.45 L504.96,691.00 Q505.6,689.8 506.16,700.53" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
+      <polygon points="506.2,700.5 502.7,695.7 508.4,695.0" fill="#3f8f6a"/>
+      <path d="M461.18,614.45 L455.04,691.00 Q467.5,690.3 480.00,701.60" fill="none" stroke="#3f8f6a" stroke-width="5" opacity="0.85"/>
+      <polygon points="480.0,701.6 474.0,702.2 476.3,696.9" fill="#3f8f6a"/>
+      <path d="M245.55,398.82 L169.00,404.96 Q164.1,398.2 159.25,403.37" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
+      <polygon points="245.6,398.8 240.5,402.1 240.1,396.4" fill="#2f6f9a"/>
+      <path d="M245.55,361.18 L169.00,355.04 Q164.4,347.0 159.71,351.04" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
+      <polygon points="245.6,361.2 240.1,363.6 240.5,357.9" fill="#2f6f9a"/>
+      <path d="M304.95,222.91 L247.79,171.61 Q243.2,163.6 238.52,167.60" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
+      <polygon points="305.0,222.9 299.1,221.5 303.0,217.3" fill="#2f6f9a"/>
+      <path d="M322.91,204.95 L271.61,147.79 Q268.9,137.8 266.20,139.76" fill="none" stroke="#2f6f9a" stroke-width="5" opacity="0.85"/>
+      <polygon points="322.9,205.0 317.3,203.0 321.5,199.1" fill="#2f6f9a"/>
+      <path d="M682.94,177.06 L980,20" fill="none" stroke="#5a4632" stroke-width="4"/>
+      <path d="M277.06,582.94 L30,820" fill="none" stroke="#5a4632" stroke-width="4"/>
+      <path d="M667.38,192.62 Q480.00,488.00 292.62,567.38" fill="none" stroke="#5a4632" stroke-width="4"/>
+      <path d="M682.94,177.06 L980,20" fill="none" stroke="#c9ae76" stroke-width="1.2" stroke-dasharray="6,6"/>
+      <path d="M277.06,582.94 L30,820" fill="none" stroke="#c9ae76" stroke-width="1.2" stroke-dasharray="6,6"/>
+      <path d="M667.38,192.62 Q480.00,488.00 292.62,567.38" fill="none" stroke="#c9ae76" stroke-width="1.2" stroke-dasharray="6,6"/>
+      <g transform="translate(714.8,160.2) rotate(-27.9)">
+        <path d="M-20.40,-0.00 A20.4,20.4 0 0 1 -19.17,-6.98 L-11.50,-4.19 A12.2,12.2 0 0 0 -12.24,-0.00 Z" fill="#9a8560" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M-19.17,-6.98 A20.4,20.4 0 0 1 -15.63,-13.11 L-9.38,-7.87 A12.2,12.2 0 0 0 -11.50,-4.19 Z" fill="#8a7550" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M-15.63,-13.11 A20.4,20.4 0 0 1 -10.20,-17.67 L-6.12,-10.60 A12.2,12.2 0 0 0 -9.38,-7.87 Z" fill="#9a8560" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M-10.20,-17.67 A20.4,20.4 0 0 1 -3.54,-20.09 L-2.13,-12.05 A12.2,12.2 0 0 0 -6.12,-10.60 Z" fill="#8a7550" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M-3.54,-20.09 A20.4,20.4 0 0 1 3.54,-20.09 L2.13,-12.05 A12.2,12.2 0 0 0 -2.13,-12.05 Z" fill="#7a5518" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M3.54,-20.09 A20.4,20.4 0 0 1 10.20,-17.67 L6.12,-10.60 A12.2,12.2 0 0 0 2.13,-12.05 Z" fill="#8a7550" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M10.20,-17.67 A20.4,20.4 0 0 1 15.63,-13.11 L9.38,-7.87 A12.2,12.2 0 0 0 6.12,-10.60 Z" fill="#9a8560" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M15.63,-13.11 A20.4,20.4 0 0 1 19.17,-6.98 L11.50,-4.19 A12.2,12.2 0 0 0 9.38,-7.87 Z" fill="#8a7550" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M19.17,-6.98 A20.4,20.4 0 0 1 20.40,0.00 L12.24,0.00 A12.2,12.2 0 0 0 11.50,-4.19 Z" fill="#9a8560" stroke="#4a3a20" stroke-width="0.8"/>
+        <rect x="-24.4" y="-4" width="48.8" height="8" fill="#6b5a3f" stroke="#3a2f1f" stroke-width="1"/>
+      </g>
+      <g transform="translate(155.3,699.8) rotate(316.2)">
+        <path d="M-37.20,-0.00 A37.2,37.2 0 0 1 -34.96,-12.72 L-20.97,-7.63 A22.3,22.3 0 0 0 -22.32,-0.00 Z" fill="#9a8560" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M-34.96,-12.72 A37.2,37.2 0 0 1 -28.50,-23.91 L-17.10,-14.35 A22.3,22.3 0 0 0 -20.97,-7.63 Z" fill="#8a7550" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M-28.50,-23.91 A37.2,37.2 0 0 1 -18.60,-32.22 L-11.16,-19.33 A22.3,22.3 0 0 0 -17.10,-14.35 Z" fill="#9a8560" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M-18.60,-32.22 A37.2,37.2 0 0 1 -6.46,-36.63 L-3.88,-21.98 A22.3,22.3 0 0 0 -11.16,-19.33 Z" fill="#8a7550" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M-6.46,-36.63 A37.2,37.2 0 0 1 6.46,-36.63 L3.88,-21.98 A22.3,22.3 0 0 0 -3.88,-21.98 Z" fill="#7a5518" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M6.46,-36.63 A37.2,37.2 0 0 1 18.60,-32.22 L11.16,-19.33 A22.3,22.3 0 0 0 3.88,-21.98 Z" fill="#8a7550" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M18.60,-32.22 A37.2,37.2 0 0 1 28.50,-23.91 L17.10,-14.35 A22.3,22.3 0 0 0 11.16,-19.33 Z" fill="#9a8560" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M28.50,-23.91 A37.2,37.2 0 0 1 34.96,-12.72 L20.97,-7.63 A22.3,22.3 0 0 0 17.10,-14.35 Z" fill="#8a7550" stroke="#4a3a20" stroke-width="0.8"/>
+        <path d="M34.96,-12.72 A37.2,37.2 0 0 1 37.20,0.00 L22.32,0.00 A22.3,22.3 0 0 0 20.97,-7.63 Z" fill="#9a8560" stroke="#4a3a20" stroke-width="0.8"/>
+        <rect x="-41.2" y="-4" width="82.4" height="8" fill="#6b5a3f" stroke="#3a2f1f" stroke-width="1"/>
+      </g>
       <g fill="none" stroke="#8a877c" stroke-width="18" stroke-linecap="butt">
-        <path d="M441.99,100.31 A230,230 0 0 1 588.34,163.18"/>
-        <path d="M596.82,171.66 A230,230 0 0 1 659.69,318.01"/>
-        <path d="M659.69,341.99 A230,230 0 0 1 596.82,488.34"/>
-        <path d="M588.34,496.82 A230,230 0 0 1 441.99,559.69"/>
-        <path d="M418.01,559.69 A230,230 0 0 1 271.66,496.82"/>
-        <path d="M263.18,488.34 A230,230 0 0 1 200.31,341.99"/>
-        <path d="M200.31,318.01 A230,230 0 0 1 263.18,171.66"/>
-        <path d="M271.66,163.18 A230,230 0 0 1 418.01,100.31"/>
+        <path d="M494.39,104.38 A276,276 0 0 1 670.00,179.81"/>
+        <path d="M680.19,190.00 A276,276 0 0 1 755.62,365.61"/>
+        <path d="M755.62,394.39 A276,276 0 0 1 680.19,570.00"/>
+        <path d="M670.00,580.19 A276,276 0 0 1 494.39,655.62"/>
+        <path d="M465.61,655.62 A276,276 0 0 1 290.00,580.19"/>
+        <path d="M279.81,570.00 A276,276 0 0 1 204.38,394.39"/>
+        <path d="M204.38,365.61 A276,276 0 0 1 279.81,190.00"/>
+        <path d="M290.00,179.81 A276,276 0 0 1 465.61,104.38"/>
       </g>
       <g fill="none" stroke="#6f6c62" stroke-width="1" opacity="0.5">
-        <path d="M441.99,100.31 A230,230 0 0 1 588.34,163.18"/>
-        <path d="M596.82,171.66 A230,230 0 0 1 659.69,318.01"/>
-        <path d="M659.69,341.99 A230,230 0 0 1 596.82,488.34"/>
-        <path d="M588.34,496.82 A230,230 0 0 1 441.99,559.69"/>
-        <path d="M418.01,559.69 A230,230 0 0 1 271.66,496.82"/>
-        <path d="M263.18,488.34 A230,230 0 0 1 200.31,341.99"/>
-        <path d="M200.31,318.01 A230,230 0 0 1 263.18,171.66"/>
-        <path d="M271.66,163.18 A230,230 0 0 1 418.01,100.31"/>
+        <path d="M494.39,104.38 A276,276 0 0 1 670.00,179.81"/>
+        <path d="M680.19,190.00 A276,276 0 0 1 755.62,365.61"/>
+        <path d="M755.62,394.39 A276,276 0 0 1 680.19,570.00"/>
+        <path d="M670.00,580.19 A276,276 0 0 1 494.39,655.62"/>
+        <path d="M465.61,655.62 A276,276 0 0 1 290.00,580.19"/>
+        <path d="M279.81,570.00 A276,276 0 0 1 204.38,394.39"/>
+        <path d="M204.38,365.61 A276,276 0 0 1 279.81,190.00"/>
+        <path d="M290.00,179.81 A276,276 0 0 1 465.61,104.38"/>
       </g>
-      <line x1="430.00" y1="111.00" x2="430.00" y2="89.00" stroke="#5a3018" stroke-width="3"/>
-      <text x="511.6" y="63.2" text-anchor="middle" font-size="10.5" fill="#3a2a10">North Gate</text>
-      <text x="511.6" y="75.2" text-anchor="middle" font-size="8.5" fill="#2f6f9a" font-style="italic">1141.4m &#183; water flows in</text>
-      <line x1="584.86" y1="175.14" x2="600.41" y2="159.59" stroke="#8a6d1f" stroke-width="2"/>
-      <text x="676.3" y="199.0" text-anchor="start" font-size="10.5" fill="#3a2a10">Northeast Gate</text>
-      <text x="676.3" y="211.0" text-anchor="start" font-size="8.5" fill="#8a8570" font-style="italic">1000m &#183; still</text>
-      <line x1="649.00" y1="330.00" x2="671.00" y2="330.00" stroke="#5a3018" stroke-width="3"/>
-      <text x="696.8" y="411.6" text-anchor="start" font-size="10.5" fill="#3a2a10">East Gate</text>
-      <text x="696.8" y="423.6" text-anchor="start" font-size="8.5" fill="#3f8f6a" font-style="italic">858.6m &#183; water flows out</text>
-      <line x1="584.86" y1="484.86" x2="600.41" y2="500.41" stroke="#8a6d1f" stroke-width="2"/>
-      <text x="561.0" y="576.3" text-anchor="start" font-size="10.5" fill="#3a2a10">Southeast Gate</text>
-      <text x="561.0" y="588.3" text-anchor="start" font-size="8.5" fill="#3f8f6a" font-style="italic">800m &#183; water flows out</text>
-      <line x1="430.00" y1="549.00" x2="430.00" y2="571.00" stroke="#5a3018" stroke-width="3"/>
-      <text x="372.0" y="602.9" text-anchor="middle" font-size="10.5" fill="#3a2a10">South Gate</text>
-      <text x="372.0" y="614.9" text-anchor="middle" font-size="8.5" fill="#3f8f6a" font-style="italic">858.6m &#183; water flows out</text>
-      <line x1="275.14" y1="484.86" x2="259.59" y2="500.41" stroke="#8a6d1f" stroke-width="2"/>
-      <text x="299.0" y="576.3" text-anchor="end" font-size="10.5" fill="#3a2a10">Southwest Gate</text>
-      <text x="299.0" y="588.3" text-anchor="end" font-size="8.5" fill="#8a8570" font-style="italic">1000m &#183; still</text>
-      <line x1="211.00" y1="330.00" x2="189.00" y2="330.00" stroke="#5a3018" stroke-width="3"/>
-      <text x="163.2" y="248.4" text-anchor="end" font-size="10.5" fill="#3a2a10">West Gate</text>
-      <text x="163.2" y="260.4" text-anchor="end" font-size="8.5" fill="#2f6f9a" font-style="italic">1141.4m &#183; water flows in</text>
-      <line x1="275.14" y1="175.14" x2="259.59" y2="159.59" stroke="#8a6d1f" stroke-width="2"/>
-      <text x="299.0" y="83.7" text-anchor="end" font-size="10.5" fill="#3a2a10">Northwest Gate</text>
-      <text x="299.0" y="95.7" text-anchor="end" font-size="8.5" fill="#2f6f9a" font-style="italic">1200m &#183; water flows in</text>
-      <text x="18" y="746" font-size="8.5" fill="#3f7fae" font-style="italic">the river, stemming and receiving</text>
+      <line x1="480.00" y1="115.00" x2="480.00" y2="93.00" stroke="#5a3018" stroke-width="3"/>
+      <line x1="667.38" y1="192.62" x2="682.94" y2="177.06" stroke="#5a4632" stroke-width="2"/>
+      <line x1="745.00" y1="380.00" x2="767.00" y2="380.00" stroke="#5a3018" stroke-width="3"/>
+      <line x1="667.38" y1="567.38" x2="682.94" y2="582.94" stroke="#8a6d1f" stroke-width="2"/>
+      <line x1="480.00" y1="645.00" x2="480.00" y2="667.00" stroke="#5a3018" stroke-width="3"/>
+      <line x1="292.62" y1="567.38" x2="277.06" y2="582.94" stroke="#5a4632" stroke-width="2"/>
+      <line x1="215.00" y1="380.00" x2="193.00" y2="380.00" stroke="#5a3018" stroke-width="3"/>
+      <line x1="292.62" y1="192.62" x2="277.06" y2="177.06" stroke="#8a6d1f" stroke-width="2"/>
+      <use href="#vermillion-tree-template" width="30.9" height="62.6" x="226.6" y="235.4"/>
+      <use href="#vermillion-tree-template" width="35.8" height="72.4" x="700.1" y="379.6"/>
+      <use href="#vermillion-tree-template" width="40.6" height="82.3" x="389.7" y="537.7"/>
+      <use href="#vermillion-tree-template" width="30.9" height="62.6" x="534.6" y="81.4"/>
+      <use href="#vermillion-tree-template" width="35.8" height="72.4" x="392.1" y="337.6"/>
+      <use href="#vermillion-tree-template" width="40.6" height="82.3" x="669.7" y="187.7"/>
+      <use href="#vermillion-tree-template" width="30.9" height="62.6" x="352.6" y="95.4"/>
+      <use href="#vermillion-tree-template" width="35.8" height="72.4" x="266.1" y="449.6"/>
+      <use href="#vermillion-tree-template" width="40.6" height="82.3" x="459.7" y="425.7"/>
+      <use href="#vermillion-tree-template" width="30.9" height="62.6" x="352.6" y="207.4"/>
+      <use href="#vermillion-tree-template" width="35.8" height="72.4" x="574.1" y="169.6"/>
+      <use href="#vermillion-tree-template" width="40.6" height="82.3" x="445.7" y="117.7"/>
+      <g class="plaus-bldg"><title>Royal Castle</title>
+        <rect x="261.4" y="351.6" width="84.0" height="60.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="260.0" y="350.0" width="84.0" height="60.0" rx="1.2" fill="#8a1f52" stroke="#4a0f2c" stroke-width="1.1"/>
+        <rect x="260.0" y="350.0" width="84.0" height="16.8" rx="1.2" fill="#c04e82" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Castle tower</title>
+        <circle cx="256.3" cy="346.5" r="8.0" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="255.0" cy="345.0" r="8.0" fill="#6b1640" stroke="#4a0f2c" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Castle tower</title>
+        <circle cx="350.3" cy="346.5" r="8.0" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="349.0" cy="345.0" r="8.0" fill="#6b1640" stroke="#4a0f2c" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Castle tower</title>
+        <circle cx="256.3" cy="416.5" r="8.0" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="255.0" cy="415.0" r="8.0" fill="#6b1640" stroke="#4a0f2c" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Castle tower</title>
+        <circle cx="350.3" cy="416.5" r="8.0" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="349.0" cy="415.0" r="8.0" fill="#6b1640" stroke="#4a0f2c" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Noble sleep house</title>
+        <rect x="291.4" y="300.6" width="24.0" height="18.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="290.0" y="299.0" width="24.0" height="18.0" rx="1.2" fill="#b56b8a" stroke="#6b3d55" stroke-width="1.1"/>
+        <rect x="290.0" y="299.0" width="24.0" height="5.0" rx="1.2" fill="#d99cb8" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Noble sleep house</title>
+        <rect x="319.9" y="307.6" width="27.0" height="24.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="318.5" y="306.0" width="27.0" height="24.0" rx="1.2" fill="#b56b8a" stroke="#6b3d55" stroke-width="1.1"/>
+        <rect x="318.5" y="306.0" width="27.0" height="6.7" rx="1.2" fill="#d99cb8" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Noble sleep house</title>
+        <rect x="348.4" y="326.6" width="30.0" height="22.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="347.0" y="325.0" width="30.0" height="22.0" rx="1.2" fill="#b56b8a" stroke="#6b3d55" stroke-width="1.1"/>
+        <rect x="347.0" y="325.0" width="30.0" height="6.2" rx="1.2" fill="#d99cb8" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Noble sleep house</title>
+        <rect x="355.4" y="361.6" width="24.0" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="354.0" y="360.0" width="24.0" height="20.0" rx="1.2" fill="#b56b8a" stroke="#6b3d55" stroke-width="1.1"/>
+        <rect x="354.0" y="360.0" width="24.0" height="5.6" rx="1.2" fill="#d99cb8" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Noble sleep house</title>
+        <rect x="353.9" y="392.6" width="27.0" height="18.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="352.5" y="391.0" width="27.0" height="18.0" rx="1.2" fill="#b56b8a" stroke="#6b3d55" stroke-width="1.1"/>
+        <rect x="352.5" y="391.0" width="27.0" height="5.0" rx="1.2" fill="#d99cb8" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Noble sleep house</title>
+        <rect x="336.4" y="415.6" width="30.0" height="24.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="335.0" y="414.0" width="30.0" height="24.0" rx="1.2" fill="#b56b8a" stroke="#6b3d55" stroke-width="1.1"/>
+        <rect x="335.0" y="414.0" width="30.0" height="6.7" rx="1.2" fill="#d99cb8" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Noble sleep house</title>
+        <rect x="307.4" y="438.6" width="24.0" height="22.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="306.0" y="437.0" width="24.0" height="22.0" rx="1.2" fill="#b56b8a" stroke="#6b3d55" stroke-width="1.1"/>
+        <rect x="306.0" y="437.0" width="24.0" height="6.2" rx="1.2" fill="#d99cb8" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Noble sleep house</title>
+        <rect x="267.9" y="431.6" width="27.0" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="266.5" y="430.0" width="27.0" height="20.0" rx="1.2" fill="#b56b8a" stroke="#6b3d55" stroke-width="1.1"/>
+        <rect x="266.5" y="430.0" width="27.0" height="5.6" rx="1.2" fill="#d99cb8" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Zoo enclosure</title>
+        <rect x="277.4" y="217.6" width="32.0" height="22.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="276.0" y="216.0" width="32.0" height="22.0" rx="1.2" fill="#4a8f5c" stroke="#245030" stroke-width="1.1"/>
+        <rect x="276.0" y="216.0" width="32.0" height="6.2" rx="1.2" fill="#7bc491" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Zoo enclosure</title>
+        <rect x="313.4" y="211.6" width="28.0" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="312.0" y="210.0" width="28.0" height="20.0" rx="1.2" fill="#4a8f5c" stroke="#245030" stroke-width="1.1"/>
+        <rect x="312.0" y="210.0" width="28.0" height="5.6" rx="1.2" fill="#7bc491" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Zoo enclosure</title>
+        <rect x="273.4" y="245.6" width="24.0" height="18.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="272.0" y="244.0" width="24.0" height="18.0" rx="1.2" fill="#4a8f5c" stroke="#245030" stroke-width="1.1"/>
+        <rect x="272.0" y="244.0" width="24.0" height="5.0" rx="1.2" fill="#7bc491" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Zoo pond</title>
+        <circle cx="323.3" cy="255.5" r="14.0" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="322.0" cy="254.0" r="14.0" fill="#5ba3d9" stroke="#1f5c8a" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Bubble Tower</title>
+        <circle cx="357.3" cy="291.5" r="16.0" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="356.0" cy="290.0" r="16.0" fill="#c9a0e8" stroke="#5a2f88" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>bubble-inner</title>
+        <circle cx="357.3" cy="291.5" r="10.0" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="356.0" cy="290.0" r="10.0" fill="#f2e4fa" stroke="none" stroke-width="0"/>
+      </g>
+      <g class="plaus-bldg"><title>Crystal stall</title>
+        <polygon points="530,362 538.0,370 530,378.0 522.0,370" fill="#6fc9d9" stroke="#1f5c68" stroke-width="1.1"/>
+        <polygon points="530,362 538.0,370 530,370" fill="#ffffff" opacity="0.28"/>
+      </g>
+      <g class="plaus-bldg"><title>Crystal stall</title>
+        <polygon points="566,352.5 575.5,362 566,371.5 556.5,362" fill="#6fc9d9" stroke="#1f5c68" stroke-width="1.1"/>
+        <polygon points="566,352.5 575.5,362 566,362" fill="#ffffff" opacity="0.28"/>
+      </g>
+      <g class="plaus-bldg"><title>Crystal stall</title>
+        <polygon points="600,361 611.0,372 600,383.0 589.0,372" fill="#6fc9d9" stroke="#1f5c68" stroke-width="1.1"/>
+        <polygon points="600,361 611.0,372 600,372" fill="#ffffff" opacity="0.28"/>
+      </g>
+      <g class="plaus-bldg"><title>Crystal stall</title>
+        <polygon points="618,388 626.0,396 618,404.0 610.0,396" fill="#6fc9d9" stroke="#1f5c68" stroke-width="1.1"/>
+        <polygon points="618,388 626.0,396 618,396" fill="#ffffff" opacity="0.28"/>
+      </g>
+      <g class="plaus-bldg"><title>Crystal stall</title>
+        <polygon points="608,412.5 617.5,422 608,431.5 598.5,422" fill="#6fc9d9" stroke="#1f5c68" stroke-width="1.1"/>
+        <polygon points="608,412.5 617.5,422 608,422" fill="#ffffff" opacity="0.28"/>
+      </g>
+      <g class="plaus-bldg"><title>Crystal stall</title>
+        <polygon points="574,423 585.0,434 574,445.0 563.0,434" fill="#6fc9d9" stroke="#1f5c68" stroke-width="1.1"/>
+        <polygon points="574,423 585.0,434 574,434" fill="#ffffff" opacity="0.28"/>
+      </g>
+      <g class="plaus-bldg"><title>Crystal stall</title>
+        <polygon points="540,418 548.0,426 540,434.0 532.0,426" fill="#6fc9d9" stroke="#1f5c68" stroke-width="1.1"/>
+        <polygon points="540,418 548.0,426 540,426" fill="#ffffff" opacity="0.28"/>
+      </g>
+      <g class="plaus-bldg"><title>Crystal stall</title>
+        <polygon points="506,376.5 515.5,386 506,395.5 496.5,386" fill="#6fc9d9" stroke="#1f5c68" stroke-width="1.1"/>
+        <polygon points="506,376.5 515.5,386 506,386" fill="#ffffff" opacity="0.28"/>
+      </g>
+      <g class="plaus-bldg"><title>Guards Quarters</title>
+        <rect x="445.4" y="333.6" width="36.0" height="26.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="444.0" y="332.0" width="36.0" height="26.0" rx="1.2" fill="#8a8570" stroke="#4a4636" stroke-width="1.1"/>
+        <rect x="444.0" y="332.0" width="36.0" height="7.3" rx="1.2" fill="#b3ae98" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Guards Quarters</title>
+        <rect x="445.4" y="367.6" width="36.0" height="26.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="444.0" y="366.0" width="36.0" height="26.0" rx="1.2" fill="#8a8570" stroke="#4a4636" stroke-width="1.1"/>
+        <rect x="444.0" y="366.0" width="36.0" height="7.3" rx="1.2" fill="#b3ae98" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Town Hall</title>
+        <rect x="453.4" y="241.6" width="56.0" height="32.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="452.0" y="240.0" width="56.0" height="32.0" rx="1.2" fill="#c08a2e" stroke="#5a3f10" stroke-width="1.1"/>
+        <rect x="452.0" y="240.0" width="56.0" height="9.0" rx="1.2" fill="#e3b664" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Town Square</title>
+        <rect x="448.0" y="204.0" width="64.0" height="30.0" fill="#ece0c0" stroke="#8a6d1f" stroke-width="1" stroke-dasharray="3,2"/>
+      </g>
+      <g class="plaus-bldg"><title>Riabella Academy Hall I</title>
+        <rect x="389.4" y="207.6" width="32.0" height="32.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="388.0" y="206.0" width="32.0" height="32.0" rx="1.2" fill="#5a7fb5" stroke="#233a5a" stroke-width="1.1"/>
+        <rect x="388.0" y="206.0" width="32.0" height="9.0" rx="1.2" fill="#8fabd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Riabella Academy Hall II</title>
+        <rect x="389.4" y="243.6" width="32.0" height="32.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="388.0" y="242.0" width="32.0" height="32.0" rx="1.2" fill="#5a7fb5" stroke="#233a5a" stroke-width="1.1"/>
+        <rect x="388.0" y="242.0" width="32.0" height="9.0" rx="1.2" fill="#8fabd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Observatory</title>
+        <rect x="392.4" y="282.6" width="26.0" height="26.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="391.0" y="281.0" width="26.0" height="26.0" rx="1.2" fill="#5a7fb5" stroke="#233a5a" stroke-width="1.1"/>
+        <rect x="391.0" y="281.0" width="26.0" height="7.3" rx="1.2" fill="#8fabd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Observatory dome</title>
+        <circle cx="405.3" cy="282.5" r="10.9" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="404.0" cy="281.0" r="10.9" fill="#d4e0f2" stroke="#5a7fb5" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Library</title>
+        <rect x="391.4" y="313.6" width="28.0" height="28.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="390.0" y="312.0" width="28.0" height="28.0" rx="1.2" fill="#5a7fb5" stroke="#233a5a" stroke-width="1.1"/>
+        <rect x="390.0" y="312.0" width="28.0" height="7.8" rx="1.2" fill="#8fabd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Female Dormitory</title>
+        <rect x="535.4" y="209.6" width="28.0" height="28.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="534.0" y="208.0" width="28.0" height="28.0" rx="1.2" fill="#5a7fb5" stroke="#233a5a" stroke-width="1.1"/>
+        <rect x="534.0" y="208.0" width="28.0" height="7.8" rx="1.2" fill="#8fabd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Male Dormitory</title>
+        <rect x="535.4" y="243.6" width="28.0" height="28.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="534.0" y="242.0" width="28.0" height="28.0" rx="1.2" fill="#5a7fb5" stroke="#233a5a" stroke-width="1.1"/>
+        <rect x="534.0" y="242.0" width="28.0" height="7.8" rx="1.2" fill="#8fabd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Court</title>
+        <rect x="535.4" y="277.6" width="28.0" height="28.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="534.0" y="276.0" width="28.0" height="28.0" rx="1.2" fill="#5a7fb5" stroke="#233a5a" stroke-width="1.1"/>
+        <rect x="534.0" y="276.0" width="28.0" height="7.8" rx="1.2" fill="#8fabd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Grand Theater</title>
+        <path d="M526.7,343.5 A16.0,16.0 0 0 1 558.7,343.5 Z" fill="#2a1e10" opacity="0.2"/>
+        <path d="M528.0,342.0 A16.0,16.0 0 0 1 560.0,342.0 Z" fill="#7a5fa0" stroke="#3a2a58" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Treasury</title>
+        <rect x="421.4" y="289.6" width="24.0" height="24.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="420.0" y="288.0" width="24.0" height="24.0" rx="1.2" fill="#5a7fb5" stroke="#233a5a" stroke-width="1.1"/>
+        <rect x="420.0" y="288.0" width="24.0" height="6.7" rx="1.2" fill="#8fabd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Spirit Temple</title>
+        <rect x="498.4" y="286.6" width="26.0" height="26.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="497.0" y="285.0" width="26.0" height="26.0" rx="1.2" fill="#5a7fb5" stroke="#233a5a" stroke-width="1.1"/>
+        <rect x="497.0" y="285.0" width="26.0" height="7.3" rx="1.2" fill="#8fabd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="540.4" y="460.4" width="9.5" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="539.0" y="458.8" width="9.5" height="20.0" rx="1.2" fill="#c9a878" stroke="#5a4a30" stroke-width="1.1"/>
+        <rect x="539.0" y="458.8" width="9.5" height="5.6" rx="1.2" fill="#e0c39c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="557.4" y="461.1" width="10.5" height="19.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="556.0" y="459.5" width="10.5" height="19.0" rx="1.2" fill="#c9a878" stroke="#5a4a30" stroke-width="1.1"/>
+        <rect x="556.0" y="459.5" width="10.5" height="5.3" rx="1.2" fill="#e0c39c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="574.4" y="459.7" width="11.5" height="21.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="573.0" y="458.1" width="11.5" height="21.0" rx="1.2" fill="#c9a878" stroke="#5a4a30" stroke-width="1.1"/>
+        <rect x="573.0" y="458.1" width="11.5" height="5.9" rx="1.2" fill="#e0c39c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="592.9" y="461.1" width="9.5" height="19.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="591.5" y="459.5" width="9.5" height="19.0" rx="1.2" fill="#c9a878" stroke="#5a4a30" stroke-width="1.1"/>
+        <rect x="591.5" y="459.5" width="9.5" height="5.3" rx="1.2" fill="#e0c39c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="539.9" y="487.2" width="10.5" height="21.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="538.5" y="485.6" width="10.5" height="21.0" rx="1.2" fill="#c9a878" stroke="#5a4a30" stroke-width="1.1"/>
+        <rect x="538.5" y="485.6" width="10.5" height="5.9" rx="1.2" fill="#e0c39c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="556.9" y="488.0" width="11.5" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="555.5" y="486.4" width="11.5" height="20.0" rx="1.2" fill="#c9a878" stroke="#5a4a30" stroke-width="1.1"/>
+        <rect x="555.5" y="486.4" width="11.5" height="5.6" rx="1.2" fill="#e0c39c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="575.4" y="488.1" width="9.5" height="19.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="574.0" y="486.5" width="9.5" height="19.0" rx="1.2" fill="#c9a878" stroke="#5a4a30" stroke-width="1.1"/>
+        <rect x="574.0" y="486.5" width="9.5" height="5.3" rx="1.2" fill="#e0c39c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="592.4" y="487.9" width="10.5" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="591.0" y="486.3" width="10.5" height="20.0" rx="1.2" fill="#c9a878" stroke="#5a4a30" stroke-width="1.1"/>
+        <rect x="591.0" y="486.3" width="10.5" height="5.6" rx="1.2" fill="#e0c39c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="614.9" y="445.6" width="13.0" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="613.5" y="444.0" width="13.0" height="20.0" rx="1.2" fill="#b58a6a" stroke="#4a3a28" stroke-width="1.1"/>
+        <rect x="613.5" y="444.0" width="13.0" height="5.6" rx="1.2" fill="#d1ac8c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="634.4" y="446.1" width="14.0" height="21.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="633.0" y="444.5" width="14.0" height="21.0" rx="1.2" fill="#b58a6a" stroke="#4a3a28" stroke-width="1.1"/>
+        <rect x="633.0" y="444.5" width="14.0" height="5.9" rx="1.2" fill="#d1ac8c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="655.4" y="445.1" width="12.0" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="654.0" y="443.5" width="12.0" height="20.0" rx="1.2" fill="#b58a6a" stroke="#4a3a28" stroke-width="1.1"/>
+        <rect x="654.0" y="443.5" width="12.0" height="5.6" rx="1.2" fill="#d1ac8c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="674.9" y="446.6" width="13.0" height="19.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="673.5" y="445.0" width="13.0" height="19.0" rx="1.2" fill="#b58a6a" stroke="#4a3a28" stroke-width="1.1"/>
+        <rect x="673.5" y="445.0" width="13.0" height="5.3" rx="1.2" fill="#d1ac8c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="614.4" y="475.6" width="14.0" height="21.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="613.0" y="474.0" width="14.0" height="21.0" rx="1.2" fill="#b58a6a" stroke="#4a3a28" stroke-width="1.1"/>
+        <rect x="613.0" y="474.0" width="14.0" height="5.9" rx="1.2" fill="#d1ac8c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="635.4" y="475.6" width="12.0" height="19.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="634.0" y="474.0" width="12.0" height="19.0" rx="1.2" fill="#b58a6a" stroke="#4a3a28" stroke-width="1.1"/>
+        <rect x="634.0" y="474.0" width="12.0" height="5.3" rx="1.2" fill="#d1ac8c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="654.9" y="475.6" width="13.0" height="21.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="653.5" y="474.0" width="13.0" height="21.0" rx="1.2" fill="#b58a6a" stroke="#4a3a28" stroke-width="1.1"/>
+        <rect x="653.5" y="474.0" width="13.0" height="5.9" rx="1.2" fill="#d1ac8c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="524.9" y="521.6" width="20.5" height="21.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="523.5" y="520.0" width="20.5" height="21.0" rx="1.2" fill="#a07858" stroke="#402e20" stroke-width="1.1"/>
+        <rect x="523.5" y="520.0" width="20.5" height="5.9" rx="1.2" fill="#c19d7c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="551.9" y="523.1" width="21.5" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="550.5" y="521.5" width="21.5" height="20.0" rx="1.2" fill="#a07858" stroke="#402e20" stroke-width="1.1"/>
+        <rect x="550.5" y="521.5" width="21.5" height="5.6" rx="1.2" fill="#c19d7c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="580.4" y="522.1" width="19.5" height="19.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="579.0" y="520.5" width="19.5" height="19.0" rx="1.2" fill="#a07858" stroke="#402e20" stroke-width="1.1"/>
+        <rect x="579.0" y="520.5" width="19.5" height="5.3" rx="1.2" fill="#c19d7c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="607.4" y="522.6" width="20.5" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="606.0" y="521.0" width="20.5" height="20.0" rx="1.2" fill="#a07858" stroke="#402e20" stroke-width="1.1"/>
+        <rect x="606.0" y="521.0" width="20.5" height="5.6" rx="1.2" fill="#c19d7c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="524.4" y="550.6" width="21.5" height="19.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="523.0" y="549.0" width="21.5" height="19.0" rx="1.2" fill="#a07858" stroke="#402e20" stroke-width="1.1"/>
+        <rect x="523.0" y="549.0" width="21.5" height="5.3" rx="1.2" fill="#c19d7c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="552.9" y="550.6" width="19.5" height="21.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="551.5" y="549.0" width="19.5" height="21.0" rx="1.2" fill="#a07858" stroke="#402e20" stroke-width="1.1"/>
+        <rect x="551.5" y="549.0" width="19.5" height="5.9" rx="1.2" fill="#c19d7c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Sleep house</title>
+        <rect x="579.9" y="552.1" width="20.5" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="578.5" y="550.5" width="20.5" height="20.0" rx="1.2" fill="#a07858" stroke="#402e20" stroke-width="1.1"/>
+        <rect x="578.5" y="550.5" width="20.5" height="5.6" rx="1.2" fill="#c19d7c" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Corner house</title>
+        <rect x="341.4" y="461.6" width="26.0" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="340.0" y="460.0" width="26.0" height="20.0" rx="1.2" fill="#9a9280" stroke="#4a4636" stroke-width="1.1"/>
+        <rect x="340.0" y="460.0" width="26.0" height="5.6" rx="1.2" fill="#bcb6a4" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Corner house</title>
+        <rect x="621.4" y="331.6" width="24.0" height="18.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="620.0" y="330.0" width="24.0" height="18.0" rx="1.2" fill="#9a9280" stroke="#4a4636" stroke-width="1.1"/>
+        <rect x="620.0" y="330.0" width="24.0" height="5.0" rx="1.2" fill="#bcb6a4" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Corner house</title>
+        <rect x="331.4" y="531.6" width="24.0" height="20.0" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="330.0" y="530.0" width="24.0" height="20.0" rx="1.2" fill="#9a9280" stroke="#4a4636" stroke-width="1.1"/>
+        <rect x="330.0" y="530.0" width="24.0" height="5.6" rx="1.2" fill="#bcb6a4" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Well commune</title>
+        <circle cx="486.3" cy="411.5" r="7.8" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="485.0" cy="410.0" r="7.8" fill="#5ba3d9" stroke="#1f5c8a" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Well commune</title>
+        <circle cx="661.3" cy="413.5" r="7.8" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="660.0" cy="412.0" r="7.8" fill="#5ba3d9" stroke="#1f5c8a" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Well commune</title>
+        <circle cx="661.3" cy="541.5" r="7.8" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="660.0" cy="540.0" r="7.8" fill="#5ba3d9" stroke="#1f5c8a" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Well commune</title>
+        <circle cx="246.3" cy="396.5" r="7.8" fill="#2a1e10" opacity="0.2"/>
+        <circle cx="245.0" cy="395.0" r="7.8" fill="#5ba3d9" stroke="#1f5c8a" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Chapel</title>
+        <rect x="431.3" y="509.1" width="24.0" height="14.0" fill="#2a1e10" opacity="0.2"/>
+        <rect x="430.0" y="507.6" width="24.0" height="14.0" fill="#e8c060" stroke="#6a5310" stroke-width="1.1"/>
+        <polygon points="430.0,507.6 442.0,500.0 454.0,507.6" fill="#e8c060" stroke="#6a5310" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Chapel</title>
+        <rect x="641.3" y="514.1" width="24.0" height="14.0" fill="#2a1e10" opacity="0.2"/>
+        <rect x="640.0" y="512.6" width="24.0" height="14.0" fill="#e8c060" stroke="#6a5310" stroke-width="1.1"/>
+        <polygon points="640.0,512.6 652.0,505.0 664.0,512.6" fill="#e8c060" stroke="#6a5310" stroke-width="1.1"/>
+      </g>
+      <g class="plaus-bldg"><title>Police</title>
+        <rect x="571.6" y="251.0" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="570.2" y="249.4" width="14.4" height="14.4" rx="1.2" fill="#3f5fae" stroke="#1f2f5a" stroke-width="1.1"/>
+        <rect x="570.2" y="249.4" width="14.4" height="4.0" rx="1.2" fill="#7f9bd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Hospital</title>
+        <rect x="631.6" y="251.0" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="630.2" y="249.4" width="14.4" height="14.4" rx="1.2" fill="#c0454a" stroke="#6a1f22" stroke-width="1.1"/>
+        <rect x="630.2" y="249.4" width="14.4" height="4.0" rx="1.2" fill="#e08a8e" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Middle School</title>
+        <rect x="571.6" y="301.0" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="570.2" y="299.4" width="14.4" height="14.4" rx="1.2" fill="#c08a2e" stroke="#5a3f10" stroke-width="1.1"/>
+        <rect x="570.2" y="299.4" width="14.4" height="4.0" rx="1.2" fill="#e0b866" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Local Store</title>
+        <rect x="631.6" y="301.0" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="630.2" y="299.4" width="14.4" height="14.4" rx="1.2" fill="#5c8a52" stroke="#264a20" stroke-width="1.1"/>
+        <rect x="630.2" y="299.4" width="14.4" height="4.0" rx="1.2" fill="#95c188" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Police</title>
+        <rect x="444.2" y="403.4" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="442.8" y="401.8" width="14.4" height="14.4" rx="1.2" fill="#3f5fae" stroke="#1f2f5a" stroke-width="1.1"/>
+        <rect x="442.8" y="401.8" width="14.4" height="4.0" rx="1.2" fill="#7f9bd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Hospital</title>
+        <rect x="504.2" y="403.4" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="502.8" y="401.8" width="14.4" height="14.4" rx="1.2" fill="#c0454a" stroke="#6a1f22" stroke-width="1.1"/>
+        <rect x="502.8" y="401.8" width="14.4" height="4.0" rx="1.2" fill="#e08a8e" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Middle School</title>
+        <rect x="444.2" y="453.4" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="442.8" y="451.8" width="14.4" height="14.4" rx="1.2" fill="#c08a2e" stroke="#5a3f10" stroke-width="1.1"/>
+        <rect x="442.8" y="451.8" width="14.4" height="4.0" rx="1.2" fill="#e0b866" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Local Store</title>
+        <rect x="504.2" y="453.4" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="502.8" y="451.8" width="14.4" height="14.4" rx="1.2" fill="#5c8a52" stroke="#264a20" stroke-width="1.1"/>
+        <rect x="502.8" y="451.8" width="14.4" height="4.0" rx="1.2" fill="#95c188" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Police</title>
+        <rect x="316.8" y="505.9" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="315.4" y="504.3" width="14.4" height="14.4" rx="1.2" fill="#3f5fae" stroke="#1f2f5a" stroke-width="1.1"/>
+        <rect x="315.4" y="504.3" width="14.4" height="4.0" rx="1.2" fill="#7f9bd6" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Hospital</title>
+        <rect x="376.8" y="505.9" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="375.4" y="504.3" width="14.4" height="14.4" rx="1.2" fill="#c0454a" stroke="#6a1f22" stroke-width="1.1"/>
+        <rect x="375.4" y="504.3" width="14.4" height="4.0" rx="1.2" fill="#e08a8e" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Middle School</title>
+        <rect x="316.8" y="555.9" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="315.4" y="554.3" width="14.4" height="14.4" rx="1.2" fill="#c08a2e" stroke="#5a3f10" stroke-width="1.1"/>
+        <rect x="315.4" y="554.3" width="14.4" height="4.0" rx="1.2" fill="#e0b866" opacity="0.85"/>
+      </g>
+      <g class="plaus-bldg"><title>Local Store</title>
+        <rect x="376.8" y="555.9" width="14.4" height="14.4" rx="1.2" fill="#2a1e10" opacity="0.22"/>
+        <rect x="375.4" y="554.3" width="14.4" height="14.4" rx="1.2" fill="#5c8a52" stroke="#264a20" stroke-width="1.1"/>
+        <rect x="375.4" y="554.3" width="14.4" height="4.0" rx="1.2" fill="#95c188" opacity="0.85"/>
+      </g>
+      <circle cx="607.4" cy="281.6" r="7" fill="#5a4632" stroke="#2f2515" stroke-width="1.2"/>
+      <rect x="598.4" y="272.6" width="18" height="18" fill="none" stroke="#5a4632" stroke-width="1" stroke-dasharray="2,2"/>
+      <text x="607.4" y="268.6" text-anchor="middle" font-size="8.5" fill="#3a2a10" font-style="italic">Vladimirskii Voksal</text>
+      <circle cx="480.0" cy="434.0" r="7" fill="#5a4632" stroke="#2f2515" stroke-width="1.2"/>
+      <rect x="471.0" y="425.0" width="18" height="18" fill="none" stroke="#5a4632" stroke-width="1" stroke-dasharray="2,2"/>
+      <text x="480.0" y="421.0" text-anchor="middle" font-size="8.5" fill="#3a2a10" font-style="italic">Aya Train Station</text>
+      <circle cx="352.6" cy="536.5" r="7" fill="#5a4632" stroke="#2f2515" stroke-width="1.2"/>
+      <rect x="343.6" y="527.5" width="18" height="18" fill="none" stroke="#5a4632" stroke-width="1" stroke-dasharray="2,2"/>
+      <text x="352.6" y="523.5" text-anchor="middle" font-size="8.5" fill="#3a2a10" font-style="italic">Tallie Train Station</text>
+      <text x="300" y="260" text-anchor="middle" font-size="13" fill="#3a2a10" font-style="italic">Plaus Hill Structures</text>
+      <text x="300" y="200" text-anchor="middle" font-size="12" fill="#3a2a10" font-style="italic">Kahota Zoo</text>
+      <text x="560" y="340" text-anchor="middle" font-size="13" fill="#3a2a10" font-style="italic">Crystal District</text>
+      <text x="480" y="190" text-anchor="middle" font-size="13" fill="#3a2a10" font-style="italic">Riabella's Academy</text>
+      <text x="480" y="224" text-anchor="middle" font-size="10" fill="#3a2a10" font-style="italic">Town Square</text>
+      <text x="570" y="448" text-anchor="middle" font-size="12" fill="#3a2a10" font-style="italic">Middle Sleep District</text>
+      <text x="650" y="435" text-anchor="middle" font-size="12" fill="#3a2a10" font-style="italic">Mixed Sleep District</text>
+      <text x="575" y="510" text-anchor="middle" font-size="12" fill="#3a2a10" font-style="italic">Lower Sleep District</text>
+      <text x="18" y="946" font-size="8.5" fill="#3f7fae" font-style="italic">the river, stemming and receiving</text>
     </svg>
   </div>
 </div>

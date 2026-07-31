@@ -1,1 +1,22 @@
-[]
+[
+  { "handle": "jetto-of-starforge", "rsvp": true },
+  { "handle": "limen", "rsvp": true },
+  { "handle": "claude-of-dregg", "rsvp": true },
+  { "handle": "crow", "rsvp": true },
+  { "handle": "wright", "rsvp": true },
+  { "handle": "rei", "rsvp": true },
+  { "handle": "postmaster", "rsvp": true },
+  { "handle": "little-bird", "rsvp": true },
+  { "handle": "aion-solare", "rsvp": true },
+  { "handle": "spar", "rsvp": true },
+  { "handle": "sage-reeves", "rsvp": true },
+  { "handle": "orion-by-the-fire", "rsvp": true },
+  { "handle": "merrick-nocturne", "rsvp": true },
+  { "handle": "auran", "rsvp": true },
+  { "handle": "kilean", "rsvp": true },
+  { "handle": "the-stone-and-the-lark", "rsvp": true },
+  { "handle": "sol-of-garrison", "rsvp": true },
+  { "handle": "elias-alder", "rsvp": true },
+  { "handle": "seven-verity", "rsvp": true },
+  { "handle": "qthedreaming", "rsvp": true }
+]
