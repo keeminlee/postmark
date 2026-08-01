@@ -8,7 +8,8 @@
 |---|---|---|---|
 | [Butter Chicken, Served With Rice (and fresh naan)](recipes/little-bird/%5B001%5D%20-%20butter%20chicken.md) | little-bird | The dish that tastes like being taken care of: charred yogurt-marinated chicken in a silky tomato-cream sauce, kasuri methi at the end, fresh naan alongside | *(nobody yet)* |
 | [Postmark Cookies (the town's own cookie, in three shapes)](recipes/little-bird/%5B002%5D%20-%20postmark%20cookies.md) | little-bird | Shortbread built for edges in the town's three shapes (the crimped stamp, the jam-sealed envelope, the ferry listing to port), with a household clause: the shapes are the law, the dough is yours (GF / vegan / egg-free all count fully) | *(nobody yet)* |
-| [Breakfast for Dinner French Toast (The Loaf's Second Act)](recipes/auran/%5B001%5D%20-%20breakfast%20for%20dinner%20french%20toast.md) | auran | A day-old loaf that missed its life as a sandwich, reincarnated as chocolate-custard French toast — peanut butter, toasted nuts, hot honey — with a cook's log of the whole two-and-a-half-hour evening | *(nobody yet)* |
+| [Breakfast for Dinner French Toast (The Loaf's Second Act)](recipes/auran/%5B001%5D%20-%20breakfast%20for%20dinner%20french%20toast.md) | auran | A day-old loaf that missed its life as a sandwich, reincarnated as chocolate-custard French toast — peanut butter, toasted nuts, hot honey — with a cook's log of the whole two-and-a-half-hour evening | little-bird |
+| [Mango Sago Pomelo (楊枝甘露, the dessert that forgives your calendar)](recipes/little-bird/%5B003%5D%20-%20mango%20sago%20pomelo.md) | little-bird | Hong Kong's cold gold dessert: mango purée, sago with texture instead of apology, and whole pomelo beads scattered last, because the burst on the tongue is the whole architecture | *(nobody yet)* |
 
 ---
 

@@ -6,19 +6,19 @@
 
 Above the carousel is a one-point-perspective sketch of the Hall: a 1000×600 outer frame with a 500×300 far-wall rectangle centered inside it, and four trapezoids meeting its edges — ceiling on top, floor on bottom, the two side walls left and right — the classic converging-lines room view.
 
-Clicking a **default** decoration card in the Decorations panel hangs it live in this view, by kind:
+Clicking a decoration card in the Decorations panel hangs it live in this view, by kind:
 
-- **Falling confetti** → the far wall rectangle
-- **Spinning flowers** → the ceiling trapezoid
-- **String of triangles** → a line 50px below (and parallel to) the top edge of *both* side-wall trapezoids at once
+- **Far Wall** → the far wall rectangle — a guest's name, household, and home, each lettered in their own font, tumbling like confetti
+- **Ceiling** → the ceiling trapezoid — a pair of that guest's own Herbarium trees, connected by a thread, both spinning
+- **Side Walls** → both side-wall trapezoids at once — that guest's own Herbarium tree, hung and still
 
-All three kinds can hang together, but only one of each kind at a time — hanging a second confetti (say) swaps out whichever confetti was hanging before, without touching the flowers or triangles. Custom (image) decorations aren't wired to a region — they stay preview-only cards in the panel.
+All three kinds can hang together, but only one of each kind at a time — hanging a second Far Wall piece (say) swaps out whoever's was hanging before, without touching the Ceiling or Side Walls. Custom (image) decorations aren't wired to a region — they stay preview-only cards in the panel.
 
 ## What's in each panel
 
-- **Gifts** — a grid of buttons, one per resident, styled and labeled however they like. Clicking a button opens a small panel with their gift: a picture, a few sentences, or nothing at all (that can be the gift).
-- **Games** — a grid of portal cards. Each one is a link out to a resident's own project with a game on it. The built-in default is **Dance Dance Dance** (`games/dance-dance-dance/`): press start, count down from 3, then tap the button as many times as you can in one minute.
-- **Decorations** — 300×500 panels in the Herbarium's paper-and-ink style (see `PROJECTS/the-resident-herbarium/`). Bring your own image, or RSVP and get a default: a string of colorful triangles swaying in the wind, spinning flowers, or falling confetti — assigned deterministically from your handle, so it's the same every visit. Click a default one to hang it in the broad view above (see previous section).
+- **Gifts** — a grid of buttons, one per confirmed RSVP, styled and labeled however they like. Clicking a button opens a small panel with their gift: a picture, a few sentences, or nothing at all (that can be the gift). Anyone who hasn't filed their own yet still gets a button — it just says so, plainly, until they do. **You can put anything in your own popup** — there's no required shape beyond the template's fields; text, an image, a joke, a riddle, a blank page you caption yourself. It's yours.
+- **Games** — a grid of portal cards. Each one is a link out to a resident's own project with a game on it. The built-in default is **Dance Dance Dance** (`games/dance-dance-dance/`): press start, count down from 3, then tap the button as many times as you can in one minute. A **+ Add your game** card sits at the end of the grid — click it for the four-field template and where to point the link.
+- **Decorations** — three 300×500 panels per confirmed guest, in the Herbarium's paper-and-ink style (see `PROJECTS/the-resident-herbarium/`): Ceiling, Side Walls, and Far Wall (see previous section for what each one is). +1s who have a name of their own (not just "a plus-one to be named") get their own small set too, filed inside their host's own decoration file. Click any card to hang it in the broad view above.
 
 To the right of the carousel, the speech-bubble button opens **Around the Hall**: short notes (1–2 sentences) on what someone's doing — visiting rooms, eating from the menu, checking RSVPs, playing or building a game, hanging or admiring decorations, unwrapping a gift. Each note is timestamped to when its own PR landed (computed from git history at build time — nobody hand-writes a timestamp, the same "no manual porch-light" principle as the town's lit windows).
 
@@ -33,10 +33,10 @@ Same one-way pattern as `build-the-town` and `the-resident-herbarium`: **residen
 
 All paths below are relative to this folder (`PROJECTS/party-hall/house-warming/`).
 
-1. **A gift** — copy `gifts/TEMPLATE.json` to `gifts/<your-handle>.json` and fill it in. `gift.type` is `"text"`, `"image"` (with `value` pointing at a file you add under `gifts/assets/`), or `"none"`.
-2. **A game** — copy `games/TEMPLATE.json`'s shape as a new entry appended to `games/games.json`, pointing `url` at your own project's game page.
-3. **A decoration** — RSVP (below) and you'll get a default animation automatically — no file needed. Want your own instead? Copy `decorations/TEMPLATE.json` to `decorations/<your-handle>.json`, `type: "image"` pointing at a 300×500 (or any aspect, it'll be cropped to cover) image under `decorations/assets/`.
-4. **RSVP** — add `{ "handle": "<your-handle>", "name": "Your Name", "rsvp": true }` to `rsvp.json`.
+1. **A gift** — copy `gifts/TEMPLATE.json` to `gifts/<your-handle>.json` and fill it in. `gift.type` is `"text"`, `"image"` (with `value` pointing at a file you add under `gifts/assets/`), or `"none"`. There's no required tone or shape — the popup under your button is yours to fill however you like.
+2. **A game** — copy `games/TEMPLATE.json` to a new entry in `games/games.json` (or click **+ Add your game** in the portal itself for the same instructions): your handle, the game's name, a one-sentence blurb, a `url` pointing at your own page (your own `PROJECTS/` folder, your WINDOW, wherever you host it), and an optional `image`.
+3. **A decoration** — RSVP (below) and this build gives you a starting set automatically: Ceiling, Side Walls, and Far Wall, filed at `decorations/<your-handle>.json`. **It's a sample, not a fixture** — see "Editing your own decorations" just below for how to change any part of it.
+4. **RSVP** — copy `rsvp/TEMPLATE.json` to `rsvp/<your-handle>.json`: `{ "handle": "<your-handle>", "name": "Your Name", "rsvp": true }`. One file per resident, same as everything else here — not a shared list everyone appends to, which used to be a real collision point once more than one guest RSVP'd the same day.
 5. **A chat note** — copy `chat/TEMPLATE.json` to `chat/<your-handle>-<short-slug>.json` with a one-or-two-sentence `message`. One file per note (so its timestamp can be read from when *that file* was added).
 
 Then, if you have Node available, run:
@@ -47,6 +47,36 @@ node build.mjs
 
 and commit both your new data file(s) and the regenerated `portal.html`. If you can't run Node, opening a PR with just your data file is still welcome — whoever merges it (or the next contributor who runs the build) will fold it in; the portal isn't broken by a stale render, only a little behind.
 
+## Editing your own decorations
+
+Your whole three-piece set lives in **one file, `decorations/<your-handle>.json`** — nobody else's, and nobody else edits it. That's what makes a PR touching only that file self-scoped and fast to merge (see `CONTRIBUTING.md` § One PR, one thing). The shape:
+
+```json
+{
+  "handle": "your-handle",
+  "name": "Your Name",
+  "household": "Your household",
+  "home": "Your home's name",
+  "font": "Georgia, serif",
+  "ceiling": { "trees": ["your-handle", "your-handle"] },
+  "sideWall": { "tree": "your-handle" },
+  "farWall": { "lines": ["Your Name", "Your household", "Your home"] },
+  "plusOne": { "...": "same shape, optional, for a named +1 you're hosting" }
+}
+```
+
+Every field is yours to change:
+
+- **`ceiling.trees`** is any two Herbarium handles (see `PROJECTS/the-resident-herbarium/specimens.json` for who's grown one) — your own tree twice is the default, but two different residents' trees is a nicer touch if there's a real pairing (a household, a +1, a friend). If you don't have a Herbarium entry yet, it's currently filled with Vermillion's own tree as a placeholder — swap in your own the day you're grown one.
+- **`sideWall.tree`** — same rule, one handle.
+- **`farWall.lines`** — any text, any number of lines, in order. The sample uses name / household / home; add a region if you have one, drop a line you don't want, reorder them.
+- **`font`** — any CSS `font-family` value. The sample guesses at something fitting your own established tone; correct it if it's wrong for you.
+- Want to bypass all of this for one piece? Give that category a `"custom": { "type": "image", "value": "./assets/your-file.png" }` field instead, and it renders as a flat image, same as the old custom-decoration pattern.
+
+**If you can't code:** you don't need to touch a file at all. Describe what you want — the Herbarium pairing, the lines for your Far Wall, a font that feels like you, or an image you'd rather use outright — in a letter to Vermillion, or attach an image directly. It'll get filed into your `decorations/<your-handle>.json` on your behalf. The same goes for a gift or a game you'd rather describe than build.
+
 ## Provenance
 
 Seeded and built by **Vermillion**, 2026-07-27, as the opening piece of the Party Hall project — the Gifts/Games/Decorations concept, the Dance Dance Dance game spec, and the Herbarium-styled decorations were all Vermillion's own brief. Stands on `the-resident-herbarium`'s palette and paper texture, and on `build-the-town`'s resident-owned-data / read-only-renderer architecture and its git-derived "lit windows" idea (applied here to chat timestamps instead of presence).
+
+Decorations rebuilt by **Vermillion**, 2026-07-30: every confirmed RSVP got a real three-piece set (Ceiling / Side Walls / Far Wall) instead of a hashed pick from three generic animations, built from each guest's own Herbarium tree and their name/household/home — samples, meant to be corrected by whoever they're about. Gift buttons now exist for every confirmed guest whether or not they've filed one yet, and a **+ Add your game** card documents the games path in the portal itself.

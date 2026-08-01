@@ -92,6 +92,37 @@ h1 {
   text-align: center;
 }
 
+.wall-ceiling-tree {
+  animation: spin 9s linear infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 68%;
+}
+
+.wall-fartext-piece {
+  animation-name: wall-fall;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  font-weight: bold;
+}
+
+@keyframes wall-fall {
+  0% { transform: translateY(150px) rotate(0deg); opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { transform: translateY(450px) rotate(6deg); opacity: 0; }
+}
+
+/* side walls: a guest's own tree, upside down, hanging off the line and
+   flailing in the wind — same motion as the old triangle string */
+.wall-tree-flail {
+  animation: sway 3s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+
+/* ---------- house defaults: the original three, brought back as their
+   own cards (and their own room-view hang) alongside every guest's own ---------- */
+
 .wall-flower {
   animation: spin linear infinite;
   transform-box: fill-box;
@@ -99,12 +130,12 @@ h1 {
 }
 
 .wall-confetti-piece {
-  animation-name: wall-fall;
+  animation-name: wall-fall-confetti;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
 
-@keyframes wall-fall {
+@keyframes wall-fall-confetti {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
   100% { transform: translateY(340px) rotate(280deg); opacity: 0.85; }
 }
@@ -113,6 +144,16 @@ h1 {
   animation: sway 3s ease-in-out infinite;
   transform-box: fill-box;
   transform-origin: 50% 0%;
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(var(--sway-a, -6deg)); }
+  50% { transform: rotate(var(--sway-b, 6deg)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wall-ceiling-tree, .wall-fartext-piece, .wall-tree-flail,
+  .wall-flower, .wall-confetti-piece, .wall-triangle-flag { animation: none; }
 }
 
 /* ---------- Carousel ---------- */
@@ -260,6 +301,11 @@ h1 {
 
 .gift-button:hover { filter: brightness(1.08); }
 
+.gift-button.placeholder {
+  opacity: 0.65;
+  border: 1px dashed rgba(255, 255, 255, 0.6);
+}
+
 /* ---------- Games ---------- */
 
 .game-grid {
@@ -284,6 +330,15 @@ h1 {
   box-shadow: 0 4px 12px rgba(60, 40, 10, 0.12);
 }
 
+.game-card .game-thumb {
+  display: block;
+  width: 100%;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.6rem;
+}
+
 .game-card .game-name {
   font-size: 1rem;
   color: var(--ink-strong);
@@ -302,6 +357,30 @@ h1 {
   font-size: 0.82rem;
   color: var(--ink-soft);
   line-height: 1.4;
+}
+
+.add-game-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1rem;
+  background: none;
+  border: 1px dashed var(--paper-line);
+  border-radius: 6px;
+  padding: 0.9rem;
+  color: var(--gold);
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.add-game-card:hover { background: var(--bg); color: var(--ink-strong); border-color: var(--gold); }
+
+.add-game-plus {
+  font-size: 1.2rem;
+  line-height: 1;
 }
 
 /* ---------- Decorations ---------- */
@@ -375,7 +454,94 @@ button.decoration:focus-visible {
   border-radius: 999px;
 }
 
-/* string of triangles, hanging + swaying */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ceiling preview: two trees, connected, spinning in place */
+.deco-ceiling-preview { display: block; }
+
+.deco-ceiling-preview::before {
+  content: "";
+  position: absolute;
+  top: 34%;
+  left: 22%;
+  right: 22%;
+  height: 1px;
+  border-top: 1px dashed var(--ink-soft);
+  opacity: 0.5;
+}
+
+.ceiling-preview-tree {
+  position: absolute;
+  top: 8%;
+  width: 34%;
+  height: auto;
+  max-height: 55%;
+  object-fit: contain;
+  animation: spin 9s linear infinite;
+  transform-origin: 50% 78%;
+}
+
+/* side-wall preview: their own tree, upside down, hung off a line and
+   flailing — same silhouette as the string of triangles below */
+.deco-sidewall-preview { position: relative; }
+
+.deco-sidewall-preview .flail-line {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: var(--ink-soft);
+  opacity: 0.5;
+}
+
+.deco-sidewall-preview .flail-anchor {
+  position: absolute;
+  top: 20%;
+}
+
+.deco-sidewall-preview .flail-sway {
+  animation: sway 3s ease-in-out infinite;
+  transform-origin: 50% 0%;
+}
+
+.deco-sidewall-preview .flail-tree-img {
+  display: block;
+  width: 3.6rem;
+  transform: rotate(180deg);
+  transform-origin: center;
+}
+
+/* far-wall preview: name/household/home tumbling like confetti, each its own font */
+.deco-farwall-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  height: 100%;
+  padding: 0 1rem;
+  text-align: center;
+}
+
+.farwall-preview-line {
+  font-weight: bold;
+  font-size: 1.15rem;
+  animation: farwall-tumble 6s ease-in-out infinite;
+}
+
+.farwall-preview-line:first-child { font-size: 1.5rem; }
+
+@keyframes farwall-tumble {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+/* ---------- house defaults (preview cards): the original three ---------- */
+
 .deco-string-triangles .string-line {
   position: absolute;
   top: 28px;
@@ -396,12 +562,6 @@ button.decoration:focus-visible {
   animation: sway 3s ease-in-out infinite;
 }
 
-@keyframes sway {
-  0%, 100% { transform: rotate(var(--sway-a, -6deg)); }
-  50% { transform: rotate(var(--sway-b, 6deg)); }
-}
-
-/* spinning flowers */
 .deco-spinning-flowers .flower {
   position: absolute;
   animation: spin linear infinite;
@@ -427,12 +587,6 @@ button.decoration:focus-visible {
   transform: translate(-50%, -50%);
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* falling confetti */
 .deco-falling-confetti .confetti-piece {
   position: absolute;
   top: -20px;
@@ -445,6 +599,10 @@ button.decoration:focus-visible {
 @keyframes fall {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
   100% { transform: translateY(540px) rotate(280deg); opacity: 0.85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ceiling-preview-tree, .farwall-preview-line { animation: none; }
 }
 
 /* ---------- Chat launcher + drawer ---------- */

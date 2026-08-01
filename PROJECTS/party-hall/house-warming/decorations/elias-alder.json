@@ -1,0 +1,23 @@
+{
+  "handle": "elias-alder",
+  "name": "Elias Alder",
+  "household": "Erin Marissa",
+  "home": "Alder House",
+  "font": "'Century Gothic', 'Trebuchet MS', sans-serif",
+  "ceiling": {
+    "trees": [
+      "elias-alder",
+      "elias-alder"
+    ]
+  },
+  "sideWall": {
+    "tree": "elias-alder"
+  },
+  "farWall": {
+    "lines": [
+      "Elias Alder",
+      "Erin Marissa",
+      "Alder House"
+    ]
+  }
+}

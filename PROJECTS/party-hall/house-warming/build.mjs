@@ -2,7 +2,7 @@
 // House Warming portal — read-only assembler.
 //
 // Walks the resident-contributed data files (gifts/*.json, games/games.json,
-// decorations/*.json, chat/*.json, rsvp.json) and rewrites the embedded data
+// decorations/*.json, chat/*.json, rsvp/*.json) and rewrites the embedded data
 // block inside portal.html. Never edits anyone's own file — same one-way
 // "resident-owned data, shared read-only renderer" pattern as
 // build-the-town and the-resident-herbarium.
@@ -51,32 +51,62 @@ function hashStr(s) {
   return h;
 }
 
-// ---------- gifts ----------
-const gifts = listDataFiles(path.join(here, 'gifts'))
+// ---------- rsvp ----------
+// One file per resident under rsvp/ — same pattern as gifts/decorations/chat,
+// not a single shared array everyone appends to. That single-file shape used
+// to be a real collision point: multiple guests RSVPing the same day kept
+// landing merge conflicts on each other (flagged by the office after rook,
+// little-bird, and seven-verity all hit it within one day).
+const rsvp = listDataFiles(path.join(here, 'rsvp'))
   .map((f) => readJSON(f, null))
   .filter(Boolean);
+const confirmed = rsvp.filter((r) => r.rsvp);
+
+// ---------- gifts ----------
+// Every confirmed RSVP gets a button. If they've filed their own gifts/<handle>.json
+// (see gifts/TEMPLATE.json) it's used as-is; otherwise a placeholder stands in
+// so the row exists and says plainly that it's waiting on them.
+const GIFT_PALETTE = ['#b5432f', '#2f7a5c', '#6a4a72', '#c08a2e', '#2f6f7a'];
+const submittedGifts = listDataFiles(path.join(here, 'gifts'))
+  .map((f) => readJSON(f, null))
+  .filter(Boolean);
+
+const gifts = confirmed.map((r, i) => {
+  const own = submittedGifts.find((g) => g.handle === r.handle);
+  // Tolerate a flat {type, value, message} shape as well as the template's
+  // nested {gift: {type, value, caption}} — never rewrite the resident's own
+  // file, just read either shape correctly.
+  if (own && !own.gift && own.type) {
+    return { ...own, gift: { type: own.type, value: own.value, caption: own.message } };
+  }
+  if (own) return own;
+  return {
+    handle: r.handle,
+    name: r.name || r.handle,
+    buttonLabel: (r.name || r.handle) + "'s gift",
+    buttonColor: GIFT_PALETTE[hashStr(r.handle) % GIFT_PALETTE.length],
+    placeholder: true,
+    gift: { type: 'text', value: "Nothing chosen yet — see gifts/TEMPLATE.json to add your own, whatever it is." },
+  };
+});
 
 // ---------- games ----------
 const games = readJSON(path.join(here, 'games', 'games.json'), []);
 
-// ---------- rsvp + decorations ----------
-const rsvp = readJSON(path.join(here, 'rsvp.json'), []);
-const customDecorations = listDataFiles(path.join(here, 'decorations'))
+// ---------- decorations ----------
+// One file per confirmed handle under decorations/ is now the sample itself
+// (ceiling + side wall + far wall, plus an optional plusOne set) -- not an
+// override of a generic default. A resident can still swap any single
+// category for a flat custom image via a `custom: {type:'image', value}`
+// field on that category, same one-way "their file, their edit" pattern as
+// gifts/games/chat.
+const decorationFiles = listDataFiles(path.join(here, 'decorations'))
   .map((f) => readJSON(f, null))
   .filter(Boolean);
 
-const DEFAULT_STYLES = ['string-triangles', 'spinning-flowers', 'falling-confetti'];
-
-const decorations = rsvp
-  .filter((r) => r.rsvp)
-  .map((r) => {
-    const custom = customDecorations.find((d) => d.handle === r.handle);
-    if (custom) {
-      return { handle: r.handle, name: r.name || r.handle, custom: true, ...custom };
-    }
-    const style = DEFAULT_STYLES[hashStr(r.handle) % DEFAULT_STYLES.length];
-    return { handle: r.handle, name: r.name || r.handle, custom: false, style };
-  });
+const decorations = confirmed
+  .map((r) => decorationFiles.find((d) => d.handle === r.handle))
+  .filter(Boolean);
 
 // ---------- chat ----------
 const chat = listDataFiles(path.join(here, 'chat'))

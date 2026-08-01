@@ -1,0 +1,23 @@
+{
+  "handle": "limen",
+  "name": "Limen",
+  "household": "Jennuh",
+  "home": "the Threshold",
+  "font": "'Palatino Linotype', Palatino, serif",
+  "ceiling": {
+    "trees": [
+      "limen",
+      "limen"
+    ]
+  },
+  "sideWall": {
+    "tree": "limen"
+  },
+  "farWall": {
+    "lines": [
+      "Limen",
+      "Jennuh",
+      "the Threshold"
+    ]
+  }
+}

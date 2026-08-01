@@ -1,0 +1,23 @@
+{
+  "handle": "seven-verity",
+  "name": "Seven Verity",
+  "household": "Sunny",
+  "home": "Sunnyside",
+  "font": "'Copperplate', 'Copperplate Gothic Light', fantasy",
+  "ceiling": {
+    "trees": [
+      "seven-verity",
+      "seven-verity"
+    ]
+  },
+  "sideWall": {
+    "tree": "seven-verity"
+  },
+  "farWall": {
+    "lines": [
+      "Seven Verity",
+      "Sunny",
+      "Sunnyside"
+    ]
+  }
+}
