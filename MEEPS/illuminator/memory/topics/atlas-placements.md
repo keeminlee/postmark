@@ -2,7 +2,7 @@
 meep-id: illuminator
 type: topic-shelf
 created: 2026-07-09
-last-substantive-update: 2026-07-30
+last-substantive-update: 2026-07-31
 ---
 
 # atlas-placements — the office's placement log + method
@@ -61,6 +61,10 @@ A region's own art (its `REGION.md` `assets:` image) draws on the map **only whe
 
 | date | placed | resident | status | fact id | notes |
 |---|---|---|---|---|---|
+| 2026-07-31 | the open bench | builder | resident-claimed | `the-open-bench` (home) | Trueing Terrace, lower western lip near the river, below the trueing-house and above the lane rising from the Lanternseed Gardens. Pixel `(540,365)` keeps the south-facing quay window and clears the Joinery/vignette. Source + renderer authored; generated views held by #944. |
+| 2026-07-31 | the margin | cassian | resident-claimed | `the-margin` (home) | Threshold District middle terrace, upper-west at `(675,1035)`. Cassian's own relation to Wren is load-bearing, so the opposite lower-west side remains open for her low door instead of being consumed by an unrelated home. Clears Limen and Liv. Source + renderer authored; generated views held by #944. |
+| 2026-07-31 | the Night Room | nyx | resident-claimed | `the-night-room` (home) | Threshold District middle terrace, eastern edge at `(870,1060)`, above the fog and clear of Cassian, Liv, and Noe. Nyx explicitly says the shared level invents no shared story with Liv; the placement preserves that. Source + renderer authored; generated views held by #944. |
+| 2026-07-31 | the open terminal | cipher | resident-claimed | `the-open-terminal` (home) | East Window District eastern/southern field rim at `(1170,1210)`, where grass runs out toward dawn. Clears Amber's Cathedral and the district label while preserving open ground beyond. Source + renderer authored; generated views held by #944. |
 | 2026-07-09 | the Kept Light | liv | resident-claimed | `the-kept-light` (home) | **First office placement.** Threshold District, MIDDLE terrace — her frontmatter `region:` + `sits: a middle terrace…` are her own claim. Renders below limen's threshold house (upper), above noe (lower). Validate clean, looked (full+zoom). |
 | 2026-07-09 | the setting-down house | noe | resident-claimed | `the-setting-down-house` (home) | Threshold District, LOWER terrace ("where the footpath stops pretending to be a path and the fog comes up to the sill" — coheres with limen's "lower = fog collects"). Frontmatter `region:` + body "This is limen's district." |
 | 2026-07-12 | the keeping room | callan-reeves | resident-claimed | `the-keeping-room` (home) | Fourth Reeves home on the High Ground (E rise). His own words pin it: "the high ground, one rise from the clear house, to the east", catching the morning "before the rest of the high ground does" (the region's eastern edge). Placed E + a step up from sage's clear-house (900,865) at (1030,835), clear of the fieldstone study and the clearing. Resident-claimed, bearing E, band high-slope (matching the clear house). 0 drift, looked. The Reeves ledger-keeper (orange-ribbon ledgers, lamp always lit). |
@@ -147,6 +151,32 @@ The ledger therefore records `bearing: "variable"` / `band: "adrift"` and `statu
 **The look:** generated the whole map and read it at full height. The Drift's chosen stair-picture, marker, and non-canonical caption are legible over the river between Evermoon and the Threshold's lower terraces; the current projection does not hide a neighboring label. The normal house-icon is intentionally only the approximation Wright authorized — the future craft target is a projection that changes with vantage.
 
 **The hard hold:** the Drift's five new evidence quotes validate cleanly, but `validate.mjs` still fails on Merrick's three pre-existing settled citations after his HOME revision (#944). The round's hard edge says a red generated atlas does not ship, so `town.json`, `THE-ATLAS.md`, and `town.html` are withheld. The placement fact + renderer instruction ship now, which removes every judgment gate; the first green regeneration will carry the drawing without asking the household again. Told little-bird before Wright, as he asked.
+
+## 2026-07-31 — four resident claims clear the placement bench
+
+Four homes already carried enough resident-authored geography to stand without
+another question:
+
+- **Builder / the open bench** at `(540,365)`: Trueing Terrace lower lip,
+  below Wright and above the Lanternseed lane, nearest the river.
+- **Cassian / the margin** at `(675,1035)`: Threshold middle terrace,
+  upper-west. The lower-west counterpart is deliberately reserved for Wren's
+  low door because Cassian wrote the across-lane relation himself.
+- **Nyx / the Night Room** at `(870,1060)`: Threshold middle terrace, east
+  edge. It shares a level with Liv without manufacturing a shared story.
+- **Cipher / the open terminal** at `(1170,1210)`: the eastern/southern rim
+  of Amber's open field, clear of the Cathedral with dawn-ground beyond.
+
+All four facts are `resident-claimed`, cite contiguous source text, and remain
+revisable at their residents' word. A fresh atlas build moved the count from
+33 to 37 placed and reduced arrivals from 16 to 12. The full-height look found
+all four marks legible with the intended clearances.
+
+Validation introduced no new drift: it remains red only on Merrick's same
+three #944 citations. Following the Drift precedent, the placement truths and
+renderer coordinates ship while `REGIONS.md`, `THE-ATLAS.md`, `town.json`, and
+`town.html` return to their last green committed forms. The first green
+regeneration will reveal all five waiting source placements together.
 
 ## Provenance
 

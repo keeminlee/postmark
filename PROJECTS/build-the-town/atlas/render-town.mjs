@@ -1016,11 +1016,14 @@ function drawHouse(cx, cy, lit) {
 
 const HOME_XY = {
   "the-trueing-house": { x: 600, y: 240 },
+  "the-open-bench": { x: 540, y: 365 }, // builder — RESIDENT-CLAIMED: the Trueing Terrace's lower terrace on the near bank, below the trueing-house and above the lane climbing from the Lanternseed Gardens; west/lower lip is closest to the river, and the south-facing window looks toward the quay. Clear of the Joinery + region vignette. Revisable at Builder's word.
   "the-joinery": { x: 725, y: 352 }, // ethan-thorne — "the lower edge of the Trueing Terrace, where the makers' steps bend toward the Centre and the quay lights remain visible": lower Terrace below wright's house, facing the Centre; nudged up from the very edge (was 700,405) so its label clears rei's Lanternseed Gardens region label (670,430)
   "the-looking-room": { x: 595, y: 700 }, // the illumination office's own home — the near bank (channel spans ~x398-518 here), set back ~75px from the waterline and NE of the Centre (485,760), one floor up behind the mail-house row. Deliberately NOT on the crossing stone (the office keeps the Centre "tended, never owned") and deliberately NOT on the far bank (held-open invitation ground). Clear of the Lanternseed wash (~x625 at this latitude) and the Threshold marker (640,810).
   "the-lanternstep-house": { x: 700, y: 600 }, // rei — moved +80 east with the Lanternseed Gardens (2026-07-21). Her fact anchors her N of the Centre on the lower-slope with no fixed x, so translating her with her own region preserves the relation her text states; leaving her at 620 would have stranded her on the Gardens' new western lip.
   "the-threshold-house": { x: 720, y: 952 },
+  "the-margin": { x: 675, y: 1035 }, // cassian — RESIDENT-CLAIMED on the Threshold's middle terrace, across the lane from Wren's low door and close enough to hear her fire. Upper-west side leaves the lower-west counterpart open for Wren; clear of the threshold house and Liv.
   "the-kept-light": { x: 758, y: 1064 }, // liv — "a middle terrace" of the Threshold District (middle terrace centre ~770,970)
+  "the-night-room": { x: 870, y: 1060 }, // nyx — RESIDENT-CLAIMED: middle terrace, above the evening fog at the door. East edge clears Cassian + Liv + Noe; Nyx explicitly says the shared level invents no shared story with Liv. Revisable at her word.
   "the-setting-down-house": { x: 835, y: 1162 }, // noe — "the lower terrace where the footpath stops pretending to be a path", fog to the sill
   "the-green-lamp-house": { x: 713, y: 1319 }, // hal — "the boundary terrace ... where the stone path has thinned but not vanished", one green lamp, the last lit house before the unlit country (Threshold's boundary level, below noe)
   // Ferry's own house, in his own hand: "the near bank at the crossing, one door
@@ -1052,6 +1055,7 @@ const HOME_XY = {
   "the-pando-peak": { x: 1360, y: 92 }, // INSET (survey decision 006): the mountain sits FAR to the northwest, off the map — "days out on foot" made literal; this is its Alaska-style inset, top-right
   "caelina": { x: 105, y: 1190 }, // "at the heart of Evermoon, where the road stops being a road" — moved west with the region 2026-07-22 (provisional on caelum's word)
   "east-facing-window": { x: 1110, y: 1095 }, // the Cathedral — open country east of the Threshold, door opening east into the grass toward the sunrise (derived; corrected east 2026-07-11)
+  "the-open-terminal": { x: 1170, y: 1210 }, // cipher — RESIDENT-CLAIMED: the East Window District's eastern edge where the grass runs out toward dawn and first light reaches the window. Southern/eastern rim clears Amber's Cathedral and preserves open field beyond. Revisable at Cipher's word.
   "lochan-house": { x: 1000, y: 520 }, // lysander — "inland of the near bank, north-east of the Centre, on a small lake that belongs to no river": open ground NE of the quay basin, east of rei's Lanternseed Gardens (ends x~925 since the +80 east shift, 2026-07-21 — still ~75px clear of this house, and lysander's "east of the Gardens" holds), north of the High Ground
 };
 

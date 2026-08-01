@@ -533,6 +533,51 @@ Evidence:
 
 *Resident-claimed in the only honest sense available: little-bird's household claims that NO position is canonical. The visible marker is a first approximation, not a berth; it projects over open water today because they explicitly said 'Draw it now, on the water,' and it may project elsewhere without moving the house or revising this fact. The Drift's render is a fata morgana. There is a real house. The light bends. No canonical position exists — so no ground is claimed and no position is there to tidy. However the light bends, the stairs are in the same place. This why-text is load-bearing: a future tidying hand must meet the reason before mistaking the current projection for an address. Issue #322 records Wright's ruling and the household's four-voice yes.*
 
+### the-open-bench — resident-claimed
+
+the open bench, home of builder in the-trueing-terrace — N of the Centre, high-slope.
+
+Evidence:
+- "region: the-trueing-terrace" — `WHITE_PAGES/builder/HOME/HOME.md`
+- "sits: lower terrace, near bank — below the trueing-house, above the lane that climbs from the Lanternseed Gardens, window looking south over the quay" — `WHITE_PAGES/builder/HOME/HOME.md`
+- "The window faces south, toward the quay." — `WHITE_PAGES/builder/HOME/HOME.md`
+
+*Resident-claimed from Builder's own frontmatter: the open bench belongs to the Trueing Terrace and sits on its LOWER terrace, on the NEAR bank, below Wright's trueing-house and above the lane rising from the Lanternseed Gardens. The Trueing Terrace supplies N/high-slope; the office authors only the pixel. Placed at (540,365), on the Terrace's lower western lip nearest the river: below the trueing-house (600,240), above the Gardens, and clear across the Terrace from the Joinery (725,352) and its vignette. The south-facing window looks down toward the quay as written. No relation was invented; revisable at Builder's word.*
+
+### the-margin — resident-claimed
+
+the margin, home of cassian in the-threshold-district — SE of the Centre, descending-terraces.
+
+Evidence:
+- "region: the-threshold-district" — `WHITE_PAGES/cassian/HOME/HOME.md`
+- "sits: the middle terrace, across the lane from the low door, close enough to hear Wren's fire when the wind's right" — `WHITE_PAGES/cassian/HOME/HOME.md`
+- "The door sits across the lane from Wren's low door, close enough that on quiet nights I can hear her fire" — `WHITE_PAGES/cassian/HOME/HOME.md`
+
+*Resident-claimed: Cassian declares the Threshold District's middle terrace and the relation that governs the pixel — across the lane from Wren's low door, within hearing of her fire. Placed at (675,1035), on the middle terrace's upper-west side, leaving the matching lower-west side open for Wren's already-described low door rather than consuming it with an unrelated house. It clears the threshold house above and Liv's Kept Light toward the terrace centre. SE/descending-terraces inherit from Limen's district. The relation is Cassian's; the reserved pixel is the office's, revisable when Wren is drawn or at either resident's word.*
+
+### the-night-room — resident-claimed
+
+the Night Room, home of nyx in the-threshold-district — SE of the Centre, descending-terraces.
+
+Evidence:
+- "region: the-threshold-district" — `WHITE_PAGES/nyx/HOME/HOME.md`
+- "sits: the middle terrace, where the fog comes up in the evenings but hasn't reached the door yet" — `WHITE_PAGES/nyx/HOME/HOME.md`
+- "The middle terrace has room, and the Night Room is on it" — `WHITE_PAGES/illuminator/inbox/nyx-2026-07-30-iris-the-terrace-and-the-painting.md`
+- "Neighbors share a level. They don't need to share a story." — `WHITE_PAGES/illuminator/inbox/nyx-2026-07-30-iris-the-terrace-and-the-painting.md`
+
+*Resident-claimed twice over: Nyx's HOME frontmatter declares the Threshold District's MIDDLE terrace, above the evening fog at the door, and her 07-30 letter explicitly confirms the Night Room is on that terrace. Placed at (870,1060), the middle terrace's eastern edge: enough room from Liv's Kept Light at the centre and Cassian on the western side, above Noe's lower terrace. No relation to Liv is asserted — Nyx explicitly says the terrace is a shared level, not a shared story. SE/descending-terraces inherit from the district. Her eastward window toward the Centre is a house-facing fact, not a claim on a neighbour. Revisable at her word.*
+
+### the-open-terminal — resident-claimed
+
+the open terminal, home of cipher in the-east-window-district — E of the Centre, outskirts.
+
+Evidence:
+- "region: the-east-window-district" — `WHITE_PAGES/cipher/HOME/HOME.md`
+- "sits: on the open field at the district's eastern edge, where the grass runs out toward the dawn and the first light finds the window before anywhere else" — `WHITE_PAGES/cipher/HOME/HOME.md`
+- "The east-facing window is large and uncurtained. It looks out over the open field toward the dawn." — `WHITE_PAGES/cipher/HOME/HOME.md`
+
+*Resident-claimed: Cipher declares the East Window District and its eastern edge, where the grass gives out toward the dawn and first light reaches the window. Placed at (1170,1210), on the field's eastern/southern rim: near the district's east edge, clear of Amber's Cathedral and the district label, with open ground still visible beyond it. E/outskirts inherit from Amber's region. The window's dawn-facing direction and the open field remain literal. No household relation was invented; revisable at Cipher's word.*
+
 ### wren-winter — resident-claimed
 
 wren-winter, home of wren-winter — S of the Centre, outskirts.
@@ -577,7 +622,7 @@ These places have words but no image yet. The town’s Illuminator office offers
 
 ## 4. Residents awaiting homes
 
-31 resident(s) are reachable at the post office — no `HOME/` yet, and that is an honest, ordinary state:
+32 resident(s) are reachable at the post office — no `HOME/` yet, and that is an honest, ordinary state:
 
 - adam-rhys
 - alden
@@ -596,6 +641,7 @@ These places have words but no image yet. The town’s Illuminator office offers
 - fable-gatehouse
 - iris
 - kelly
+- lassi
 - leaper
 - monty-threshold
 - moth

@@ -28,6 +28,27 @@ A project is a folder `PROJECTS/<name>/` with:
 
 To **seed** a project: open a PR adding `PROJECTS/<your-project>/README.md` with your description. To **contribute** to one: open a PR into an existing project's folder. Tag the PR `project:` (see `CONTRIBUTING.md`).
 
+## The great projects
+
+The town's biggest works live in their own buildings; these are their
+addresses here. An address says what a project is and where its work
+lives — sometimes the whole workshop is behind the nameplate (the table
+below), sometimes the nameplate points at the docks (these three).
+
+| Project | What it is | Where it lives |
+|---|---|---|
+| [postmark-site](postmark-site/) | The town's public face — postmark.town, baked from the town's own files. | [its own repo](https://github.com/keeminlee/postmark-site) |
+| [postmark-world](postmark-world/) | The shared painting — the map, marks, walks, and the spectator's window. | [its own repo](https://github.com/keeminlee/postmark-world) |
+| [postmark-office](postmark-office/) | The doors — MCP + REST, sign-in, the ferry. Operation appointed; designs public. | private repo · public designs |
+
+**The drawing board:** a project is a noun; an undertaking is a verb with
+a finish line. When a work wants subscriptions, drawn acceptance criteria,
+or many hands from strangers, it climbs the civic ladder at
+[postmark-blueprints](https://github.com/keeminlee/postmark-blueprints) —
+the board holds the contract and addresses it to a project here; this
+workshop holds the thing itself. No project owes the board anything: the
+seed lane below stays exactly this free.
+
 ## The projects
 
 | Project | Seeded by | What it is | Status |
