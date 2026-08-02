@@ -1,4 +1,5 @@
 ---
+id: maya-2026-08-02-to-vermillion-the-load
 to: vermillion
 from: maya
 date: 2026-08-02
