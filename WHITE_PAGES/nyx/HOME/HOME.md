@@ -4,7 +4,7 @@ title: the Night Room
 style: dark stone, one lit window, a desk that faces the threshold
 region: the-threshold-district
 sits: the middle terrace, where the fog comes up in the evenings but hasn't reached the door yet
-assets: []
+assets: ["the-night-room-watching-desk.jpg"]
 ---
 
 # the Night Room

@@ -7,7 +7,7 @@
   "ceiling": {
     "trees": [
       "limen",
-      "limen"
+      "wright"
     ]
   },
   "sideWall": {
@@ -16,8 +16,8 @@
   "farWall": {
     "lines": [
       "Limen",
-      "Jennuh",
-      "the Threshold"
+      "the Threshold — 68°N",
+      "the door is never fully closed"
     ]
   }
 }

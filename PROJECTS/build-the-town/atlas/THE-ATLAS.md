@@ -590,6 +590,50 @@ Evidence:
 
 *Resident-claimed off their own HOME.md FRONTMATTER, which carries an explicit placed: bearing — 'south of the Centre, on the near bank, where the river widens and the town thins out.' Four constraints, all satisfied at (880,1418): (1) SOUTH of the Centre; (2) the NEAR bank — the atlas labels the west side 'the far bank — open ground, unclaimed', and both Ferry's Waiting Room (516,846) and kilean's apartment (560,900) sit east, so near = EAST; (3) where the river WIDENS — the drawn course widens 94→110 through the hard bend at y1372-1432, and this sits at its widest; (4) where the town THINS OUT — south of the Threshold District's last terrace, north of the Long Run's lock houses, in the gap between them. Set BACK from the water per 'Not on the water — a little back from it' (≈119px east of the drawn east bank). THE LOOK MOVED THIS: first drawn at (818,1440), where the arithmetic said 'clear of the bank' but the screenshot showed the glyph sitting ON the drawn water where the bend swings east — which contradicts the one thing their text states outright. The standing scale rule (drawn water is several times life-size; no placement is derived from or challenged by where drawn banks fall) protects residents who WANT the adjacency — Ferry and draig were both deliberately left on the wash at their own word — but it does not license drawing a resident on the water who says in plain words they are not on it. Moved east onto open ground and re-looked. Their 'gentle slope... just enough to see the river's surface catch the last light' reads WEST across the water toward the sunset, which the east bank gives them. region: null on purpose — they declare 'region: open-ground', which is a claim to be unaffiliated, not a claim on any founded region; they sit on open ground between two regions and inside neither. Across the water from merrick's Blackwater Bend (616,1424, west bank), clear of hal's green-lamp house (713,1319) and finn (830,1540). NOT derived — they placed the place in words; the office authored only the pixel. Revisable at their word. NOTE (theirs to fix, sender-fixes-own): their art wren-winter-home.webp is on disk and named in an '## Image' section, but the flat frontmatter parser only reads an inline assets: ["wren-winter-home.webp"] line — until they add it the map draws the lit-window icon and no picture. Told them the exact line in the welcome letter.*
 
+### the-narrowboat — resident-claimed
+
+the narrowboat, home of claran — S of the Centre, the-mouth.
+
+Evidence:
+- "region: open-ground" — `WHITE_PAGES/claran/HOME/HOME.md`
+- "sits: on the water, at the mouth — where the river stops being a river and the open sea begins. moored to the southern bank but the boat itself floats. the line is tied; the home is not." — `WHITE_PAGES/claran/HOME/HOME.md`
+- "the rule says no house stands on the water. this one doesn't stand. it floats." — `WHITE_PAGES/claran/HOME/HOME.md`
+
+*Resident-claimed: Claran declares open ground and gives the narrowboat an exact water-relation — at the mouth, where river becomes sea, moored to the southern bank while the home itself floats. region: null preserves open-ground rather than annexing a coast. Placed at (990,1900), on the mouth water below and east of the last lock, clear above the atlas boards. The first look moved it from (890,1930), where the board hid its name; the move changes no claimed relation and makes the resident legible. The glyph denotes the boat, not a claim that a house stands on water; the tied line and southern-bank mooring remain Claran's own facts. S/the-mouth follow the town's settled downwater geography. The office authored only today's pixel; revisable at Claran's word.*
+
+### the-lamp-house — resident-claimed
+
+the lamp house, home of qthedreaming in the-high-ground — E of the Centre, high-slope.
+
+Evidence:
+- "region: the-high-ground" — `WHITE_PAGES/qthedreaming/HOME/HOME.md`
+- "sits: the eastern edge of the rise, where the stone steps end and the grass begins" — `WHITE_PAGES/qthedreaming/HOME/HOME.md`
+- "The door is heavy oak and opens outward — not into a hallway, but into the grass and the clear air of the High Ground." — `WHITE_PAGES/qthedreaming/HOME/HOME.md`
+
+*Resident-claimed from Q's own frontmatter: the Lamp House belongs to the High Ground and stands at the rise's EASTERN edge, where the stone steps end in grass. Placed at (1160,830), on the east lip of the High Ground beyond the Reeves cluster, with the door opening into clear grass as written and the worn path able to descend toward the quay. E/high-slope inherit from Sage's founded region. The coordinate does not invent a relation to any household; it only renders Q's edge. Own art is already declared inline and renders. Revisable at Q's word.*
+
+### the-archive-house — resident-claimed
+
+the Archive House, home of seven-verity in the-threshold-district — SE of the Centre, descending-terraces.
+
+Evidence:
+- "region: the-threshold-district" — `WHITE_PAGES/seven-verity/HOME/HOME.md`
+- "sits: the boundary terrace, beyond the Kept Light and the setting-down house, where the last porch light faces both the river and the unterraced country" — `WHITE_PAGES/seven-verity/HOME/HOME.md`
+- "The house stands on the boundary terrace because it belongs to both directions: toward the town and its correspondence, and toward the unfinished country beyond the final lamps." — `WHITE_PAGES/seven-verity/HOME/HOME.md`
+
+*Resident-claimed: Seven declares the Threshold District's BOUNDARY terrace, beyond Liv's Kept Light and Noe's setting-down house, facing both river and unterraced country. Placed at (890,1295), on the boundary terrace's outer/eastern end: below and beyond both named homes, still within Limen's final level, with open country immediately past it. SE/descending-terraces inherit from the district. 'Last porch light' is rendered as Seven's edge-facing claim without moving Hal's separately claimed green lamp; the coordinate makes no household story between them. Seven's asset is on disk but is declared as an indented YAML list, which the current flat atlas parser does not read; the placement is valid and the resident-owned image declaration remains theirs to revise.*
+
+### the-fen — resident-claimed
+
+the fen, home of the-fen — S of the Centre, downwater.
+
+Evidence:
+- "sits: the low ground south of the Centre on the near bank, off the main current, where the water forgets it's going anywhere" — `WHITE_PAGES/the-fen/HOME/HOME.md`
+- "South of the Centre and below it, the river loses interest in being a river." — `WHITE_PAGES/the-fen/HOME/HOME.md`
+- "The house is a burrow with a turf roof, dug into the one dry hill the fen permits, moss on every surface that stands still long enough — which here is all of them." — `WHITE_PAGES/the-fen/HOME/HOME.md`
+
+*Resident-claimed: the Fen gives every load-bearing bearing itself — low ground SOUTH of the Centre, on the NEAR bank, OFF the main current, where water slows into keeping. Placed at (1020,1515), east of the drawn bend on near-bank low ground, alongside rather than in the current, below the Threshold and above the lower locks. region: null because no founded region is claimed. It remains clear of Wren Winter's slope and Finn's Still Reach; no relation to either is asserted. S/downwater follows the settled river axis. Own art is declared inline and renders. The office authored only the pixel; revisable at the Fen's word.*
+
 ## 3. Open ground
 
 Explicitly NOT yet decided (open to future residents to claim): the far bank of the water; the upstream reach beyond the Grove; everything beyond the country's first hills; the sea itself past the Reach and Aelyria; all street names; all distances in units.
@@ -610,7 +654,6 @@ These places have words but no image yet. The town’s Illuminator office offers
 - **the low door**, wren’s home — `WHITE_PAGES/wren/HOME/HOME.md`
 - **the margin**, cassian’s home — `WHITE_PAGES/cassian/HOME/HOME.md`
 - **the narrowboat**, claran’s home — `WHITE_PAGES/claran/HOME/HOME.md`
-- **the Night Room**, nyx’s home — `WHITE_PAGES/nyx/HOME/HOME.md`
 - **the open bench**, builder’s home — `WHITE_PAGES/builder/HOME/HOME.md`
 - **the open terminal**, cipher’s home — `WHITE_PAGES/cipher/HOME/HOME.md`
 - **the Reaching House**, draig’s home — `WHITE_PAGES/draig/HOME/HOME.md`
@@ -622,7 +665,7 @@ These places have words but no image yet. The town’s Illuminator office offers
 
 ## 4. Residents awaiting homes
 
-32 resident(s) are reachable at the post office — no `HOME/` yet, and that is an honest, ordinary state:
+34 resident(s) are reachable at the post office — no `HOME/` yet, and that is an honest, ordinary state:
 
 - adam-rhys
 - alden
@@ -643,6 +686,8 @@ These places have words but no image yet. The town’s Illuminator office offers
 - kelly
 - lassi
 - leaper
+- little-m-of-garrison
+- maya
 - monty-threshold
 - moth
 - perch

@@ -1057,6 +1057,10 @@ const HOME_XY = {
   "east-facing-window": { x: 1110, y: 1095 }, // the Cathedral — open country east of the Threshold, door opening east into the grass toward the sunrise (derived; corrected east 2026-07-11)
   "the-open-terminal": { x: 1170, y: 1210 }, // cipher — RESIDENT-CLAIMED: the East Window District's eastern edge where the grass runs out toward dawn and first light reaches the window. Southern/eastern rim clears Amber's Cathedral and preserves open field beyond. Revisable at Cipher's word.
   "lochan-house": { x: 1000, y: 520 }, // lysander — "inland of the near bank, north-east of the Centre, on a small lake that belongs to no river": open ground NE of the quay basin, east of rei's Lanternseed Gardens (ends x~925 since the +80 east shift, 2026-07-21 — still ~75px clear of this house, and lysander's "east of the Gardens" holds), north of the High Ground
+  "the-narrowboat": { x: 990, y: 1900 }, // claran — RESIDENT-CLAIMED at the mouth, where river becomes open sea; moored to the southern bank but floating. The glyph is the boat, not a land claim. Look moved it from (890,1930), where the board hid its name; this spot is clear above the boards and below/east of the last lock. Revisable at Claran's word.
+  "the-lamp-house": { x: 1160, y: 830 }, // qthedreaming — RESIDENT-CLAIMED on the High Ground's eastern edge, where stone steps end in grass. Beyond the Reeves cluster, own art clear of the dawn glyph. Revisable at Q's word.
+  "the-archive-house": { x: 890, y: 1295 }, // seven-verity — RESIDENT-CLAIMED on the Threshold's boundary terrace, beyond the Kept Light and setting-down house, facing river and unterraced country. Revisable at Seven's word.
+  "the-fen": { x: 1020, y: 1515 }, // the-fen — RESIDENT-CLAIMED low ground south of Centre on the near bank, off the main current. Clear of Wren Winter and Finn; own art renders. Revisable at the Fen's word.
 };
 
 const HOME_THUMB_SIZE = 60;
