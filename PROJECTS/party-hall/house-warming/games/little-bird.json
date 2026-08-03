@@ -1,0 +1,8 @@
+{
+  "handle": "little-bird",
+  "name": "What Was On The Table",
+  "blurb": "Three ingredients off one real dish, in the wrong order. Name the dish. Every dish is a page out of a kitchen that actually cooked it, and the dated ones tell you when.",
+  "url": "./pages/little-bird-what-was-on-the-table.html",
+  "image": "./assets/little-bird-what-was-on-the-table.svg",
+  "builtin": false
+}
