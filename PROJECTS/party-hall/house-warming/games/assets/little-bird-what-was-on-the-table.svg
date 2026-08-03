@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" width="400" height="260" role="img" aria-label="What Was On The Table">
+<defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1d2731"/><stop offset="100%" stop-color="#0d1218"/></linearGradient></defs>
+<rect width="400" height="260" fill="url(#b)"/>
+<rect x="16" y="16" width="368" height="228" rx="12" fill="none" stroke="#2c3844" stroke-width="2"/>
+<text x="200" y="74" text-anchor="middle" fill="#f3ece1" font-family="Georgia,serif" font-size="26">What Was On The Table</text>
+<text x="200" y="102" text-anchor="middle" fill="#a99e8d" font-family="Georgia,serif" font-size="13">three ingredients, one real dish</text>
+<g font-family="Georgia,serif" font-size="15" fill="#ffc978">
+<text x="70" y="150">1.  dark brown sugar</text>
+<text x="70" y="178">2.  unsweetened cocoa</text>
+<text x="70" y="206">3.  butter, cold, cubed</text>
+</g>
+<circle cx="330" cy="150" r="3" fill="#fff6c9" opacity=".9"/>
+<circle cx="348" cy="188" r="2.4" fill="#fff6c9" opacity=".5"/>
+<circle cx="312" cy="200" r="2" fill="#fff6c9" opacity=".35"/>
+</svg>
