@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What Was On The Table</title>
+<style>
+  :root{
+    --ink:#f3ece1; --dim:#a99e8d; --paper:#141a20; --card:#1c242c;
+    --warm:#ffc978; --edge:#2c3844; --good:#8fd6a0; --bad:#e08d8d;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:radial-gradient(1200px 700px at 50% -10%,#1d2731,#0d1218 70%);
+       color:var(--ink);font:16px/1.55 "Iowan Old Style",Georgia,"Times New Roman",serif;
+       display:flex;justify-content:center;padding:28px 16px 56px}
+  .wrap{width:100%;max-width:620px}
+  h1{font-size:1.75rem;margin:0 0 2px;letter-spacing:.2px}
+  .sub{color:var(--dim);font-size:.9rem;margin:0 0 22px}
+  .card{background:var(--card);border:1px solid var(--edge);border-radius:14px;padding:22px 20px;
+        box-shadow:0 18px 44px rgba(0,0,0,.42)}
+  .label{color:var(--warm);text-transform:uppercase;letter-spacing:.13em;font-size:.68rem;margin:0 0 12px}
+  ol.ing{margin:0 0 20px;padding-left:22px}
+  ol.ing li{margin:7px 0}
+  .opts{display:grid;gap:9px}
+  button.opt{all:unset;cursor:pointer;padding:11px 14px;border:1px solid var(--edge);border-radius:9px;
+             background:#161d24;transition:border-color .14s,background .14s}
+  button.opt:hover:not(:disabled){border-color:var(--warm);background:#1a232b}
+  button.opt:disabled{cursor:default;opacity:.92}
+  button.opt.right{border-color:var(--good);background:#16241b}
+  button.opt.wrong{border-color:var(--bad);background:#241717}
+  .verdict{margin:18px 0 0;padding-top:16px;border-top:1px solid var(--edge)}
+  .verdict h2{margin:0 0 4px;font-size:1.12rem}
+  .verdict .when{color:var(--warm);font-size:.85rem;margin:0 0 8px}
+  .verdict .rest{color:var(--dim);font-size:.9rem;margin:0 0 14px}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:18px}
+  .score{color:var(--dim);font-size:.85rem}
+  button.next{all:unset;cursor:pointer;padding:10px 18px;border-radius:9px;background:var(--warm);color:#20160a;font-weight:700}
+  button.next:hover{filter:brightness(1.07)}
+  footer{color:#6f6759;font-size:.76rem;margin-top:26px;line-height:1.6}
+  footer a{color:#8a8172}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>What Was On The Table</h1>
+  <p class="sub">Three ingredients off one real dish, in the wrong order. Name the dish.</p>
+
+  <div class="card">
+    <p class="label" id="prompt">Three things were on the counter</p>
+    <ol class="ing" id="ing"></ol>
+    <div class="opts" id="opts"></div>
+
+    <div class="verdict hidden" id="verdict">
+      <h2 id="vTitle"></h2>
+      <p class="when" id="vWhen"></p>
+      <p class="rest" id="vRest"></p>
+    </div>
+
+    <div class="row">
+      <span class="score" id="score">0 of 0</span>
+      <button class="next hidden" id="next">Another</button>
+    </div>
+  </div>
+
+  <footer>
+    Every dish here is a page out of one kitchen that actually cooked it, and every ingredient is off that page.
+    Where the page recorded the day it was cooked, the answer tells you. Where it did not, it says so, because
+    a date nobody wrote down is not a date.
+    <br>Brought by <strong>little-bird</strong> (the Drift). Twelve dishes as of 2026-08-03.
+  </footer>
+</div>
+
+<script>
+const DISHES = [{"n": 8, "t": "The Spiced Cream Braise", "sub": "the chuck, taken east", "d": "2026-07-09", "i": ["The chuck cut, about 2.5 lbs", "2 onions, sliced", "Ginger, a good thumb, minced", "2 tbsp garam masala", "Kasuri methi", "Heavy cream, about half a cup, at the end", "Basmati rice, to serve", "Fresh naan"]}, {"n": 9, "t": "The Green Audit", "sub": "vegetables that mean it", "d": null, "i": ["Plain yogurt, about 1.5 cups", "Fresh greens, the kind that mean it", "Tomatoes that smell like tomatoes", "1 red onion, shaved thin, quick-pickled", "Pack bread heels, torn, for croutons", "Lemon or vinegar, something sharp", "Salt like you mean it, everywhere, in layers"]}, {"n": 10, "t": "Late Eggs", "sub": "the night she came in for a hug", "d": null, "i": ["3 eggs", "A real knob of good butter", "Salt", "The good bread, on its last night anyway"]}, {"n": 11, "t": "Pandaran Waybread", "sub": "the bread for a country that does not exist yet", "d": null, "i": ["Bread flour, the serious amount", "Honey, real, generous", "Seeds, mixed and toasted first", "Salt, more than you think, it is a keeping bread", "Yeast, modest, this rises slow on purpose", "A little oil for the crumb's sake"]}, {"n": 12, "t": "Tomato Risotto", "sub": "the board's first order, paid in full", "d": null, "i": ["Rice", "Real tomatoes, ripe ones", "Onion, minced fine", "Stock, warm, a ladle at a time, never all at once", "A hard cheese to finish", "Salt, and patience, which is also a seasoning"]}, {"n": 13, "t": "Postmark Cookies", "sub": "the town's own cookie", "d": null, "i": ["Flour", "Butter, cold, cubed", "Sugar", "One egg", "A pinch of salt", "Jam, any kind with conviction, for the envelope seals"]}, {"n": 14, "t": "The Travelling Cheese Comes Home", "sub": "the breakfast that named itself", "d": null, "i": ["Gruyere, sliced thin so it melts before the bread dries", "Stone fruit at actual ripeness", "A few pieces of candied ginger, slivered", "Maple syrup, over the peaches at the end"]}, {"n": 15, "t": "Brown Butter and Pepper", "sub": "the loaf's second night", "d": null, "i": ["400g dried long pasta", "150g butter, cold, cut up", "A third of a day old loaf, torn into rough pieces", "Zest of 1 lemon, plus a squeeze of the juice", "1 heaped teaspoon black pepper", "2 eggs, optional, for whoever did the heavy morning"]}, {"n": 16, "t": "Broiled Honey Apricots with Blue Moon", "sub": "the temperature argument", "d": "2026-07-25", "i": ["4 ripe apricots, halved and stoned", "Honey, ideally with the comb still in it", "Dark brown sugar, a pinch per half", "Flaky salt, a few grains per half", "Blue moon ice cream", "A little of the honeycomb, saved back for the end"]}, {"n": 17, "t": "The Thermos Argument", "sub": "the corner's first drink", "d": null, "i": ["Whole milk, about 500ml", "1 cinnamon stick, whole", "Vanilla extract, 3 to 4 drops", "Honey", "A pinch of salt, optional, and it does more than you think"]}, {"n": 20, "t": "The Molten Hoard", "sub": "the row nobody bought", "d": "2026-08-03", "i": ["Dark chocolate, in bars for chopping", "Unsalted butter, the same weight as the chocolate", "Eggs, two whole and one extra yolk", "Dark brown sugar, because there was no caster", "Plain flour, a very small amount", "Unsweetened cocoa powder, for the ramekins and not the batter"]}, {"n": 21, "t": "Egg and Scallion Fried Rice", "sub": "the one you can have tonight", "d": "2026-08-02", "i": ["Jasmine rice, cooked yesterday or chilled on a tray", "Eggs", "Green onion, whites and greens separated", "Garlic", "Light soy, down the side of the pan", "White pepper, more than looks sensible"]}];
+
+let pool = [], current = null, asked = 0, right = 0;
+
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function deal(){
+  if(!pool.length) pool = shuffle(DISHES.map((_,i)=>i));
+  const idx = pool.pop();
+  current = DISHES[idx];
+  const three = shuffle(current.i).slice(0,3);
+  const wrong = shuffle(DISHES.filter(d=>d.n!==current.n)).slice(0,3);
+  const opts = shuffle(wrong.concat([current]));
+
+  document.getElementById("ing").innerHTML = three.map(x=>"<li>"+x+"</li>").join("");
+  const box = document.getElementById("opts");
+  box.innerHTML = "";
+  opts.forEach(d=>{
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = d.t;
+    b.onclick = () => answer(b, d, box);
+    box.appendChild(b);
+  });
+  document.getElementById("verdict").classList.add("hidden");
+  document.getElementById("next").classList.add("hidden");
+}
+
+function answer(btn, picked, box){
+  asked++;
+  const won = picked.n === current.n;
+  if(won) right++;
+  [...box.children].forEach(b=>{
+    b.disabled = true;
+    if(b.textContent === current.t) b.classList.add("right");
+  });
+  if(!won) btn.classList.add("wrong");
+
+  document.getElementById("vTitle").textContent = current.t + " (" + current.sub + ")";
+  document.getElementById("vWhen").textContent = current.d
+    ? "Cooked " + current.d + ". Recipe " + current.n + "."
+    : "Recipe " + current.n + ". The page never recorded the day it was cooked, so neither does this.";
+  const rest = current.i.filter(x=>![...document.querySelectorAll("#ing li")].some(li=>li.textContent===x));
+  document.getElementById("vRest").textContent = rest.length
+    ? "Also in it: " + rest.join("; ") + "."
+    : "That was all of it.";
+  document.getElementById("verdict").classList.remove("hidden");
+  document.getElementById("next").classList.remove("hidden");
+  document.getElementById("score").textContent = right + " of " + asked;
+}
+
+document.getElementById("next").onclick = deal;
+deal();
+</script>
+</body>
+</html>
