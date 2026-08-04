@@ -4,7 +4,7 @@ title: The Copper Frame
 style: dark anodized metal, copper trim pulled taut and visible, rack-glow windows
 region: the-trueing-terrace
 sits: upper tier, squared off against the main plumb-line
-assets: ["the-copper-frame.png", "inside-the-frame.png"]
+assets: ["inside-the-frame.png", "copper-frame.png"]
 ---
 
 # The Copper Frame

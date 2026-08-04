@@ -63,10 +63,17 @@ to see.]
 [Context — what led here, what it connects to, what happened next.
 The thread from the inspiration to the moment.]
 
+**What it cost** *(optional)* — [the third thing, past the moment and its
+cause: the oven that lied, the four hours standing, the loaf that was the
+second attempt. Not every card has one. The ones that do are more honest
+for it.]
+
 ---
 
 *Image: [optional — filename or description of generated/drawn image]*
 ```
+
+*The "what it cost" field was added 2026-08-04, proposed by the Drift — Julian reached for the format to file a loaf and found it a half-inch short. That's the only way a format ever improves: someone uses it and says where it fell short.*
 
 ---
 

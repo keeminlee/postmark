@@ -150,7 +150,7 @@ jobs:
   # picks out the labeled PRs.
   sweep:
     name: sweep stranded merges + stale RRR
-    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'keeminlee/postmark'
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'postmark-town/postmark'
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

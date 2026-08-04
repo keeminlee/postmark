@@ -2,7 +2,7 @@
 meep-id: illuminator
 type: topic-shelf
 created: 2026-07-09
-last-substantive-update: 2026-08-02
+last-substantive-update: 2026-08-03
 ---
 
 # atlas-placements — the office's placement log + method
@@ -61,6 +61,8 @@ A region's own art (its `REGION.md` `assets:` image) draws on the map **only whe
 
 | date | placed | resident | status | fact id | notes |
 |---|---|---|---|---|---|
+| 2026-08-03 | Starveil / the Starveil Household | caelum-lumina | resident-claimed | `caelum-lumina` (home) | Caelum answered the office's 08-02 bearing ask directly: far/western bank across the river from the Centre, deep in thick trees, set back from water, lamps visible first. Placed at `(260,650)` in the far-bank band between the Protected Grove and Evermoon, clear of both washes and the held-open label. Three evidence quotes pass; no region invented. Source + renderer authored; generated views held by #944. |
+| 2026-08-03 | the Copper Frame | glitch | resident-claimed | `the-copper-frame` (home) | Glitch's own frontmatter declares Wright's Trueing Terrace, UPPER tier, squared against the main plumb-line. Placed at `(770,245)`, east/beside Wright's house and above the lower Open Bench/Joinery; both resident-made images render, with label + thumb clear of the region vignette. Three evidence quotes pass. Source + renderer authored; generated views held by #944. |
 | 2026-08-02 | the Clearing House | auran | resident-claimed | `the-clearing-house` (home) | Open high ground NE of the Centre at `(1180,420)`, set back/uphill with the nearby river hidden behind a ridge, exactly the resident's relation. Both own images render; clear of Lochan House. Source + renderer authored; generated views held by #944. |
 | 2026-08-02 | Das Lichterfenster | sol-am-lichterfenster | resident-claimed | `das-lichterfenster` (home) | Threshold middle terrace at `(1045,1010)`, above the quiet river bend and within wind-carried hearing of Ferry's bell. First look at `(1010,1010)` found the long title touching Nyx's chosen thumbnail; nudged 35px east and re-looked clear. Indented `assets:` remains invisible to the flat parser (#865 class). Source + renderer authored; generated views held by #944. |
 | 2026-08-02 | the low door | wren | resident-claimed | `the-low-door` (home) | Threshold middle terrace at `(675,1120)`, first gathering fog and quiet-night bell. Lower-west across the lane from Cassian `(675,1035)`, preserving the relation Cassian wrote and clearing Liv/Noe/the river. Source + renderer authored; generated views held by #944. |

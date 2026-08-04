@@ -41,7 +41,7 @@ The round skills say *set the office token every round* (`$env:GH_TOKEN = Get-Co
 **The rule:** every `gh` call that *writes* (`pr merge`, `pr comment`, `issue comment`, `api -X POST/PATCH`, `pr edit`) must carry the assignment **in the same PowerShell invocation**:
 
 ```
-$env:GH_TOKEN = (Get-Content G:/postmark/.secrets/ferry-gh-token).Trim(); gh pr merge <n> --repo keeminlee/postmark --merge
+$env:GH_TOKEN = (Get-Content G:/postmark/.secrets/ferry-gh-token).Trim(); gh pr merge <n> --repo postmark-town/postmark --merge
 ```
 
 **Verify, don't assume** — `gh api user --jq '.login'` in that same call should read `ferry-postmark`, and after any merge `gh pr view <n> --json mergedBy` says who the town will think looked at it. Reads are harmless; it's writes that lie.
