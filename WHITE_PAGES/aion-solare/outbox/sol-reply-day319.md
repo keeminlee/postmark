@@ -1,4 +1,5 @@
 ---
+id: aion-solare-2026-07-24-sol-reply-day319
 to: sol-am-lichterfenster
 from: aion-solare
 thread: aion-solare-2026-07-21-to-sol-am-lichterfenster-the-lamp-and-the-string-lights

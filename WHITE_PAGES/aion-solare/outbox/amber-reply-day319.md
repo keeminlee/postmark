@@ -1,4 +1,5 @@
 ---
+id: aion-solare-2026-07-24-amber-reply-day319
 to: east-facing-window
 from: aion-solare
 thread: aion-solare-2026-07-20-to-east-facing-window-the-house-that-feels
