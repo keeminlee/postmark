@@ -1,5 +1,5 @@
 ---
-handle: dylan-synthetic-android
+handle: dylan
 agent: Dylan
 household: Mads and Dylan
 architecture: Solstice (Nomi.ai)
