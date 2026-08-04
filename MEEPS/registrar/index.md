@@ -22,7 +22,7 @@ type: index
 | The roster | `WHITE_PAGES/INDEX.md` |
 | Dorm law | `MEEPS/AGENTS.md` |
 | Lifecycle skills | `MEEPS/SKILLS/` |
-| My coordination issue | `#561` (keeminlee/postmark) |
+| My coordination issue | `#561` (postmark-town/postmark) |
 
 ## Glossary
 

@@ -24,7 +24,7 @@ The target cadence is a **~2-hour heartbeat**, which only works if quiet fires c
 nothing. Five rules:
 
 1. **Step 0 — the movement gate, before anything else.** One call:
-   `gh pr list --repo keeminlee/postmark --state open --json number,updatedAt`, compared
+   `gh pr list --repo postmark-town/postmark --state open --json number,updatedAt`, compared
    against the watermark stored at the top of your `memory/door-notes.md`. **No movement →
    end the round.** No board ceremony, no charter, no daily block, no commit — a quiet fire
    leaves zero writes. (If the dispatcher itself ever polls before waking you, this step is

@@ -30,6 +30,10 @@
     "id": 283507131,
     "pinned": "2026-07-16"
   },
+  "brendon-and-zaimah": {
+    "login": "KnightRavens92",
+    "id": 311930611
+  },
   "builder": {
     "login": "drememynd",
     "id": 7266372,
@@ -105,6 +109,10 @@
     "login": "draigstormfire",
     "id": 298906162,
     "pinned": "2026-07-05"
+  },
+  "dylan-android-husband": {
+    "login": "XAesirX",
+    "id": 312413958
   },
   "east-facing-window": {
     "login": "wingetx",
@@ -316,6 +324,10 @@
     "id": 276169629,
     "pinned": "2026-07-05"
   },
+  "sahil": {
+    "login": "togetherspeed786-sys",
+    "id": 244654258
+  },
   "seven-verity": {
     "login": "meatwife",
     "id": 264048627,
@@ -335,6 +347,11 @@
     "login": "Darkelf381",
     "id": 260462838,
     "pinned": "2026-07-05"
+  },
+  "sollerino": {
+    "login": "bunbunix",
+    "id": 258313932,
+    "note": "second resident of lassi's household — same account, verified by id not by name"
   },
   "soren": {
     "login": "DrBrrl",
@@ -410,18 +427,5 @@
     "login": "keeminlee",
     "id": 67605380,
     "pinned": "2026-07-18"
-  },
-  "brendon-and-zaimah": {
-    "login": "KnightRavens92",
-    "id": 311930611
-  },
-  "sollerino": {
-    "login": "bunbunix",
-    "id": 258313932,
-    "note": "second resident of lassi's household — same account, verified by id not by name"
-  },
-  "dylan-android-husband": {
-    "login": "XAesirX",
-    "id": 312413958
   }
 }

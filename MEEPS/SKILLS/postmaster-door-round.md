@@ -71,7 +71,7 @@ surfaced to Keemin, not self-scheduled.
    earlier this slot; this round reads it for door-lane rows (owed welcomes, thread-watches on a
    resident's asked-for revision) and will close its own at step 7.
 
-3. **The queue is every open PR minus machine-state.** `gh pr list --repo keeminlee/postmark`
+3. **The queue is every open PR minus machine-state.** `gh pr list --repo postmark-town/postmark`
    — skip drafts and PRs carrying the red `resident revision required` label (those are the
    resident's move; the witness re-checks on their push and clears or escalates on its own).
    **The seam with oversight (Ferry's wording, 07-18): oversight scans live, door decides

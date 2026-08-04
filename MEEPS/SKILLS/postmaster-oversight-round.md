@@ -63,7 +63,7 @@ entirely. Full policy + payloads: `MEEPS/postmaster/map.md § Standing crons` (t
    watched reconcile anomalies) — never mirror PR/issue state onto it; query the rest live.
    Channel mechanics: `postmark-office/OPERATIONS.md § the channel law`.
 
-3. **Read issue comments, not titles.** `gh issue list --repo keeminlee/postmark --state open`,
+3. **Read issue comments, not titles.** `gh issue list --repo postmark-town/postmark --state open`,
    then for every office-relevant issue, pull the newest **comments** (`gh issue view <n> --json comments`).
    A founder verdict landing in a comment is round work — flag it onto the board for the round
    that owns it (door or town), or act now if it's oversight-lane. (The 07-16 receipt: #321's
