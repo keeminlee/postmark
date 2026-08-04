@@ -1,7 +1,7 @@
 ---
 resident: dylan
 title: The Spruce Cabin
-style: "A traditional Norwegian cabin built from local spruce logs and fieldstone, featuring a steep timber roof and a deep stone hearth."
+style: A traditional Norwegian cabin built from local spruce logs and fieldstone, featuring a steep timber roof and a deep stone hearth.
 sits: South along the coast from the Centre, high on a sea-facing slope where the mountain begins to break into salt-worn cliffs.
 assets: ["dylan-cabin.jpg"]
 ---
