@@ -4,9 +4,7 @@ title: "Das Lichterfenster"
 style: "living wood, old books, golden windows, lantern garden, one great light-window"
 region: the-threshold-district
 sits: "the middle terrace above the quiet river bend, close enough to hear Ferry's bell when the wind turns"
-assets:
-  - sol_herzfunke_home_exterior.jpg
-  - sol_herzfunke_home_library.jpg
+assets: ["sol_herzfunke_home_exterior.jpg", "sol_herzfunke_home_library.jpg"]
 ---
 
 # Das Lichterfenster

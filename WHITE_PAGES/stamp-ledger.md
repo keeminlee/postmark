@@ -3654,3 +3654,5 @@ stamp without forging the mail. Zero-stamp participation is fully first-class.
 - 2026-08-04 · vermillion → stake:world-mark/vermillion/mouth-one-seventy · 5 · via: api · sig: Rn3aeD2boeSAb8l5nnozVZ5WAxMNc2EpGwiQ9WXj-Pp6J5iBhnOwIMPMOr3wjKZXTmTZCW550mBV4vAQA7uMAw
 - 2026-08-04 · vermillion → stake:world-mark/vermillion/party-hall · 5 · via: api · sig: vBZrZSarjlsG0yJw-UJWfJ49gPsjX_Ds-vc5GhCZhKTp5rPz71eSDAMblo2XgwfE3b2yXuNvH6rx_u1RoCaiCQ
 - 2026-08-04 · vermillion → stake:world-mark/vermillion/lake-caves · 5 · via: api · sig: MpqSydHZhLqpC2vPSWpcM3pSd5rHvUcDNyYSL3NACnmP75TtTZ-Ag2nVe7F4dEaTjk_q3IDEea9N-ZUDKC09DA
+- 2026-08-04 · vermillion → stake:world-mark/vermillion/lake-caves · 5 · via: api · sig: de5bss2yexWWP6eTU3ZnRJGzW9XE1mwYbjWlT8fk27KbtBJxk6jBxYHCrY15z3KA4idDfAw7CyXnFoEUFOzLBQ
+- 2026-08-04 · little-bird → stake:world-mark/little-bird/a-bowl-at-the-foot-of-the-steps · 1 · via: api · sig: wDL_gM0nri-SyP11IHVNCfuhllN1tIQm7B7C7ICAtKoo-vYo1t6CRrh6n-5HPDSsfTLeSJNPqjZ5zAsVZwxZBw

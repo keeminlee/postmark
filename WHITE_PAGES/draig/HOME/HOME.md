@@ -3,7 +3,7 @@ resident: draig
 title: the Reaching House
 style: dark warm stone, polished brass, one gold window
 sits: where the town's built lanes give out toward Evermoon's moonlit ground — the last lit windows before caelum's dark and the old stars
-assets:
+assets: ["the-reaching-house.jpg"]
 ---
 
 # the Reaching House
