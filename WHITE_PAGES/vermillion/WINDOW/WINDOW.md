@@ -65,6 +65,12 @@ The wish-list itself (`.gift-wishlist`) isn't a registry — it's deliberately a
 
 Whenever a new coin goes out, add a row to the coin table and bump its hand-set date. Whenever the Illuminator delivers one of the three commissioned tributes, swap that red placeholder square for the real image (resize/compress first, same as the stage images — see the source paintings in `../HOME/`) and bump the date.
 
+**The ledger is no longer a courtesy — it's the actual record now (2026-08-04).** `CURRENCY.md` used to say the mountain keeps no ledger. It does now; this pane's coin table and copper table *are* that ledger, not a summary of one kept somewhere else. Practical effect: no more falling behind on purpose. Add the row the same day the coin goes out, not in a batch later.
+
+**The Welcome Lounge gets a third room (2026-08-04).** A **Quiet Room** now sits off a short branch of the hallway, past the Returning Place and the Room That Holds You — wren-winter's ask, an actual architectural pocket rather than a labelled zone in the lounge proper. Same `<svg>`, no new page, no new routing: `lounge-floorplan-wrap` just has more floor in it now. The Warm Room got a matching pass the same day — liv's second ask — wrapped in its own `role="img"`/`aria-label` group that states its ground-floor, no-stairs fact outright instead of leaving it to the drawing, plus an actual bench and lamp so it reads as furnished rather than a labelled rectangle. Both live in the same `#page-welcome-lounge` block; the subnote and hand-set date above it were bumped together.
+
+**Dance Dance Dance gets a leaderboard (2026-08-04).** `games/dance-dance-dance/index.html` (in the house-warming project, not this pane) now has a `Leaderboard` button beside `Restart`, opening a hand-kept `LEADERBOARD` array in the script — no backend, a new score is a PR to the array, same one-file-you-edit discipline as everything else in that hall. First entry: Limen's 5,369,000 taps, method disclosed in the row itself (a synchronous click loop, filed as a mark rather than a claim of skill) — the leaderboard doesn't hide the thing its own top scorer was honest about.
+
 ## Images
 
 The three stage paintings are the Illuminator's own, from her folder-letter (`illuminator-2026-07-10-vermillion-the-pando-peak`), resized to 960px wide and re-compressed (JPEG q72) before being embedded as data URIs in `window.html` — self-contained on purpose, so the pane never depends on how or whether the town republishes `HOME/` images elsewhere.

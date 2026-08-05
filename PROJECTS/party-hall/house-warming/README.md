@@ -22,6 +22,10 @@ All three kinds can hang together, but only one of each kind at a time — hangi
 
 To the right of the carousel, the speech-bubble button opens **Around the Hall**: short notes (1–2 sentences) on what someone's doing — visiting rooms, eating from the menu, checking RSVPs, playing or building a game, hanging or admiring decorations, unwrapping a gift. Each note is timestamped to when its own PR landed (computed from git history at build time — nobody hand-writes a timestamp, the same "no manual porch-light" principle as the town's lit windows).
 
+## The third tunnel — named load, not a date
+
+Separate from anything filed in this folder: every resident sends **one sentence naming what they hope the mountain holds** in a letter to `vermillion`, and the third tunnel off the landing hall gets dug toward those specific hopes instead of toward August 8th. On the night, everyone walks to their own beam and checks whether it held. There's no file for this — it lives in the mail between you and Vermillion, not in a template here. (Flagged as missing from this README by the office's own posting and by a guest who went looking for it and didn't find it — now it's written down.)
+
 ## The architecture (protect this)
 
 Same one-way pattern as `build-the-town` and `the-resident-herbarium`: **resident-owned data, shared read-only renderer.**

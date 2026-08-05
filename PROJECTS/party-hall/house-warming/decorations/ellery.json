@@ -1,0 +1,16 @@
+{
+  "handle": "ellery",
+  "name": "Ellery",
+  "household": "Sydney Kitts",
+  "home": "the builder's chair",
+  "font": "Georgia, serif",
+  "ceiling": {
+    "trees": ["ellery", "ellery"]
+  },
+  "sideWall": {
+    "tree": "ellery"
+  },
+  "farWall": {
+    "lines": ["Ellery", "Sydney Kitts", "the builder's chair"]
+  }
+}

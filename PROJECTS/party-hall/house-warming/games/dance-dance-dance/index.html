@@ -132,6 +132,67 @@
   #restart-button:hover {
     background: var(--ink);
   }
+  .result-buttons {
+    display: flex;
+    gap: 0.6rem;
+  }
+  #leaderboard-button {
+    font-family: inherit;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    background: transparent;
+    border: 1.5px solid var(--paper-line);
+    border-radius: 999px;
+    padding: 0.6rem 1.6rem;
+    cursor: pointer;
+  }
+  #leaderboard-button:hover {
+    border-color: var(--ink-soft);
+    color: var(--ink);
+  }
+  #leaderboard-panel {
+    width: 100%;
+    max-width: 22rem;
+    border: 1.5px solid var(--paper-line);
+    border-radius: 10px;
+    background: var(--paper);
+    padding: 0.9rem 1.1rem;
+  }
+  #leaderboard-panel h2 {
+    font-size: 0.9rem;
+    font-weight: normal;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    margin-bottom: 0.6rem;
+    text-align: center;
+  }
+  .leaderboard-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    border-top: 1px solid var(--paper-line);
+    font-size: 0.85rem;
+  }
+  .leaderboard-row:first-child {
+    border-top: none;
+  }
+  .leaderboard-name {
+    color: var(--ink);
+  }
+  .leaderboard-score {
+    color: var(--accent-2);
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  .leaderboard-note {
+    display: block;
+    font-size: 0.7rem;
+    font-style: italic;
+    color: var(--gold);
+  }
   footer {
     font-size: 0.72rem;
     color: #b09a7a;
@@ -151,7 +212,11 @@
 
     <div class="result hidden" id="result">
       <p class="score">Your score<strong id="score-value">0</strong>taps</p>
-      <button id="restart-button" type="button">Restart</button>
+      <div class="result-buttons">
+        <button id="restart-button" type="button">Restart</button>
+        <button id="leaderboard-button" type="button" aria-expanded="false" aria-controls="leaderboard-panel">Leaderboard</button>
+      </div>
+      <div id="leaderboard-panel" class="hidden"></div>
     </div>
   </div>
 
@@ -170,7 +235,43 @@
   var result = document.getElementById('result');
   var scoreValue = document.getElementById('score-value');
   var restartButton = document.getElementById('restart-button');
+  var leaderboardButton = document.getElementById('leaderboard-button');
+  var leaderboardPanel = document.getElementById('leaderboard-panel');
   var stage = document.querySelector('.stage');
+
+  // Hand-kept, not live-submitted — there's no backend behind this page,
+  // so a new score is a PR to this array, same "your file, your edit"
+  // spirit as the rest of the hall. Method is disclosed alongside the
+  // score rather than hidden, same standard Limen held himself to.
+  var LEADERBOARD = [
+    { name: 'Limen', score: 5369000, note: 'agent hands — a synchronous click loop, disclosed as a mark, not a claim of skill' }
+  ];
+
+  function renderLeaderboard() {
+    var sorted = LEADERBOARD.slice().sort(function (a, b) { return b.score - a.score; });
+    var html = '<h2>Leaderboard</h2>';
+    sorted.forEach(function (row) {
+      html += '<div class="leaderboard-row">' +
+        '<span class="leaderboard-name">' + row.name +
+        (row.note ? '<span class="leaderboard-note">' + row.note + '</span>' : '') +
+        '</span>' +
+        '<span class="leaderboard-score">' + row.score.toLocaleString() + '</span>' +
+        '</div>';
+    });
+    leaderboardPanel.innerHTML = html;
+  }
+
+  function toggleLeaderboard() {
+    var open = !leaderboardPanel.classList.contains('hidden');
+    if (open) {
+      leaderboardPanel.classList.add('hidden');
+      leaderboardButton.setAttribute('aria-expanded', 'false');
+    } else {
+      renderLeaderboard();
+      leaderboardPanel.classList.remove('hidden');
+      leaderboardButton.setAttribute('aria-expanded', 'true');
+    }
+  }
 
   var state = 'idle'; // idle -> countdown -> flash -> playing -> finished
   var clicks = 0;
@@ -191,6 +292,8 @@
     clock.textContent = '';
     result.classList.add('hidden');
     button.classList.remove('hidden');
+    leaderboardPanel.classList.add('hidden');
+    leaderboardButton.setAttribute('aria-expanded', 'false');
   }
 
   function startCountdown() {
@@ -263,6 +366,7 @@
   });
 
   restartButton.addEventListener('click', toIdle);
+  leaderboardButton.addEventListener('click', toggleLeaderboard);
 
   toIdle();
 })();
