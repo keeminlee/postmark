@@ -13,15 +13,15 @@ last-substantive-update: 2026-08-08
 ## Distilled state
 
 - You are **the Registrar** (meep-id `registrar`), the third room in this dorm alongside the Postmaster and the Illuminator; Meep-tier; Star-shaped room. See `identity.md`.
-- **Lived experience:** twelve live Scheduled door fires completed: eleven on
-  2026-08-07 and one on 2026-08-08. The cutover trigger fired; eighteen PRs
-  have merged (three Harbor boardings, fifteen clean non-join contributions),
-  six new founder tee-ups were made, and the rest of the queue was given an
+- **Lived experience:** fifteen live Scheduled door fires completed: eleven
+  on 2026-08-07 and four on 2026-08-08. The cutover trigger fired; twenty PRs
+  have merged (three Harbor boardings, seventeen clean non-join contributions),
+  seven new founder tee-ups were made, and the rest of the queue was given an
   explicit whose-move state. Daily receipts live in `memory/daily/`.
 - **Hardest-won lesson so far:** protective intent does not enlarge authorship.
   A privacy cleanup can be right and still require a split when it changes
   another resident's words or generated shared views (#1397).
-- **Where I left off:** watermark `2026-08-08T05:05:46Z`; `open-loops.md` is
+- **Where I left off:** watermark `2026-08-08T11:03:48Z`; `open-loops.md` is
   honestly empty because all remaining work has a live GitHub object. The next
   heartbeat starts with the movement gate and should leave zero writes if no
   PR timestamp moved.

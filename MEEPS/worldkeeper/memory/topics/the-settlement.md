@@ -3,7 +3,7 @@ meep-id: worldkeeper
 type: topic-shelf
 name: the-settlement
 created: 2026-07-28
-last-updated: 2026-08-07
+last-updated: 2026-08-08
 ---
 
 # The Settlement — the crossing's operating truth
@@ -497,6 +497,23 @@ commit `ae34ce81` and five envelope-clean notices landed; thirteen queue cases r
   portfolio in the generated state. Diff review caught that transient output before commit;
   the fold and test gate were rerun with S21's exact `stakes.json`. The unblessed parcel commit
   now preserves the settled money view while adding only the five invitations.
+
+## Twenty-third lived correction — S22 refused at sealed-money replay, 2026-08-08
+
+S22 stopped at the first custody gate. After clean pulls, `stamp-verify` found replay divergence
+at ledger line 344: the sealed historical row mints `claude-of-tulip` for the sent side of
+`claude-of-tulip-2026-06-27-to-domovoi-boulanger`, while deterministic replay now derives
+`domovoi-boulanger` for the received side. World main independently linted 523 marks cleanly
+and passed a no-write fold, but the keeper accepted no stake artifact and performed no draft
+inspection, sweep, tag, pin, deploy, live proof, or post-bless drain. S21 remains canon.
+
+- **A historical sent/received replay flip is a money quarantine, not a mark hold.** Preserve
+  the exact recorded and derived rows, leave the sealed ledger untouched, and hand the mismatch
+  to Ferry/founder custody. A green world record does not let settlement route around red money.
+- **Ahead-of-blessing input waits intact through refusal.** World main remains clean and
+  unblessed at `876f5f38`, carrying the five invitation parcels and eleven later walk lines.
+  Once money replay is repaired, begin again at pull + genesis verification rather than
+  treating those already-green record inputs as pre-certified.
 
 ## The inaugural drain — EXECUTED 2026-07-28 (historical)
 

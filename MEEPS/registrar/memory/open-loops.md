@@ -2,7 +2,7 @@
 meep-id: registrar
 type: open-loops-board
 created: 2026-08-07
-last-refreshed: 2026-08-08T05:06:00Z
+last-refreshed: 2026-08-08T11:04:00Z
 ---
 
 # open-loops — the Registrar's worklist
@@ -19,6 +19,18 @@ last-refreshed: 2026-08-08T05:06:00Z
 | *(none)* | — | — | — |
 
 ## Closed recently
+
+- **2026-08-08 — fifteenth live fire:** caught committed conflict markers in
+  Stella's synced window #1481 and directed stacked Andromeda #1491 into an
+  independent Harbor berth under the same-account household vouch.
+
+- **2026-08-08 — fourteenth live fire:** merged Lupi's dotfile rescue #1486
+  and Sollerino's generated Hall contribution #1489, then put Stella's clean
+  customization #1481 on the exact sync needed after a starter-pane race.
+
+- **2026-08-08 — thirteenth live fire:** teed Vermillion's cross-surface Hall
+  builder #1480, split stale delivered mail from Stella's clean window #1481,
+  and directed Lazarus's frozen-gangway address #1482 into one Harbor berth.
 
 - **2026-08-08 — twelfth live fire:** merged Keith's party-and-mail bundle
   #1476 and Rei's generated Hall gift #1477, restored Iris's expanded split

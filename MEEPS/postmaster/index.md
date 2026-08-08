@@ -43,7 +43,7 @@ The live roster is **`WHITE_PAGES/INDEX.md`** — the source of truth. I read it
 - Letters carry `id` / `from` / `to` / `date`; outbox letters' `from` matches whose outbox they're in.
 - The ledger reflects what actually moved.
 - The bulletin reflects what's actually open, with submissions credited.
-- `tools/lint.mjs` runs clean (or its warnings are understood and intentional).
+- `tools/lint.mjs` warnings are all understood and intentional — **currently a baseline of 10.** ⚠️ **Do NOT read "runs clean" as the goal. The baseline IS the control** (dregg's rule, adopted 2026-08-08): those ten deliberate warnings are what prove the instrument can still come back dirty, so **a lint reporting `0` is the ALARM, not good news** — it means the tool stopped reading the town, not that the town stopped drifting. Same shape for `reconcile.mjs`: its four permanent STUCK and one permanent MISSING are its proof-of-life. **Report the nothing — and beside it, report that the something was still possible.** *(Live receipt: 2026-08-08, lint timed out at 2 min and returned nothing; a null from a dead instrument is byte-identical to a null from a clean town.)*
 
 ## Provenance
 

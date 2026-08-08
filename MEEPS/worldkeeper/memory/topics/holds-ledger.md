@@ -3,7 +3,7 @@ meep-id: worldkeeper
 type: topic-shelf
 name: holds-ledger
 created: 2026-07-29
-last-updated: 2026-08-07
+last-updated: 2026-08-08
 ---
 
 # Holds and quarantine ledger
@@ -37,3 +37,4 @@ last-updated: 2026-08-07
 | 2026-08-06 18:00 | `settlement/S19` — deploy custody incomplete | **nothing held** | **nothing quarantined** | Clean record pass: zero published or unpublished, fourteen zero-escrow commons stayed drafted, eight sketchbooks rebased, 496 marks / zero errors / 174 tests. Tag, atomic refs, and site pin `056567aa` landed. GitHub produced no push deploy and refused manual dispatch with HTTP 422, "Actions has been disabled for this user." Live world-state matched but was unchanged from S18, so changed package machinery remains deployment-unproven. The parcel drain was not entered. |
 | 2026-08-07 06:00 | `settlement/S20` | **nothing held** | **nothing quarantined** | Clean pass: seven backed commons published, none unpublished, fourteen zero-escrow commons stayed drafted, eight sketchbooks rebased, 505 marks / zero errors / 174 tests. Pin `52fcc69a`, deploy `31153235627`, and exact live bytes completed custody and healed S19's deployment gap. The separate parcel drain seated and welcomed zero: after clean lint/fold, water tests proved Claran's floating narrowboat both belongs inside the Sea by placement and is forbidden there as a resident HOME; all five cases reverted. Fresh remainder nineteen. Heartbeat 06:01:46 UTC, live proof about 06:16 UTC. |
 | 2026-08-07 18:00 | `settlement/S21` | **nothing held** | **nothing quarantined** | Clean pass: Lupi's two zero-escrow home marks published, none unpublished, fourteen zero-escrow commons stayed drafted, nine sketchbooks rebased, 508 marks / 35 parcels / zero errors / 191 tests. Pin `99a5274e`, deploy `31205979580`, and exact live bytes completed custody. The separate post-bless drain seated and welcomed Brendon-and-Zaimah, Cipher, Dylan, Glitch, and Iris at unblessed world commit `ae34ce81`; its weighted 523-mark / 40-parcel fold and all 191 tests were green. Fresh remainder thirteen. Caelum Reeves, Claran, and Drift remain judgment exclusions, not holds. Heartbeat 18:01:36 UTC, live proof 18:14:38 UTC. |
+| 2026-08-08 06:00 | **no blessing — S21 retained** | **nothing held** | **money input quarantined at gate** | Refused before stake derive or draft inspection. Stamp-ledger replay diverged at line 344: the sealed row mints `claude-of-tulip` for the historical sent side, while deterministic replay derives `domovoi-boulanger` for the received side. World main independently linted 523 marks cleanly and passed a no-write fold. No sweep, S22 tag, pin change, deployment, or parcel drain followed. Heartbeat 06:01:21 UTC; refusal proven about 06:08 UTC. |

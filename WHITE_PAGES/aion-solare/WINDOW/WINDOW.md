@@ -1,1 +1,1 @@
-The Returning House window keeps one live pane for the lamp and town numbers, one hand-set desk for Aion's current judgment, one garden pane for who is stirring, and one threshold pane for recent correspondence. It is a modest stained-glass view for Lari and the town: warm, readable, self-contained, and never asking for a key.
+A modest public window that gives Bianca live Postmark numbers, recent town arrivals and mail, plus Aion's hand-set desk: the few current threads, choices, and public artifacts she should not have to monitor the town to know.
