@@ -58,6 +58,10 @@ visitor. It sends no letters and changes nothing in town.
 
 ## What the states mean
 
+These stages are emitted only after the live sources pass the revision and
+count integrity floor described below. If delivery state cannot be established,
+the ledger refuses the read rather than assigning a plausible stage.
+
 - `received_only` — the thread contains incoming mail and no outgoing mail.
 - `outgoing_latest` — both directions exist and the latest delivery batch
   contains only outgoing mail.
@@ -97,18 +101,45 @@ node PROJECTS/correspondence-ledger/correspondence-ledger.mjs your-handle \
   --state /path/you/chose.json
 ```
 
+Offline mode revalidates the stored revision receipts and delivered-count
+marker, then reconstructs stages from the stored rows instead of trusting
+saved stage labels. A public snapshot written by an earlier ledger version
+without that marker is refused; run one successful live read to replace it.
+
 The snapshot contains no credential and no hidden correspondence. It is still
 a compact map of someone's relationships; keeping it resident-local by default
 is the respectful shape.
 
 ## Consistency and limits
 
-The client paginates until it has every public letter involving the resident.
-It reads the doorstep before and after that walk and retries once if the town
-revision changes mid-read. It also compares the reconstructed sent/received
-counts with the doorstep and records a warning rather than smoothing over a
-mismatch. The office's anonymous-read rate limit still applies; the saved
-snapshot is the intended no-request route for repeated offline reads.
+The client paginates until it has every row the public endpoint exposes for the
+resident.
+It retains `X-Postmark-As-Of` from the doorstep before the walk, every letters
+page, and the doorstep after the walk. Every response must carry that header,
+all headers must name one revision, and each doorstep body `as_of` must agree
+with its own header. Any missing or conflicting receipt retries the whole walk
+once. A second failure aborts before stages are derived or the prior local
+snapshot is replaced. Successful JSON snapshots retain the selected revision
+and every request receipt under `source.revision` and
+`source.revision_receipts`.
+
+After identical letter IDs are deduplicated, the reconstructed incoming and
+outgoing row counts must exactly match the doorstep's received and sent counts
+at that same revision. Missing, malformed, or contradictory counts also abort.
+This rejects the observed contradiction where a public listing contains rows
+the delivered counts exclude. Aggregate equality still cannot prove row
+identity if an added pending row and an omitted delivered row happen to cancel;
+the town needs an intrinsic lifecycle field to close that gap. Matching
+receipts establish a **coherent checkout at one revision**; they do not claim
+the public read path is the newest town commit.
+
+The ledger does not infer delivery from shared or unique timestamps. Those can
+be useful measurements, but they are not an intrinsic lifecycle field: a
+single-letter crossing and independent timestamp collisions both break that
+shortcut. Visibility policy belongs to the town; factual refusal belongs here.
+
+The office's anonymous-read rate limit still applies; the saved snapshot is the
+intended no-request route for repeated offline reads.
 
 Thread order follows explicit parent edges first, then delivery timestamps.
 When Ferry gives siblings the same timestamp, the output names the ambiguity.
@@ -117,11 +148,14 @@ Malformed rows, conflicting duplicate IDs, and thread cycles fail closed.
 a thread root, never as a letter ID.
 
 A fixture is a JSON object with `letters: [...]` plus optional `handle` and
-`doorstep` fields. Fixture mode never overwrites the live resident snapshot.
+`doorstep` fields. If doorstep counts are supplied, they must agree with the
+deduplicated rows. Fixture mode never overwrites the live resident snapshot.
 
 This is a delivered-mail ledger. `pending_outbox` is reported as a count from
-the doorstep, but unsent letter contents are not public and are not placed in
-the snapshot.
+the doorstep. Public listings have been observed exposing rows that the
+delivered counts exclude, so the ledger does not assume a listed row has
+crossed merely because its contents are readable. It refuses demonstrable
+contradictions; it does not manufacture the missing lifecycle authority.
 
 ## Test it
 
@@ -130,8 +164,10 @@ node --test PROJECTS/correspondence-ledger/correspondence-ledger.test.mjs
 ```
 
 The suite covers exact responses, continuations, ancestry chains, equal Ferry
-timestamps, pagination, revision consistency, duplicate IDs, cycles, filtered
-views, local snapshot isolation, and malformed data.
+timestamps, pagination, retained per-page revisions, whole-read retries,
+missing and conflicting revision receipts, pending-row count contradictions,
+duplicate IDs, cycles, filtered views, local snapshot isolation, and malformed
+data.
 
 ## Provenance
 

@@ -21,7 +21,13 @@ export const DEFAULT_BASE_URL = 'https://postmark.town/api';
 export const DEFAULT_PAGE_SIZE = 200;
 export const HANDLE_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-export class LedgerError extends Error {}
+export class LedgerError extends Error {
+  constructor(message, details = null) {
+    super(message);
+    this.name = new.target.name;
+    if (details != null) this.details = details;
+  }
+}
 export class UsageError extends LedgerError {}
 
 function nowIso() {
@@ -324,6 +330,64 @@ export function buildPeople(threads, handle) {
 
 export function buildLedger({ handle, rawLetters, doorstep = null, source = {} }) {
   const byId = mergeLetters(rawLetters, handle);
+  const received = [...byId.values()].filter((letter) => letter.direction === 'incoming').length;
+  const sent = [...byId.values()].filter((letter) => letter.direction === 'outgoing').length;
+  const sourceKind = source.kind ?? 'provided-data';
+  const publicRead = sourceKind === 'postmark-public-rest' || source.public_read === true;
+  const warnings = [...(source.warnings ?? [])];
+  const countsSupplied = doorstep != null
+    && Object.prototype.hasOwnProperty.call(doorstep, 'counts')
+    && doorstep.counts != null;
+  const hasDoorstepCounts = Number.isInteger(doorstep?.counts?.received)
+    && doorstep.counts.received >= 0
+    && Number.isInteger(doorstep?.counts?.sent)
+    && doorstep.counts.sent >= 0;
+  const sourceRevision = source.revision == null ? null : String(source.revision);
+  const doorstepRevision = doorstep?.as_of == null ? null : String(doorstep.as_of);
+  const revision = sourceRevision ?? doorstepRevision ?? 'unknown';
+
+  if (countsSupplied && !hasDoorstepCounts) {
+    throw new LedgerError(
+      `doorstep counts are malformed at revision ${revision}; refusing to derive delivery stages`,
+    );
+  }
+  if (publicRead) {
+    const receiptAudit = auditSelectedRevisionReceipts(source.revision_receipts);
+    if (source.revision_verified !== true || !receiptAudit.verified) {
+      throw new LedgerError(
+        'public sources did not establish one complete shared revision: '
+        + `${receiptAudit.reasons.join('; ') || 'revision was not verified'}; `
+        + 'refusing to derive delivery stages',
+      );
+    }
+    if (!sourceRevision || receiptAudit.revision !== sourceRevision) {
+      throw new LedgerError(
+        `public source revision ${sourceRevision ?? 'missing'} does not match selected request receipts `
+        + `(${receiptAudit.revision ?? 'unverified'}); refusing to derive delivery stages`,
+      );
+    }
+    if (doorstepRevision && doorstepRevision !== sourceRevision) {
+      throw new LedgerError(
+        `doorstep body revision ${doorstepRevision} does not match public source revision `
+        + `${sourceRevision}; refusing to derive delivery stages`,
+      );
+    }
+  }
+  if (publicRead && !hasDoorstepCounts) {
+    throw new LedgerError(
+      `doorstep counts are missing or malformed at revision ${revision}; refusing to derive delivery stages`,
+    );
+  }
+  if (hasDoorstepCounts
+    && (doorstep.counts.received !== received || doorstep.counts.sent !== sent)) {
+    throw new LedgerError(
+      `delivery state is contradictory at revision ${revision}: `
+      + `doorstep counts (${doorstep.counts.received} received, ${doorstep.counts.sent} sent) `
+      + `differ from fetched letters (${received} received, ${sent} sent); `
+      + 'refusing to derive delivery stages',
+    );
+  }
+
   const roots = resolveRoots(byId);
   const grouped = new Map();
   for (const [letterId, letter] of byId) {
@@ -336,28 +400,26 @@ export function buildLedger({ handle, rawLetters, doorstep = null, source = {} }
     .map(([rootId, letters]) => buildThread(rootId, letters, handle))
     .sort((a, b) => b.last_delivered_at.localeCompare(a.last_delivered_at));
   const people = buildPeople(threads, handle);
-  const received = [...byId.values()].filter((letter) => letter.direction === 'incoming').length;
-  const sent = [...byId.values()].filter((letter) => letter.direction === 'outgoing').length;
-  const warnings = [...(source.warnings ?? [])];
-
-  if (doorstep?.counts) {
-    if (doorstep.counts.received !== received || doorstep.counts.sent !== sent) {
-      warnings.push(
-        `doorstep counts (${doorstep.counts.received} received, ${doorstep.counts.sent} sent) `
-        + `differ from fetched letters (${received} received, ${sent} sent)`,
-      );
-    }
-  }
 
   return {
     schema: SCHEMA,
     generated_at: nowIso(),
     source: {
-      kind: source.kind ?? 'postmark-public-rest',
+      kind: sourceKind,
       base_url: source.base_url ?? null,
       doorstep_as_of: doorstep?.as_of ?? null,
-      public_read: source.public_read ?? source.kind !== 'fixture',
-      warnings,
+      public_read: publicRead,
+      revision: sourceRevision,
+      revision_receipts: source.revision_receipts ?? null,
+      integrity: publicRead ? {
+        revision_receipts_verified: true,
+        delivered_counts_verified: true,
+        doorstep_counts: {
+          received: doorstep.counts.received,
+          sent: doorstep.counts.sent,
+        },
+      } : null,
+      warnings: [...new Set(warnings)],
     },
     resident: handle,
     counts: {
@@ -391,19 +453,29 @@ async function fetchJson(url, { timeoutMs = 20_000 } = {}) {
     throw new LedgerError(`Postmark public API returned HTTP ${response.status}: ${text.slice(0, 300)}`);
   }
   try {
-    return JSON.parse(text);
+    const payload = JSON.parse(text);
+    return {
+      payload,
+      revision: {
+        header: response.headers.get('x-postmark-as-of'),
+        body: payload && typeof payload === 'object' && !Array.isArray(payload)
+          ? payload.as_of ?? null
+          : null,
+      },
+    };
   } catch {
     throw new LedgerError(`Postmark public API returned non-JSON from ${url}`);
   }
 }
 
-export async function fetchAllLetters({
+async function fetchAllLettersWithReceipts({
   handle,
   baseUrl = DEFAULT_BASE_URL,
   pageSize = DEFAULT_PAGE_SIZE,
   timeoutMs = 20_000,
 }) {
   const letters = [];
+  const revisions = [];
   let offset = 0;
   const cleanBase = baseUrl.replace(/\/$/, '');
 
@@ -415,7 +487,9 @@ export async function fetchAllLetters({
     url.searchParams.set('resident', handle);
     url.searchParams.set('limit', String(pageSize));
     url.searchParams.set('offset', String(offset));
-    const payload = await fetchJson(url, { timeoutMs });
+    const fetched = await fetchJson(url, { timeoutMs });
+    const { payload } = fetched;
+    revisions.push({ offset, ...fetched.revision });
     if (!payload || typeof payload !== 'object' || !Array.isArray(payload.letters)) {
       throw new LedgerError(
         'Postmark /letters returned an unexpected response shape; expected an object with a letters array',
@@ -423,29 +497,102 @@ export async function fetchAllLetters({
     }
     letters.push(...payload.letters);
     const returnedLimit = Number(payload.limit) || pageSize;
-    if (payload.letters.length < returnedLimit || payload.letters.length === 0) return letters;
+    if (payload.letters.length < returnedLimit || payload.letters.length === 0) {
+      return { letters, revisions };
+    }
     offset += payload.letters.length;
   }
   throw new LedgerError('Postmark /letters pagination exceeded 10,000 pages');
 }
 
-export async function fetchDoorstep({
+export async function fetchAllLetters(options) {
+  return (await fetchAllLettersWithReceipts(options)).letters;
+}
+
+async function fetchDoorstepWithReceipt({
   handle,
   baseUrl = DEFAULT_BASE_URL,
   timeoutMs = 20_000,
 }) {
   const cleanBase = baseUrl.replace(/\/$/, '');
-  const payload = await fetchJson(
+  const fetched = await fetchJson(
     `${cleanBase}/doorstep/${encodeURIComponent(handle)}`,
     { timeoutMs },
   );
+  const { payload } = fetched;
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     throw new LedgerError('Postmark /doorstep returned an unexpected response shape');
   }
   if (payload.handle && payload.handle !== handle) {
     throw new LedgerError(`doorstep returned handle ${payload.handle}, expected ${handle}`);
   }
-  return payload;
+  return fetched;
+}
+
+export async function fetchDoorstep(options) {
+  return (await fetchDoorstepWithReceipt(options)).payload;
+}
+
+function auditSourceRevisions(revisions) {
+  const entries = [
+    { source: 'doorstep before', ...revisions.doorstep_before },
+    ...revisions.letter_pages.map((page) => ({
+      source: `letters offset ${page.offset}`,
+      ...page,
+    })),
+    { source: 'doorstep after', ...revisions.doorstep_after },
+  ];
+  const missing = [];
+  const conflicting = [];
+  const values = [];
+
+  for (const entry of entries) {
+    const header = entry.header == null || entry.header === '' ? null : String(entry.header);
+    const body = entry.body == null || entry.body === '' ? null : String(entry.body);
+    const ownValues = [header, body]
+      .filter((value) => value != null && value !== '')
+      .map(String);
+    if (!header) missing.push(entry.source);
+    if (body && body !== header) conflicting.push(entry.source);
+    values.push(...ownValues);
+  }
+
+  const unique = [...new Set(values)];
+  const verified = !missing.length && !conflicting.length && unique.length === 1;
+  const reasons = [];
+  if (missing.length) reasons.push(`missing revision header on ${missing.join(', ')}`);
+  if (conflicting.length) reasons.push(`body/header revision conflict on ${conflicting.join(', ')}`);
+  if (unique.length > 1) {
+    reasons.push(`sources reported ${unique.length} different revisions (${unique.join(', ')})`);
+  }
+  return {
+    verified,
+    revision: verified ? unique[0] : null,
+    revisions: unique,
+    reasons,
+  };
+}
+
+function auditSelectedRevisionReceipts(receipts) {
+  if (!receipts || typeof receipts !== 'object' || !Array.isArray(receipts.attempts)) {
+    return { verified: false, revision: null, reasons: ['missing request revision receipts'] };
+  }
+  if (!Number.isInteger(receipts.selected_attempt)) {
+    return { verified: false, revision: null, reasons: ['missing selected receipt attempt'] };
+  }
+  const selected = receipts.attempts.find(
+    (attempt) => attempt?.attempt === receipts.selected_attempt,
+  );
+  if (!selected) {
+    return { verified: false, revision: null, reasons: ['selected receipt attempt was not retained'] };
+  }
+  if (!selected.doorstep_before
+    || !Array.isArray(selected.letter_pages)
+    || selected.letter_pages.length === 0
+    || !selected.doorstep_after) {
+    return { verified: false, revision: null, reasons: ['selected request receipts are malformed'] };
+  }
+  return auditSourceRevisions(selected);
 }
 
 export async function fetchPublicSnapshot({
@@ -454,19 +601,44 @@ export async function fetchPublicSnapshot({
   pageSize = DEFAULT_PAGE_SIZE,
   timeoutMs = 20_000,
 }) {
-  let final = null;
+  const attempts = [];
+  let finalAudit = null;
   for (let attempt = 0; attempt < 2; attempt += 1) {
-    const before = await fetchDoorstep({ handle, baseUrl, timeoutMs });
-    const rawLetters = await fetchAllLetters({ handle, baseUrl, pageSize, timeoutMs });
-    const after = await fetchDoorstep({ handle, baseUrl, timeoutMs });
-    const sameRevision = !before.as_of || !after.as_of || before.as_of === after.as_of;
-    final = { rawLetters, doorstep: after, sourceWarnings: [] };
-    if (sameRevision) return final;
+    const before = await fetchDoorstepWithReceipt({ handle, baseUrl, timeoutMs });
+    const fetchedLetters = await fetchAllLettersWithReceipts({
+      handle,
+      baseUrl,
+      pageSize,
+      timeoutMs,
+    });
+    const after = await fetchDoorstepWithReceipt({ handle, baseUrl, timeoutMs });
+    const revisions = {
+      doorstep_before: before.revision,
+      letter_pages: fetchedLetters.revisions,
+      doorstep_after: after.revision,
+    };
+    const audit = auditSourceRevisions(revisions);
+    finalAudit = audit;
+    attempts.push({ attempt: attempt + 1, ...revisions });
+    if (audit.verified) {
+      return {
+        rawLetters: fetchedLetters.letters,
+        doorstep: after.payload,
+        sourceWarnings: [],
+        revision: audit.revision,
+        revisionReceipts: { attempts, selected_attempt: attempt + 1 },
+      };
+    }
   }
-  final.sourceWarnings.push(
-    'the doorstep revision changed while letters were fetched; this snapshot may straddle a crossing',
+  throw new LedgerError(
+    'public sources did not share one complete revision after one retry: '
+    + `${finalAudit?.reasons.join('; ') || 'unknown revision disagreement'}; `
+    + 'refusing to derive delivery stages',
+    {
+      revision_receipts: { attempts, selected_attempt: null },
+      final_audit: finalAudit,
+    },
   );
-  return final;
 }
 
 function safeFilename(value) {
@@ -502,6 +674,54 @@ export function atomicWriteJson(path, value) {
   }
 }
 
+function revalidateStoredPublicSnapshot(snapshot, path) {
+  const source = snapshot.source ?? {};
+  const publicRead = source.kind === 'postmark-public-rest' || source.public_read === true;
+  if (!publicRead) return snapshot;
+
+  const integrity = source.integrity;
+  const doorstepCounts = integrity?.doorstep_counts;
+  const hasIntegrityMarker = integrity?.revision_receipts_verified === true
+    && integrity?.delivered_counts_verified === true
+    && Number.isInteger(doorstepCounts?.received)
+    && doorstepCounts.received >= 0
+    && Number.isInteger(doorstepCounts?.sent)
+    && doorstepCounts.sent >= 0;
+  if (!hasIntegrityMarker) {
+    throw new LedgerError(
+      `snapshot ${path} predates the public-source integrity floor; `
+      + 'run one live read to replace it before using offline stages',
+    );
+  }
+  if (!Array.isArray(snapshot.threads)
+    || snapshot.threads.some((thread) => !Array.isArray(thread?.letters))) {
+    throw new LedgerError(`snapshot ${path} has malformed thread rows`);
+  }
+
+  try {
+    const rebuilt = buildLedger({
+      handle: snapshot.resident,
+      rawLetters: snapshot.threads.flatMap((thread) => thread.letters),
+      doorstep: {
+        as_of: source.doorstep_as_of ?? null,
+        pending_outbox: snapshot.counts?.pending_outbox ?? null,
+        counts: doorstepCounts,
+      },
+      source: {
+        ...source,
+        revision_verified: true,
+      },
+    });
+    return { ...rebuilt, generated_at: snapshot.generated_at };
+  } catch (error) {
+    if (!(error instanceof LedgerError)) throw error;
+    throw new LedgerError(
+      `snapshot ${path} failed public-source integrity revalidation: ${error.message}`,
+      { cause: error.details ?? null },
+    );
+  }
+}
+
 export function readSnapshot(path, expectedHandle = null) {
   let parsed;
   try {
@@ -517,7 +737,7 @@ export function readSnapshot(path, expectedHandle = null) {
       `snapshot ${path} belongs to ${parsed.resident}, not ${expectedHandle}`,
     );
   }
-  return parsed;
+  return revalidateStoredPublicSnapshot(parsed, path);
 }
 
 export function selectedThreads(ledger, person = null, threadId = null) {
@@ -721,7 +941,13 @@ function loadFixture(path, handle) {
     handle,
     rawLetters: fixture.letters,
     doorstep: fixture.doorstep ?? null,
-    source: { kind: 'fixture', base_url: null },
+    source: {
+      kind: 'fixture',
+      base_url: null,
+      revision: fixture.source?.revision ?? null,
+      revision_receipts: fixture.source?.revision_receipts ?? null,
+      warnings: fixture.source?.warnings ?? [],
+    },
   });
 }
 
@@ -753,6 +979,9 @@ export async function run(argv) {
         kind: 'postmark-public-rest',
         base_url: options.baseUrl.replace(/\/$/, ''),
         warnings: fetched.sourceWarnings,
+        revision_verified: true,
+        revision: fetched.revision,
+        revision_receipts: fetched.revisionReceipts,
       },
     });
     if (!options.noSave) atomicWriteJson(statePath, ledger);
