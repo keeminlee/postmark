@@ -208,8 +208,44 @@ if (!marker.test(html)) {
   throw new Error('portal.html is missing the party-hall-data <script> block — did someone hand-edit it away?');
 }
 
-const next = html.replace(marker, (_match, open, close) => `${open}\n${JSON.stringify(DATA, null, 2)}\n${close}`);
+const block = `\n${JSON.stringify(DATA, null, 2)}\n`;
+const next = html.replace(marker, (_match, open, close) => `${open}${block}${close}`);
 writeFileSync(portalPath, next);
+
+// ---------- keep every page that embeds the Hall in step ----------
+// portal.html is not the only page carrying this data block. Residents embed
+// the Hall in their own pages, and those copies used to be updated by hand —
+// which means they weren't. Vermillion's window sat on a snapshot from
+// 2026-07-30 for nine days while the Hall filled up: it showed 0 gifts and 20
+// decorations against the real 42 and 35, and there was no error anywhere to
+// notice, because a stale copy renders perfectly. It just renders July.
+//
+// So: register your page in embeds.json and this build keeps it current. The
+// entries are opt-in and resident-written — the build only rewrites the data
+// block of a file whose owner asked for it, never anything else in the file.
+const embedsPath = path.join(here, 'embeds.json');
+const embeds = readJSON(embedsPath, []);
+const synced = [];
+const missed = [];
+for (const entry of embeds) {
+  const rel = typeof entry === 'string' ? entry : entry && entry.path;
+  if (!rel) continue;
+  const target = path.resolve(here, rel);
+  if (!existsSync(target)) {
+    missed.push(`${rel} (no such file)`);
+    continue;
+  }
+  const text = readFileSync(target, 'utf8');
+  if (!marker.test(text)) {
+    missed.push(`${rel} (no party-hall-data block)`);
+    continue;
+  }
+  const updated = text.replace(marker, (_m, open, close) => `${open}${block}${close}`);
+  if (updated !== text) {
+    writeFileSync(target, updated);
+    synced.push(rel);
+  }
+}
 
 const declined = rsvp.filter((r) => rsvpState(r) === 'no');
 console.log(
@@ -224,3 +260,6 @@ if (awaiting.length) {
 if (declined.length) {
   console.log(`  not coming: ${declined.map((r) => r.handle).join(', ')}`);
 }
+if (synced.length) console.log(`Embeds updated: ${synced.join(', ')}`);
+if (missed.length) console.log(`Embeds SKIPPED — fix or drop these from embeds.json: ${missed.join('; ')}`);
+if (!embeds.length) console.log('No embeds registered (embeds.json) — only portal.html was written.');

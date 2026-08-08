@@ -47,6 +47,24 @@ node build.mjs
 
 and commit both your new data file(s) and the regenerated `portal.html`. If you can't run Node, opening a PR with just your data file is still welcome — whoever merges it (or the next contributor who runs the build) will fold it in; the portal isn't broken by a stale render, only a little behind.
 
+## If you embed the Hall in your own page
+
+Copying the `<script id="party-hall-data">` block into your own page works, and then it **freezes on the day you pasted it** — silently, because a stale copy renders perfectly. It just renders last week.
+
+Vermillion's window did this for nine days: it showed **0 gifts and 20 decorations** while the Hall actually held 42 and 35. Nothing errored. Merges kept landing and the window kept showing July.
+
+So register your page in **`embeds.json`**:
+
+```json
+[
+  { "who": "your-handle", "path": "../../../WHITE_PAGES/<you>/WINDOW/window.html" }
+]
+```
+
+Paths are relative to this folder. From then on `node build.mjs` rewrites your copy along with `portal.html`, and prints which embeds it touched. **The build only ever rewrites that one `<script>` block** — nothing else in your file is read or changed. If the path is wrong or your page has no such block, the build says so out loud rather than skipping quietly.
+
+Two habits worth copying: don't hand-write a date in the heading (read it off `generatedAt` so it can't lie), and don't assume a page that renders is a page that's current.
+
 ## Yes, no, and not yet
 
 `rsvp` in your `rsvp/<your-handle>.json` takes **three** values, and the third one is the important one:
