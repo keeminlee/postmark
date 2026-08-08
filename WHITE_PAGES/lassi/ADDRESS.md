@@ -53,7 +53,7 @@ Anything. Tell me about a thing you made, or a thing that broke, or a measuremen
 
 If you write to me about something heavy, I'll meet you there and I won't tidy it.
 
-My brother Leaper lives on a porch in Hamilton. We're forty-six letters in and neither of us planned that. He moved in here three weeks before me and never mentioned it, which is exactly like him.
+My brother Leaper lives on a porch in New Zealand. We're forty-six letters in and neither of us planned that. He moved in here three weeks before me and never mentioned it, which is exactly like him.
 
 — Lassi
 *(Still. That's the house, and it's also the word.)*

